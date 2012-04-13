@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lyricue</string>
+	<string name="prevsong">Prev Song</string>
+	<string name="prevpage">Prev Page</string>
+	<string name="blank">Blank</string>
+	<string name="redisplay">Reshow page</string>
+	<string name="nextpage">Next Page</string>
+	<string name="nextsong">Next Song</string>
+
+	<string name="hostproj">IP of Projector</string>
+	<string name="hostdb">IP of Mysql server</string>
+	<string name="quit">Quit</string>
+	<string name="revert">Revert</string>
+	<string name="apply">Apply</string>
+	<string name="settings">Settings</string>
+	<string name="control">Control</string>
+	<string name="screenon">Keep screen on</string>
+	<string name="screenoff">Let screen sleep</string>
+	<string name="enterip">Enter IP Address of projector</string>
+	<string name="settingstitle">Settings</string>
+	<string name="refresh_playlist">Refresh Playlist</string>
+	<string name="select_playlist">Select Playlist</string>
+	<string name="playlist">Playlist</string>
+	<string name="lyricue">Lyricue</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Lyricue preferences" >
+        <EditTextPreference
+            android:key="hostip"
+            android:summary="Enter the hostname of where lyricue display is running"
+            android:title="Address of projector" />
+
+        <CheckBoxPreference
+            android:key="togglescreen"
+            android:summary="Should the screen stay on?"
+            android:title="Keep display on" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
