@@ -32,7 +32,7 @@ public class Lyricue extends FragmentActivity {
 
 	/** Called when the activity is first created. */
 	public static final String PREFS_NAME = "LyricuePrefsFile";
-    private static final String TAG = Lyricue.class.getSimpleName();
+	private static final String TAG = Lyricue.class.getSimpleName();
 
 	public ViewPager pager = null;
 	public LyricuePagerAdapter adapter = null;
@@ -61,25 +61,26 @@ public class Lyricue extends FragmentActivity {
 	}
 
 	private void getPrefs() {
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		PreferenceManager.setDefaultValues(this,R.xml.preferences,false);
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		hostip = settings.getString("hostip", "");
-		logDebug("hostip:"+settings.getString("hostip","not set"));
+		logDebug("hostip:" + settings.getString("hostip", "not set"));
 		if (hostip.equals("")) {
-			Intent settingsActivity = new Intent(getBaseContext(), Preferences.class);
-			startActivityForResult(settingsActivity,1);
+			Intent settingsActivity = new Intent(getBaseContext(),
+					Preferences.class);
+			startActivityForResult(settingsActivity, 1);
 		}
 	}
-	
+
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode , Intent data) {
-		if (requestCode==1) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 1) {
 			getPrefs();
 		} else {
 			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
-
 
 	@Override
 	protected void onStop() {
@@ -127,7 +128,8 @@ public class Lyricue extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.settings_menu:
-			Intent settingsActivity = new Intent(getBaseContext(), Preferences.class);
+			Intent settingsActivity = new Intent(getBaseContext(),
+					Preferences.class);
 			startActivity(settingsActivity);
 			return true;
 		default:
@@ -142,12 +144,12 @@ public class Lyricue extends FragmentActivity {
 	}
 
 	public void logError(String error_text) {
-		Log.d(TAG,error_text);
+		Log.d(TAG, error_text);
 		Toast.makeText(this, error_text, Toast.LENGTH_SHORT).show();
 	}
 
 	public void logDebug(String error_text) {
-		Log.d(TAG,error_text);
+		Log.d(TAG, error_text);
 	}
 
 	public String runCommand(String command, String option1, String option2) {

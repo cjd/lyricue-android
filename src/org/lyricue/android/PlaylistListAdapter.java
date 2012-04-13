@@ -12,10 +12,11 @@ import pl.polidea.treeview.TreeNodeInfo;
 import pl.polidea.treeview.TreeStateManager;
 
 final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
-	private final Lyricue activity; 
+	private final Lyricue activity;
 	private final PlaylistFragment fragment;
 
-	public PlaylistAdapter(final Activity activity, final PlaylistFragment fragment, final Set<Long> selected,
+	public PlaylistAdapter(final Activity activity,
+			final PlaylistFragment fragment, final Set<Long> selected,
 			final TreeStateManager<Long> treeStateManager,
 			final int numberOfLevels) {
 		super(activity, treeStateManager, numberOfLevels);
@@ -34,7 +35,7 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 		return viewLayout;
 	}
 
-	private String getDescription(final long id) {		
+	private String getDescription(final long id) {
 		return fragment.playlistmap.get(id);
 	}
 

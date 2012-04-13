@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 public class BibleFragment extends Fragment {
 	public static final String PREFS_NAME = "LyricuePrefsFile";
 
-	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	View v = (View) inflater.inflate(R.layout.bible, null);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View v = (View) inflater.inflate(R.layout.bible, null);
 		return v;
 
 	}
-	
 
 }
