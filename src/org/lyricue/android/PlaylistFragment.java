@@ -117,40 +117,53 @@ public class PlaylistFragment extends Fragment {
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getGroupId() == 1) {
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
-		
+					.getMenuInfo();
+
 			long itemid = treeView.getItemIdAtPosition(info.position);
 
 			if (item.getItemId() == 0) {
 				activity.logDebug("show item:" + itemid);
-				activity.runCommand("display", String.valueOf(itemid), "");
+				activity.runCommand_noreturn("display", String.valueOf(itemid),
+						"");
 			} else if (item.getItemId() == 1) {
 				activity.logDebug("remove item:" + itemid);
-			} 
+			}
 			return true;
 		} else {
 			return false;
 		}
-		
+
 	}
 
 	void load_playlist() {
 		activity.logDebug("load_playlist");
+		final PlaylistFragment fragment = this;
+		new Thread(new Runnable() {
+			public void run() {
+				v.post(new Runnable() {
+					public void run() {
 
-		manager = new InMemoryTreeStateManager<Long>();
-		final TreeBuilder<Long> treeBuilder = new TreeBuilder<Long>(manager);
-		if (activity.playlistid > 0) {
-			add_playlist(treeBuilder, activity.playlistid, 0);
-		} else {
-			treeBuilder.sequentiallyAddNextNode((long) 0, 0);
-			playlistmap.put((long) 0,
-					"No playlist loaded\nLoad one from the menu");
-		}
-		adapter = new PlaylistAdapter(activity, this, selected, manager,
-				LEVEL_NUMBER);
-		treeView.setAdapter(adapter);
-		manager.collapseChildren(null);
-		setCollapsible(true);
+						manager = new InMemoryTreeStateManager<Long>();
+						final TreeBuilder<Long> treeBuilder = new TreeBuilder<Long>(
+								manager);
+						if (activity.playlistid > 0) {
+							add_playlist(treeBuilder, activity.playlistid, 0);
+						} else {
+							treeBuilder.sequentiallyAddNextNode((long) 0, 0);
+							playlistmap
+									.put((long) 0,
+											"No playlist loaded\nLoad one from the menu");
+						}
+						adapter = new PlaylistAdapter(activity, fragment, selected,
+								manager, LEVEL_NUMBER);
+						treeView.setAdapter(adapter);
+						manager.collapseChildren(null);
+						setCollapsible(true);
+					}
+				});
+			}
+		}).start();
+
 	}
 
 	void add_playlist(TreeBuilder<Long> treeBuilder, int playlistid, int level) {

@@ -97,22 +97,22 @@ public class Lyricue extends FragmentActivity {
 		System.err.println("onclick");
 		switch (v.getId()) {
 		case R.id.ButtonPrevPage:
-			runCommand("display", "prev_page", "");
+			runCommand_noreturn("display", "prev_page", "");
 			break;
 		case R.id.ButtonNextPage:
-			runCommand("display", "next_page", "");
+			runCommand_noreturn("display", "next_page", "");
 			break;
 		case R.id.ButtonPrevSong:
-			runCommand("display", "prev_song", "");
+			runCommand_noreturn("display", "prev_song", "");
 			break;
 		case R.id.ButtonNextSong:
-			runCommand("display", "next_song", "");
+			runCommand_noreturn("display", "next_song", "");
 			break;
 		case R.id.ButtonBlank:
-			runCommand("blank", "", "");
+			runCommand_noreturn("blank", "", "");
 			break;
 		case R.id.ButtonRedisplay:
-			runCommand("display", "current", "");
+			runCommand_noreturn("display", "current", "");
 			break;
 		}
 	}
@@ -150,6 +150,15 @@ public class Lyricue extends FragmentActivity {
 
 	public void logDebug(String error_text) {
 		Log.d(TAG, error_text);
+	}
+
+	public void runCommand_noreturn(final String command, final String option1,
+			final String option2) {
+		new Thread(new Runnable() {
+			public void run() {
+				runCommand(command, option1, option2);
+			}
+		}).start();
 	}
 
 	public String runCommand(String command, String option1, String option2) {

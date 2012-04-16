@@ -22,8 +22,6 @@ public class PlaylistsDialogFragment extends DialogFragment {
 	}
 
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		// int title = getArguments().getInt("title");
-
 		Lyricue activity = (Lyricue) this.getActivity();
 
 		activity.logDebug("load_playlists");
@@ -35,13 +33,11 @@ public class PlaylistsDialogFragment extends DialogFragment {
 				+ " AND playlist.data NOT LIKE '%-%'"
 				+ " AND (type='play' OR type='sub')"
 				+ " WHERE data IS NULL AND playlists.id > 0" + " ORDER BY id";
-		String result = activity.runCommand("query", "lyricDb", Query);
-		if (result == "") {
+		JSONArray jArray = activity.runQuery("lyricDb", Query);
+		if (jArray == null) {
 			return null;
 		}
 		try {
-			JSONObject json = new JSONObject(result);
-			JSONArray jArray = json.getJSONArray("results");
 			activity.playlists_text = new String[jArray.length()];
 			activity.playlists_id = new int[jArray.length()];
 
