@@ -20,7 +20,9 @@
 	<string name="enterip">Enter IP Address of projector</string>
 	<string name="settingstitle">Settings</string>
 	<string name="refresh_playlist">Refresh Playlist</string>
+	<string name="refresh_songlist">Refresh Songlist</string>
 	<string name="select_playlist">Select Playlist</string>
 	<string name="playlist">Playlist</string>
 	<string name="lyricue">Lyricue</string>
+	<string name="typetofilter">type to filter</string>
 </resources>

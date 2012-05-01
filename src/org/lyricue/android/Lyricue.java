@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class Lyricue extends FragmentActivity {
@@ -56,6 +57,7 @@ public class Lyricue extends FragmentActivity {
 		TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
 		pager.setAdapter(adapter);
 		indicator.setViewPager(pager);
+		pager.setOffscreenPageLimit(4);
 		getPrefs();
 		pager.setCurrentItem(0);
 	}
@@ -94,7 +96,7 @@ public class Lyricue extends FragmentActivity {
 	}
 
 	public void onClickControl(View v) {
-		System.err.println("onclick");
+		System.err.println("onclickcontrol");
 		switch (v.getId()) {
 		case R.id.ButtonPrevPage:
 			runCommand_noreturn("display", "prev_page", "");
@@ -116,7 +118,17 @@ public class Lyricue extends FragmentActivity {
 			break;
 		}
 	}
-
+	
+	public void onClickAvailable(View v) {
+		System.err.println("onclickavailable");
+		switch (v.getId()) {
+		case R.id.ButtonClearSongSearch:
+			EditText searchString = (EditText) pager.findViewById(R.id.available_search);
+			if (searchString != null) searchString.setText("");
+			break;
+		}
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -143,6 +155,7 @@ public class Lyricue extends FragmentActivity {
 		newFragment.show(getSupportFragmentManager(), "dialog");
 	}
 
+	
 	public void logError(String error_text) {
 		Log.d(TAG, error_text);
 		Toast.makeText(this, error_text, Toast.LENGTH_SHORT).show();
@@ -156,7 +169,8 @@ public class Lyricue extends FragmentActivity {
 			final String option2) {
 		new Thread(new Runnable() {
 			public void run() {
-				runCommand(command, option1, option2);
+				LyricueDisplay ld = new LyricueDisplay(hostip);
+				ld.runCommand(command, option1, option2);
 			}
 		}).start();
 	}

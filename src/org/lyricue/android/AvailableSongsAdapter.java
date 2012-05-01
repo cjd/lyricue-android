@@ -11,34 +11,94 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-public class AvailableSongsAdapter extends ArrayAdapter<String> implements
-		SectionIndexer {
+public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
+		implements SectionIndexer, Filterable {
 	private final Context context;
-	private String[] main;
-	private String[] small;
-	private int[] ids;
-	ArrayList<String> myElements;
+	private ArrayList<AvailableSongItem> items;
+	private ArrayList<AvailableSongItem> originalitems;
+	private ArrayFilter mFilter;
 	HashMap<String, Integer> alphaIndexer;
+	private final Object mLock = new Object();
 	String[] sections;
 
-	public AvailableSongsAdapter(Context context, String[] main,
-			String[] small, int[] ids) {
-		super(context, R.layout.available_song_row, main);
+	public AvailableSongsAdapter(Context context,
+			ArrayList<AvailableSongItem> items) {
+		super(context, R.layout.available_song_row, items);
 		this.context = context;
-		this.main = main;
-		this.small = small;
-		this.ids = ids;
+		this.items = items;
+		refresh_songlist_index();
+	}
 
-		alphaIndexer = new HashMap<String, Integer>();
-		int size = main.length;
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		LayoutInflater inflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View rowView = inflater.inflate(R.layout.available_song_row, parent,
+				false);
+		TextView mainView = (TextView) rowView.findViewById(R.id.textMain);
+		TextView smallView = (TextView) rowView.findViewById(R.id.textSmall);
+		if (position < items.size()) {
+			mainView.setText(items.get(position).main);
+			smallView.setText(items.get(position).small);
+		}
+		return rowView;
+	}
+
+	@Override
+	public AvailableSongItem getItem(int position) {
+		if (position < items.size()) {
+			return items.get(position);
+		}
+		return null;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		if (position < items.size()) {
+			return items.get(position).id;
+		}
+		return 0;
+	}
+
+	@Override
+	public int getPositionForSection(int section) {
+		String letter = sections[section];
+		return alphaIndexer.get(letter);
+	}
+
+	@Override
+	public int getSectionForPosition(int position) {
+		return 0;
+	}
+
+	@Override
+	public Object[] getSections() {
+		return sections; // to string will be called each object, to display the
+							// letter
+	}
+
+	@Override
+	public Filter getFilter() {
+		if (mFilter == null) {
+			mFilter = new ArrayFilter();
+		}
+		return mFilter;
+	}
+
+	void refresh_songlist_index() {
+		if (alphaIndexer == null) alphaIndexer = new HashMap<String, Integer>();
+		alphaIndexer.clear();
+		int size = items.size();
 		for (int i = size - 1; i >= 0; i--) {
 			// We store the first letter of the word, and its index.
-			// The Hashmap will replace the value for identical keys are putted
-			// in
-			alphaIndexer.put(main[i].substring(0, 1), i);
+			// The Hashmap will replace the value for identical keys are put in
+			alphaIndexer
+					.put(items.get(i).main.substring(0, 1).toUpperCase(), i);
 		}
 
 		// now we have an hashmap containing for each first-letter
@@ -67,51 +127,78 @@ public class AvailableSongsAdapter extends ArrayAdapter<String> implements
 		keyList.toArray(sections);
 	}
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.available_song_row, parent,
-				false);
-		TextView mainView = (TextView) rowView.findViewById(R.id.textMain);
-		TextView smallView = (TextView) rowView.findViewById(R.id.textSmall);
-		mainView.setText(main[position]);
-		smallView.setText(small[position]);
-		return rowView;
-	}
+	private class ArrayFilter extends Filter {
+		@Override
+		protected FilterResults performFiltering(CharSequence prefix) {
+			FilterResults results = new FilterResults();
 
-	@Override
-	public String getItem(int position) {
-		if (position < main.length) {
-			return main[position];
+			if (originalitems == null) {
+				synchronized (mLock) {
+					originalitems = new ArrayList<AvailableSongItem>(items);
+				}
+			}
+
+			if (prefix == null || prefix.length() == 0) {
+				ArrayList<AvailableSongItem> list;
+				synchronized (mLock) {
+					list = new ArrayList<AvailableSongItem>(originalitems);
+				}
+				results.values = list;
+				results.count = list.size();
+			} else {
+				String prefixString = prefix.toString().toLowerCase();
+
+				ArrayList<AvailableSongItem> values;
+				synchronized (mLock) {
+					values = new ArrayList<AvailableSongItem>(originalitems);
+				}
+
+				final int count = values.size();
+				final ArrayList<AvailableSongItem> newValues = new ArrayList<AvailableSongItem>();
+
+				for (int i = 0; i < count; i++) {
+					final AvailableSongItem value = values.get(i);
+					final String valueText = value.toString().toLowerCase();
+
+					// First match against the whole, non-split value
+					if (valueText.startsWith(prefixString)) {
+						newValues.add(value);
+					} else {
+						final String[] words = valueText.split(" ");
+						final int wordCount = words.length;
+
+						// Start at index 0, in case valueText starts with
+						// space(s)
+						for (int k = 0; k < wordCount; k++) {
+							if (words[k].startsWith(prefixString)) {
+								newValues.add(value);
+								break;
+							}
+						}
+					}
+				}
+
+				results.values = newValues;
+				results.count = newValues.size();
+			}
+			return results;
 		}
-		return "";
-	}
 
-	@Override
-	public long getItemId(int position) {
-		if (position < ids.length) {
-			return ids[position];
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void publishResults(CharSequence constraint,
+				FilterResults results) {
+			items = (ArrayList<AvailableSongItem>) results.values;
+			if (results.count > 0) {
+				notifyDataSetChanged();
+				clear();
+				for (int i = 0; i < items.size(); i++) {
+					add(items.get(i));
+				}
+				refresh_songlist_index();
+			} else {
+				notifyDataSetInvalidated();
+			}
 		}
-		return 0;
 	}
-
-	@Override
-	public int getPositionForSection(int section) {
-		String letter = sections[section];
-
-		return alphaIndexer.get(letter);
-	}
-
-	@Override
-	public int getSectionForPosition(int position) {
-		return 0;
-	}
-
-	@Override
-	public Object[] getSections() {
-		return sections; // to string will be called each object, to display the
-							// letter
-	}
-
 }

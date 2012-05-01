@@ -2,12 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="bottom"
     android:orientation="vertical" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    android:orientation="horizontal" >
+    
+        <EditText
+            android:id="@+id/available_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:ems="10"
+            android:hint="@+string/typetofilter"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_weight="1">
 
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/ButtonClearSongSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickAvailable"
+            android:text="X"
+            android:layout_weight=".1">
+
+        </Button>
+</LinearLayout>
     <ListView
         android:id="@+id/available_songlist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:fastScrollEnabled="true">
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:fastScrollEnabled="true">
     </ListView>
 
 </LinearLayout>

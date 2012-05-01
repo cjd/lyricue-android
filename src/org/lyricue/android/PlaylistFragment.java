@@ -13,6 +13,7 @@ import pl.polidea.treeview.TreeBuilder;
 import pl.polidea.treeview.TreeStateManager;
 import pl.polidea.treeview.TreeViewList;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
@@ -37,6 +38,7 @@ public class PlaylistFragment extends Fragment {
 	private PlaylistAdapter adapter;
 	private boolean collapsible;
 	public HashMap<Long, String> playlistmap = new HashMap<Long, String>();
+	private PlaylistFragment fragment = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -47,6 +49,7 @@ public class PlaylistFragment extends Fragment {
 		activity = (Lyricue) this.getActivity();
 		v = (View) inflater.inflate(R.layout.playlist, null);
 		treeView = (TreeViewList) v.findViewById(R.id.playlistView);
+		fragment = this;
 
 		if (savedInstanceState == null) {
 			load_playlist();
@@ -96,7 +99,7 @@ public class PlaylistFragment extends Fragment {
 			load_playlist();
 			return true;
 		case R.id.select_playlist_menu:
-			activity.showPlaylistsDialog(v);
+			load_playlists();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -135,35 +138,73 @@ public class PlaylistFragment extends Fragment {
 
 	}
 
+	void load_playlists() {
+		activity.logDebug("load_playlists");
+		if (activity.playlistid == 0) {
+			return;
+		}
+		new LoadPlaylistsTask().execute();
+	}
+
+	private class LoadPlaylistsTask extends AsyncTask<Void, Void, Void> {
+		protected Void doInBackground(Void... arg0) {
+			String Query = "SELECT title,id FROM playlists"
+					+ " LEFT JOIN playlist ON playlist.data=playlists.id"
+					+ " AND playlist.data NOT LIKE '%-%'"
+					+ " AND (type='play' OR type='sub')"
+					+ " WHERE data IS NULL AND playlists.id > 0"
+					+ " ORDER BY id";
+			LyricueDisplay ld = new LyricueDisplay(activity.hostip);
+
+			JSONArray jArray = ld.runQuery("lyricDb", Query);
+			if (jArray == null) {
+				return null;
+			}
+			try {
+				activity.playlists_text = new String[jArray.length()];
+				activity.playlists_id = new int[jArray.length()];
+
+				for (int i = 0; i < jArray.length(); i++) {
+					JSONObject results = jArray.getJSONObject(i);
+					activity.playlists_id[i] = results.getInt("id");
+					activity.playlists_text[i] = results.getString("title");
+				}
+			} catch (JSONException e) {
+				activity.logError("Error parsing data " + e.toString());
+				return null;
+			}
+			activity.showPlaylistsDialog(v);
+			return null;
+		}
+	}
+
 	void load_playlist() {
 		activity.logDebug("load_playlist");
-		final PlaylistFragment fragment = this;
-		new Thread(new Runnable() {
-			public void run() {
-				v.post(new Runnable() {
-					public void run() {
+		new LoadPlaylistTask().execute(activity.playlistid);
+	}
 
-						manager = new InMemoryTreeStateManager<Long>();
-						final TreeBuilder<Long> treeBuilder = new TreeBuilder<Long>(
-								manager);
-						if (activity.playlistid > 0) {
-							add_playlist(treeBuilder, activity.playlistid, 0);
-						} else {
-							treeBuilder.sequentiallyAddNextNode((long) 0, 0);
-							playlistmap
-									.put((long) 0,
-											"No playlist loaded\nLoad one from the menu");
-						}
-						adapter = new PlaylistAdapter(activity, fragment, selected,
-								manager, LEVEL_NUMBER);
-						treeView.setAdapter(adapter);
-						manager.collapseChildren(null);
-						setCollapsible(true);
-					}
-				});
+	private class LoadPlaylistTask extends
+			AsyncTask<Integer, Void, PlaylistAdapter> {
+		protected PlaylistAdapter doInBackground(Integer... arg0) {
+			manager = new InMemoryTreeStateManager<Long>();
+			final TreeBuilder<Long> treeBuilder = new TreeBuilder<Long>(manager);
+			if (activity.playlistid > 0) {
+				add_playlist(treeBuilder, activity.playlistid, 0);
+			} else {
+				treeBuilder.sequentiallyAddNextNode((long) 0, 0);
+				playlistmap.put((long) 0,
+						"No playlist loaded\nLoad one from the menu");
 			}
-		}).start();
+			adapter = new PlaylistAdapter(activity, fragment, selected,
+					manager, LEVEL_NUMBER);
+			return adapter;
+		}
 
+		protected void onPostExecute(PlaylistAdapter result) {
+			treeView.setAdapter(result);
+			manager.collapseChildren(null);
+			setCollapsible(true);
+		}
 	}
 
 	void add_playlist(TreeBuilder<Long> treeBuilder, int playlistid, int level) {
