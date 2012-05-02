@@ -130,6 +130,7 @@ public class PlaylistFragment extends Fragment {
 						"");
 			} else if (item.getItemId() == 1) {
 				activity.logDebug("remove item:" + itemid);
+				new RemoveItemTask().execute(itemid);
 			}
 			return true;
 		} else {
@@ -230,7 +231,7 @@ public class PlaylistFragment extends Fragment {
 					String Query2 = "SELECT * FROM playlists WHERE id="
 							+ results.getString("data");
 					JSONArray pArray = activity.runQuery("lyricDb", Query2);
-					if (pArray != null) {
+					if (pArray != null && pArray.length() > 0) {
 						playlistmap.put(results.getLong("playorder"), pArray
 								.getJSONObject(0).getString("title"));
 						add_playlist(treeBuilder, results.getInt("data"),
@@ -240,7 +241,7 @@ public class PlaylistFragment extends Fragment {
 					String Query2 = "SELECT pagetitle, lyrics FROM page WHERE pageid="
 							+ results.getString("data");
 					JSONArray pArray = activity.runQuery("lyricDb", Query2);
-					if (pArray != null) {
+					if (pArray != null && pArray.length() > 0) {
 						String[] lines = pArray.getJSONObject(0)
 								.getString("lyrics").split("\n");
 						playlistmap.put(results.getLong("playorder"), lines[0]);
@@ -256,10 +257,53 @@ public class PlaylistFragment extends Fragment {
 							"Unknown item type");
 				}
 			} catch (JSONException e) {
-				activity.logError("Error parsing data " + e.toString());
+				System.err.println("Error parsing data " + e.toString());
 				return;
 			}
 
 		}
 	}
+
+	private class RemoveItemTask extends AsyncTask<Long, Void, Void> {
+		protected Void doInBackground(Long... args) {
+			Long itemid = args[0];
+			remove_single_item(itemid);
+			load_playlist();
+			return null;
+		}
+	}
+	
+	void remove_single_item(Long itemid) {
+		String Query = "SELECT type,data FROM playlist WHERE playorder="+itemid;
+		JSONArray jArray = activity.runQuery("lyricDb", Query);
+		if (jArray == null) {
+			return;
+		}
+		try {
+			JSONObject results = jArray.getJSONObject(0);
+			if ((results.getString("type").equals("play")) || (results.getString("type").equals("sub"))) {
+				Query = "SELECT playorder FROM playlist WHERE playlist="+results.getLong("data");
+				JSONArray pArray = activity.runQuery("lyricDb",Query);
+				if (jArray != null) {
+					for (int i = 0; i < pArray.length(); i++) {
+						JSONObject item = pArray.getJSONObject(i);
+						remove_single_item(item.getLong("playorder"));
+					}
+				}
+				Query = "DELETE FROM playlist WHERE playlist="+results.getLong("data");
+				activity.runQuery("lyricDb", Query);
+				Query = "DELETE FROM playlists WHERE id="+results.getLong("data");
+				activity.runQuery("lyricDb", Query);
+			}
+			Query = "DELETE FROM playlist WHERE playorder="+itemid;
+			activity.runQuery("lyricDb", Query);
+			Query = "DELETE FROM associations WHERE playlist="+itemid;
+			activity.runQuery("lyricDb", Query);
+		
+		} catch (JSONException e) {
+			activity.logError("Error parsing data " + e.toString());
+			return;
+		}
+	}
+
 }

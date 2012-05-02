@@ -259,4 +259,18 @@ public class Lyricue extends FragmentActivity {
 			}
 		}
 	}
+	
+	public String runQuery_with_result(String database, String query, String retval) {
+		JSONArray jArray = runQuery(database, query);
+		if (jArray == null) {
+			return null;
+		}
+		String retstring = "";
+		try {
+			retstring = jArray.getJSONObject(0).getString(retval);
+		} catch (JSONException e) {
+			logError("Error parsing data " + e.toString());
+		}
+		return retstring;
+	}
 }
