@@ -1,14 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bible_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/textViewBook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bible"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="@string/book"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-</LinearLayout>
+    <Spinner
+        android:id="@+id/spinBibleBook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:entries="@array/bible_books"
+        android:prompt="@string/selectbook" android:layout_below="@+id/textViewBook"/>
+
+    <TextView
+        android:id="@+id/textViewChapter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chapter"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:layout_below="@+id/spinBibleBook"/>
+    
+    <Spinner
+        android:id="@+id/spinBibleChapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewChapter"
+        android:prompt="@string/selectchapter" />
+
+	<TextView
+        android:id="@+id/textViewVerse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/verses"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:layout_below="@+id/spinBibleChapter"/>
+    
+    <Spinner
+        android:id="@+id/spinBibleVerseStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewVerse"
+        android:prompt="@string/selectversestart" />
+
+    <Spinner
+        android:id="@+id/spinBibleVerseEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textViewVerse"
+        android:prompt="@string/selectverseend" />
+
+    <Button
+        android:id="@+id/buttonBibleAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/add_verse_to_playlist"/>
+
+</RelativeLayout>

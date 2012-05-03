@@ -60,7 +60,7 @@ public class PlaylistFragment extends Fragment {
 			adapter = new PlaylistAdapter(activity, this, selected, manager,
 					LEVEL_NUMBER);
 			treeView.setAdapter(adapter);
-			setCollapsible(newCollapsible);
+			treeView.setCollapsible(newCollapsible);
 		}
 		setHasOptionsMenu(true);
 		registerForContextMenu(treeView);
@@ -72,11 +72,6 @@ public class PlaylistFragment extends Fragment {
 		outState.putSerializable("treeManager", manager);
 		outState.putBoolean("collapsible", this.collapsible);
 		super.onSaveInstanceState(outState);
-	}
-
-	protected final void setCollapsible(final boolean newCollapsible) {
-		this.collapsible = newCollapsible;
-		treeView.setCollapsible(this.collapsible);
 	}
 
 	@Override
@@ -126,8 +121,8 @@ public class PlaylistFragment extends Fragment {
 
 			if (item.getItemId() == 0) {
 				activity.logDebug("show item:" + itemid);
-				activity.runCommand_noreturn("display", String.valueOf(itemid),
-						"");
+				activity.ld.runCommand_noreturn("display",
+						String.valueOf(itemid), "");
 			} else if (item.getItemId() == 1) {
 				activity.logDebug("remove item:" + itemid);
 				new RemoveItemTask().execute(itemid);
@@ -204,7 +199,7 @@ public class PlaylistFragment extends Fragment {
 		protected void onPostExecute(PlaylistAdapter result) {
 			treeView.setAdapter(result);
 			manager.collapseChildren(null);
-			setCollapsible(true);
+			treeView.setCollapsible(true);
 		}
 	}
 
@@ -216,7 +211,7 @@ public class PlaylistFragment extends Fragment {
 		}
 		String Query = "SELECT * FROM playlist" + " WHERE playlist="
 				+ playlistid + " ORDER BY playorder";
-		JSONArray jArray = activity.runQuery("lyricDb", Query);
+		JSONArray jArray = activity.ld.runQuery("lyricDb", Query);
 		if (jArray == null) {
 			return;
 		}
@@ -230,7 +225,7 @@ public class PlaylistFragment extends Fragment {
 						|| results.getString("type").equals("sub")) {
 					String Query2 = "SELECT * FROM playlists WHERE id="
 							+ results.getString("data");
-					JSONArray pArray = activity.runQuery("lyricDb", Query2);
+					JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
 					if (pArray != null && pArray.length() > 0) {
 						playlistmap.put(results.getLong("playorder"), pArray
 								.getJSONObject(0).getString("title"));
@@ -240,7 +235,7 @@ public class PlaylistFragment extends Fragment {
 				} else if (results.getString("type").equals("song")) {
 					String Query2 = "SELECT pagetitle, lyrics FROM page WHERE pageid="
 							+ results.getString("data");
-					JSONArray pArray = activity.runQuery("lyricDb", Query2);
+					JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
 					if (pArray != null && pArray.length() > 0) {
 						String[] lines = pArray.getJSONObject(0)
 								.getString("lyrics").split("\n");
@@ -272,34 +267,39 @@ public class PlaylistFragment extends Fragment {
 			return null;
 		}
 	}
-	
+
 	void remove_single_item(Long itemid) {
-		String Query = "SELECT type,data FROM playlist WHERE playorder="+itemid;
-		JSONArray jArray = activity.runQuery("lyricDb", Query);
+		String Query = "SELECT type,data FROM playlist WHERE playorder="
+				+ itemid;
+		JSONArray jArray = activity.ld.runQuery("lyricDb", Query);
 		if (jArray == null) {
 			return;
 		}
 		try {
 			JSONObject results = jArray.getJSONObject(0);
-			if ((results.getString("type").equals("play")) || (results.getString("type").equals("sub"))) {
-				Query = "SELECT playorder FROM playlist WHERE playlist="+results.getLong("data");
-				JSONArray pArray = activity.runQuery("lyricDb",Query);
+			if ((results.getString("type").equals("play"))
+					|| (results.getString("type").equals("sub"))) {
+				Query = "SELECT playorder FROM playlist WHERE playlist="
+						+ results.getLong("data");
+				JSONArray pArray = activity.ld.runQuery("lyricDb", Query);
 				if (jArray != null) {
 					for (int i = 0; i < pArray.length(); i++) {
 						JSONObject item = pArray.getJSONObject(i);
 						remove_single_item(item.getLong("playorder"));
 					}
 				}
-				Query = "DELETE FROM playlist WHERE playlist="+results.getLong("data");
-				activity.runQuery("lyricDb", Query);
-				Query = "DELETE FROM playlists WHERE id="+results.getLong("data");
-				activity.runQuery("lyricDb", Query);
+				Query = "DELETE FROM playlist WHERE playlist="
+						+ results.getLong("data");
+				activity.ld.runQuery("lyricDb", Query);
+				Query = "DELETE FROM playlists WHERE id="
+						+ results.getLong("data");
+				activity.ld.runQuery("lyricDb", Query);
 			}
-			Query = "DELETE FROM playlist WHERE playorder="+itemid;
-			activity.runQuery("lyricDb", Query);
-			Query = "DELETE FROM associations WHERE playlist="+itemid;
-			activity.runQuery("lyricDb", Query);
-		
+			Query = "DELETE FROM playlist WHERE playorder=" + itemid;
+			activity.ld.runQuery("lyricDb", Query);
+			Query = "DELETE FROM associations WHERE playlist=" + itemid;
+			activity.ld.runQuery("lyricDb", Query);
+
 		} catch (JSONException e) {
 			activity.logError("Error parsing data " + e.toString());
 			return;
