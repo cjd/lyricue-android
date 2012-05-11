@@ -177,8 +177,8 @@ public class BibleFragment extends Fragment {
 			Query = "INSERT INTO playlists (id,title) VALUES (" + playlist
 					+ ",\"" + title + "\")";
 			activity.ld.runQuery("lyricDb", Query);
-			PlaylistFragment frag = (PlaylistFragment) activity.adapter.getItem(1);
-			frag.load_playlist();
+			/*PlaylistFragment frag = (PlaylistFragment) activity.adapter.getItem(1);
+			frag.load_playlist();*/
 			return null;
 		}
 	}

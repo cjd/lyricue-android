@@ -66,6 +66,12 @@ public class Lyricue extends FragmentActivity {
 			startActivityForResult(settingsActivity, 1);
 		}
 		ld = new LyricueDisplay(hostip);
+		if (!ld.checkRunning()) {
+			hostip = "";
+			Intent settingsActivity = new Intent(getBaseContext(),
+					Preferences.class);
+			startActivityForResult(settingsActivity, 1);
+		}
 	}
 
 	@Override
