@@ -13,6 +13,7 @@ import pl.polidea.treeview.TreeBuilder;
 import pl.polidea.treeview.TreeStateManager;
 import pl.polidea.treeview.TreeViewList;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,7 +40,8 @@ public class PlaylistFragment extends Fragment {
 	private boolean collapsible;
 	public HashMap<Long, String> playlistmap = new HashMap<Long, String>();
 	private PlaylistFragment fragment = null;
-
+	private ProgressDialog progressDiag;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -176,11 +178,13 @@ public class PlaylistFragment extends Fragment {
 
 	void load_playlist() {
 		activity.logDebug("load_playlist");
+		progressDiag = ProgressDialog.show(activity,"","Loading Playlist..",true);
 		new LoadPlaylistTask().execute(activity.playlistid);
 	}
 
 	private class LoadPlaylistTask extends
 			AsyncTask<Integer, Void, PlaylistAdapter> {
+		
 		protected PlaylistAdapter doInBackground(Integer... arg0) {
 			manager = new InMemoryTreeStateManager<Long>();
 			final TreeBuilder<Long> treeBuilder = new TreeBuilder<Long>(manager);
@@ -190,6 +194,7 @@ public class PlaylistFragment extends Fragment {
 				treeBuilder.sequentiallyAddNextNode((long) 0, 0);
 				playlistmap.put((long) 0,
 						"No playlist loaded\nLoad one from the menu");
+				progressDiag.dismiss();
 			}
 			adapter = new PlaylistAdapter(activity, fragment, selected,
 					manager, LEVEL_NUMBER);
@@ -200,6 +205,7 @@ public class PlaylistFragment extends Fragment {
 			treeView.setAdapter(result);
 			manager.collapseChildren(null);
 			treeView.setCollapsible(true);
+			progressDiag.dismiss();
 		}
 	}
 

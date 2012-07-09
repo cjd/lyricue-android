@@ -5,9 +5,11 @@ import java.net.Socket;
 
 import com.viewpagerindicator.TitlePageIndicator;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -49,7 +52,7 @@ public class Lyricue extends FragmentActivity {
 		TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
 		pager.setAdapter(adapter);
 		indicator.setViewPager(pager);
-		pager.setOffscreenPageLimit(4);
+		pager.setOffscreenPageLimit(5);
 		getPrefs();
 		pager.setCurrentItem(0);
 	}
@@ -64,6 +67,11 @@ public class Lyricue extends FragmentActivity {
 			Intent settingsActivity = new Intent(getBaseContext(),
 					Preferences.class);
 			startActivityForResult(settingsActivity, 1);
+		}
+		if (settings.getBoolean("togglescreen", true)) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		} else {
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 		ld = new LyricueDisplay(hostip);
 		if (!ld.checkRunning()) {
@@ -92,6 +100,11 @@ public class Lyricue extends FragmentActivity {
 	protected void onStart() {
 		getPrefs();
 		super.onStart();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 
 	public void onClickControl(View v) {
@@ -127,7 +140,6 @@ public class Lyricue extends FragmentActivity {
 			break;
 		}
 	}
-	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

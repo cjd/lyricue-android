@@ -102,5 +102,7 @@
     <string name="book">Book</string>
     <string name="chapter">Chapter</string>
     <string name="verses">Verses</string>
+    <string name="display">Display</string>
+    <string name="osd">OSD</string>
     
 </resources>

@@ -14,12 +14,13 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter implements
 		TitleProvider {
 
 	public static String[] titles = new String[] { "Control", "Playlist",
-			"Available Songs", "Bible", };
+			"Available Songs", "Bible", "Display" };
 
 	public static int CONTROL_ID = 0;
 	public static int PLAYLIST_ID = 1;
 	public static int AVAIL_ID = 2;
 	public static int BIBLE_ID = 3;
+	public static int DISPLAY_ID = 4;
 
 	public static final String PREFS_NAME = "LyricuePrefsFile";
 
@@ -51,6 +52,8 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter implements
 			f = new AvailableSongsFragment();
 		} else if (position == BIBLE_ID) {
 			f = new BibleFragment();
+		} else if (position == DISPLAY_ID) {
+			f = new DisplayFragment();
 		} else {
 			f = new ControlFragment();
 		}
