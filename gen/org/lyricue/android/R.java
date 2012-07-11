@@ -511,6 +511,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int playlist=0x7f070025;
         public static final int prevpage=0x7f070012;
         public static final int prevsong=0x7f070011;
+        public static final int quicktext=0x7f070032;
         public static final int quit=0x7f070019;
         public static final int redisplay=0x7f070014;
         public static final int refresh_playlist=0x7f070022;

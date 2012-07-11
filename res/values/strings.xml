@@ -104,5 +104,6 @@
     <string name="verses">Verses</string>
     <string name="display">Display</string>
     <string name="osd">OSD</string>
+    <string name="quicktext">Type text to display on screen here</string>
     
 </resources>
