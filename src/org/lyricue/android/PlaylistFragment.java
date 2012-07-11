@@ -40,7 +40,7 @@ public class PlaylistFragment extends Fragment {
 	private boolean collapsible;
 	public HashMap<Long, String> playlistmap = new HashMap<Long, String>();
 	private PlaylistFragment fragment = null;
-	private ProgressDialog progressDiag;
+	private ProgressDialog progressPlaylist = null;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -63,6 +63,8 @@ public class PlaylistFragment extends Fragment {
 					LEVEL_NUMBER);
 			treeView.setAdapter(adapter);
 			treeView.setCollapsible(newCollapsible);
+			treeView.setCollapsedDrawable(getResources().getDrawable(R.drawable.collapsed));
+			treeView.setExpandedDrawable(getResources().getDrawable(R.drawable.expanded));
 		}
 		setHasOptionsMenu(true);
 		registerForContextMenu(treeView);
@@ -178,7 +180,8 @@ public class PlaylistFragment extends Fragment {
 
 	void load_playlist() {
 		activity.logDebug("load_playlist");
-		progressDiag = ProgressDialog.show(activity,"","Loading Playlist..",true);
+		if (progressPlaylist != null) progressPlaylist.dismiss();
+		progressPlaylist = ProgressDialog.show(activity,"","Loading Playlist..",true);
 		new LoadPlaylistTask().execute(activity.playlistid);
 	}
 
@@ -194,7 +197,6 @@ public class PlaylistFragment extends Fragment {
 				treeBuilder.sequentiallyAddNextNode((long) 0, 0);
 				playlistmap.put((long) 0,
 						"No playlist loaded\nLoad one from the menu");
-				progressDiag.dismiss();
 			}
 			adapter = new PlaylistAdapter(activity, fragment, selected,
 					manager, LEVEL_NUMBER);
@@ -202,10 +204,11 @@ public class PlaylistFragment extends Fragment {
 		}
 
 		protected void onPostExecute(PlaylistAdapter result) {
+			activity.logDebug("done loading playlist");
 			treeView.setAdapter(result);
 			manager.collapseChildren(null);
 			treeView.setCollapsible(true);
-			progressDiag.dismiss();
+			progressPlaylist.dismiss();
 		}
 	}
 

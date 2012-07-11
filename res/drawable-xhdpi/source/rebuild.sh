@@ -1,4 +1,4 @@
-for SVG in ic_*.svg
+for SVG in ic_*.svg collapsed.svg expanded.svg
 do PNG=`basename $SVG svg`png
 inkscape -z  -e ../../drawable-xhdpi/$PNG -w 96 -h 96 $SVG
 inkscape -z  -e ../../drawable-hdpi/$PNG -w 72 -h 72 $SVG

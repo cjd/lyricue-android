@@ -49,6 +49,7 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 	@Override
 	public void handleItemClick(final View view, final Object id) {
 		activity.logDebug(id.toString());
+		activity.ld.runCommand_noreturn("display", id.toString(), "");
 		super.handleItemClick(view, id);
 	}
 

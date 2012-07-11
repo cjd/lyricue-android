@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:treeView="http://schemas.android.com/apk/res/pl.polidea.treeview"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/playlist_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <pl.polidea.treeview.TreeViewList android:id="@+id/playlistView" android:layout_width="fill_parent"
+    <pl.polidea.treeview.TreeViewList
+        android:id="@+id/playlistView"
+        android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:scrollbars="vertical" android:smoothScrollbar="true"/>
 </LinearLayout>
