@@ -261,7 +261,7 @@ public class PlaylistFragment extends Fragment {
 							"Unknown item type");
 				}
 			} catch (JSONException e) {
-				System.err.println("Error parsing data " + e.toString());
+				activity.logError("Error parsing data " + e.toString());
 				return;
 			}
 

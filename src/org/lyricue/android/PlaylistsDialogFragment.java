@@ -28,7 +28,7 @@ public class PlaylistsDialogFragment extends DialogFragment {
 					public void onClick(DialogInterface dialog, int which) {
 						Lyricue activity = (Lyricue) getActivity();
 						activity.playlistid = activity.playlists_id[which];
-						System.err.println("Loading "
+						activity.logDebug("Loading "
 								+ activity.playlists_text[which]);
 						LyricuePagerAdapter adapter = activity.adapter;
 						PlaylistFragment frag = (PlaylistFragment) adapter

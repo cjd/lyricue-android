@@ -105,5 +105,10 @@
     <string name="display">Display</string>
     <string name="osd">OSD</string>
     <string name="quicktext">Type text to display on screen here</string>
+    <string name="welcome">Thank you for running Lyricue Frontend for Android.\n\n
+In order to run I need to know where your Lyricue display is running.\n\n
+Please Enter the Hostname or IP where Lyricue is currently accessible.</string>
+    <string name="unable_to_access">I am unable to contact the Lyricue Display\nIs it running?</string>
+    <string name="retry">Retry</string>
     
 </resources>

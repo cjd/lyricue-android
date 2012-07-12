@@ -4,7 +4,7 @@
     <PreferenceCategory android:title="Lyricue preferences" >
         <EditTextPreference
             android:key="hostip"
-            android:summary="Enter the hostname of where lyricue display is running"
+            android:summary="Enter the hostname/IP of where lyricue display is running"
             android:title="Address of projector" />
 
         <CheckBoxPreference

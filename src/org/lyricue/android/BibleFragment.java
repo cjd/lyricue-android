@@ -43,7 +43,7 @@ public class BibleFragment extends Fragment {
 	public class BibleOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View vi) {
-			System.err.println("onClickBible");
+			activity.logDebug("onClickBible");
 			switch (vi.getId()) {
 			case R.id.buttonBibleAdd:
 				Spinner spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
@@ -52,7 +52,7 @@ public class BibleFragment extends Fragment {
 				String startverse = spin.getSelectedItem().toString();
 				spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
 				String endverse = spin.getSelectedItem().toString();
-				System.err.println("Adding " + bookname + " " + chapter + ":" + startverse
+				activity.logDebug("Adding " + bookname + " " + chapter + ":" + startverse
 							+ "-" + endverse);
 				new AddVerseTask().execute(bookname, chapter, startverse, endverse);
 				break;
@@ -65,22 +65,22 @@ public class BibleFragment extends Fragment {
 				long id) {
 			switch (parent.getId()) {
 			case R.id.spinBibleBook:
-				System.err.println("book");
+				activity.logDebug("book");
 				select_book(parent.getItemAtPosition(pos).toString());
 				break;
 			case R.id.spinBibleChapter:
-				System.err.println("chapter");
+				activity.logDebug("chapter");
 				select_chapter(Integer.parseInt(parent.getItemAtPosition(pos)
 						.toString()));
 				break;
 			case R.id.spinBibleVerseStart:
-				System.err.println("start");
+				activity.logDebug("start");
 				break;
 			case R.id.spinBibleVerseEnd:
-				System.err.println("end");
+				activity.logDebug("end");
 				break;
 			}
-			System.err.println(parent.getItemAtPosition(pos).toString());
+			activity.logDebug(parent.getItemAtPosition(pos).toString());
 		}
 
 		public void onNothingSelected(AdapterView<?> parent) {
