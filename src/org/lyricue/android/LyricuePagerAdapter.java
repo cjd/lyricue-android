@@ -8,10 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
 
-import com.viewpagerindicator.TitleProvider;
-
-public class LyricuePagerAdapter extends FragmentPagerAdapter implements
-		TitleProvider {
+public class LyricuePagerAdapter extends FragmentPagerAdapter {
 
 	public static String[] titles = new String[] { "Control", "Playlist",
 			"Available Songs", "Bible", "Display" };
@@ -31,7 +28,7 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter implements
 	}
 
 	@Override
-	public String getTitle(int position) {
+	public String getPageTitle(int position) {
 		return titles[position];
 	}
 

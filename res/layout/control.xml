@@ -51,7 +51,7 @@
 		<Button android:text="@string/blank" android:id="@+id/ButtonBlank"
 			android:onClick="onClickControl" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:layout_weight="1"
-			android:drawableTop="@android:drawable/ic_menu_delete"
+			android:drawableTop="@android:drawable/ic_media_pause"
 			android:background="#FF000000" android:textColor="#ffffffff"></Button>
 		<Button android:id="@+id/ButtonRedisplay" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:layout_weight="1"

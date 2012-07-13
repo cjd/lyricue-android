@@ -3,7 +3,7 @@ package org.lyricue.android;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
-import com.viewpagerindicator.TitlePageIndicator;
+import com.viewpagerindicator.TabPageIndicator;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +17,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class Lyricue extends FragmentActivity {
@@ -47,7 +50,7 @@ public class Lyricue extends FragmentActivity {
 		fragman = getSupportFragmentManager();
 		adapter = new LyricuePagerAdapter(fragman);
 		pager = (ViewPager) findViewById(R.id.viewpager);
-		TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
+		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		pager.setAdapter(adapter);
 		indicator.setViewPager(pager);
 		pager.setOffscreenPageLimit(5);
@@ -111,21 +114,27 @@ public class Lyricue extends FragmentActivity {
 		System.err.println("onclickcontrol");
 		switch (v.getId()) {
 		case R.id.ButtonPrevPage:
+		case R.id.ButtonQuickPP:
 			ld.runCommand_noreturn("display", "prev_page", "");
 			break;
 		case R.id.ButtonNextPage:
-			ld.runCommand_noreturn("display", "next_page", "");
+		case R.id.ButtonQuickNP:
+				ld.runCommand_noreturn("display", "next_page", "");
 			break;
 		case R.id.ButtonPrevSong:
+		case R.id.ButtonQuickPS:
 			ld.runCommand_noreturn("display", "prev_song", "");
 			break;
 		case R.id.ButtonNextSong:
+		case R.id.ButtonQuickNS:
 			ld.runCommand_noreturn("display", "next_song", "");
 			break;
 		case R.id.ButtonBlank:
+		case R.id.ButtonQuickBL:
 			ld.runCommand_noreturn("blank", "", "");
 			break;
 		case R.id.ButtonRedisplay:
+		case R.id.ButtonQuickRS:
 			ld.runCommand_noreturn("display", "current", "");
 			break;
 		}
@@ -167,7 +176,22 @@ public class Lyricue extends FragmentActivity {
 		newFragment.show(getSupportFragmentManager(), "dialog");
 	}
 
-	
+	public void setQuickBar(boolean visible) {
+		View v = (View) getWindow().getDecorView();
+		View quickBar = (View) v.findViewById(R.id.quickBar);
+		View hline1 = (View) v.findViewById(R.id.hline1);
+		if (quickBar != null) {
+			if (visible) {
+				quickBar.setVisibility(View.VISIBLE);
+				hline1.setVisibility(View.VISIBLE);
+			} else {
+				quickBar.setVisibility(View.INVISIBLE);
+				hline1.setVisibility(View.INVISIBLE);
+			}
+		}
+		
+		
+	}
 	public void logError(String error_text) {
 		Log.d(TAG, error_text);
 		Toast.makeText(this, error_text, Toast.LENGTH_SHORT).show();

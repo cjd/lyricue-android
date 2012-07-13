@@ -7,11 +7,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ControlFragment extends Fragment {
+	private static Lyricue activity = null;
+	View v = null;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = (View) inflater.inflate(R.layout.control, null);
+		v = (View) inflater.inflate(R.layout.control, null);
+		activity = (Lyricue) this.getActivity();
+		activity.setQuickBar(false);
 		return v;
-
 	}
+
+
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if (activity != null && isVisibleToUser == true) { 
+			activity.setQuickBar(false);
+			
+		} else if (activity != null && isVisibleToUser == false) {
+			activity.setQuickBar(true);
+		}
+	}
+
 }
