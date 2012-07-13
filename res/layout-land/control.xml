@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ControlLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:src="@drawable/lyricue_header"
+        android:contentDescription="@string/lyricue" />
+    
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:layout_weight="1">
+
+	    <Button android:text="@string/nextpage" android:id="@+id/ButtonNextPage"
+			android:onClick="onClickControl" android:layout_width="fill_parent"
+			android:layout_weight="1" android:layout_height="fill_parent"
+			android:drawableTop="@android:drawable/ic_media_ff"
+			android:background="#FF000000" android:textColor="#ffffffff"></Button>
+	    <Button android:text="@string/nextsong" android:id="@+id/ButtonNextSong"
+			android:onClick="onClickControl" android:layout_weight="1"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:drawableTop="@android:drawable/ic_media_next"
+			android:background="#FF000000" android:textColor="#ffffffff"></Button>
+	    <Button android:id="@+id/ButtonRedisplay" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:layout_weight="1"
+			android:drawableTop="@android:drawable/ic_media_play" android:text="@string/redisplay"
+			android:onClick="onClickControl"
+			android:background="#FF000000" android:textColor="#ffffffff"></Button>
+	    
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:layout_weight="1">
+	    
+	    		<Button android:text="@string/prevpage" android:id="@+id/ButtonPrevPage"
+			android:onClick="onClickControl" android:layout_weight="1"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:drawableTop="@android:drawable/ic_media_rew"
+			android:background="#FF000000" android:textColor="#ffffffff"></Button>
+
+	
+		<Button android:text="@string/prevsong" android:id="@+id/ButtonPrevSong"
+			android:onClick="onClickControl" android:layout_weight="1"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:drawableTop="@android:drawable/ic_media_previous"
+			android:background="#FF000000" android:textColor="#ffffffff"></Button>
+		
+		<Button android:text="@string/blank" android:id="@+id/ButtonBlank"
+			android:onClick="onClickControl" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:layout_weight="1"
+			android:drawableTop="@android:drawable/ic_menu_delete"
+			android:background="#FF000000" android:textColor="#ffffffff"></Button>
+		
+	</LinearLayout>
+
+
+</LinearLayout>
