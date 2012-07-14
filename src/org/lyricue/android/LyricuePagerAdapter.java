@@ -1,17 +1,15 @@
 package org.lyricue.android;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.SparseArray;
 import android.view.View;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
-
-	public static String[] titles = new String[] { "Control", "Playlist",
-			"Available Songs", "Bible", "Display" };
+    public static String[] titles = new String[5];
 
 	public static int CONTROL_ID = 0;
 	public static int PLAYLIST_ID = 1;
@@ -21,10 +19,16 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 
 	public static final String PREFS_NAME = "LyricuePrefsFile";
 
-	private Map<Integer, Fragment> mPageReferenceMap = new HashMap<Integer, Fragment>();
+	private SparseArray<Fragment> mPageReferenceMap = new SparseArray<Fragment>();
 
-	public LyricuePagerAdapter(FragmentManager fm) {
+	public LyricuePagerAdapter(FragmentManager fm, Context context) {
 		super(fm);
+		Resources res = context.getResources();
+		titles[CONTROL_ID] = res.getString(R.string.control);
+		titles[PLAYLIST_ID] = res.getString(R.string.playlist);
+		titles[AVAIL_ID] = res.getString(R.string.available);
+		titles[BIBLE_ID] = res.getString(R.string.bible);
+		titles[DISPLAY_ID] = res.getString(R.string.display);
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public void destroyItem(View container, int position, Object object) {
-		mPageReferenceMap.remove(Integer.valueOf(position));
+		mPageReferenceMap.remove(position);
 	}
 
 	public Fragment getFragment(int position) {

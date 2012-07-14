@@ -11,4 +11,11 @@
     <issue id="UnusedNamespace">
         <ignore path="res/layout/playlist.xml" />
     </issue>
+    <issue id="UnusedResources">
+        <ignore path="res/raw/collapsed.svg" />
+        <ignore path="res/raw/expanded.svg" />
+        <ignore path="res/raw/ic_launcher.svg" />
+        <ignore path="res/raw/lyricue_header.svg" />
+        <ignore path="res/raw/rebuild.sh" />
+    </issue>
 </lint>

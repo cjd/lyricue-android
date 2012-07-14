@@ -45,7 +45,7 @@ public class Lyricue extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		fragman = getSupportFragmentManager();
-		adapter = new LyricuePagerAdapter(fragman);
+		adapter = new LyricuePagerAdapter(fragman,this.getBaseContext());
 		pager = (ViewPager) findViewById(R.id.viewpager);
 		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		pager.setAdapter(adapter);

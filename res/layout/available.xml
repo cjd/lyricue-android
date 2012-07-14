@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:ems="10"
-            android:hint="@+string/typetofilter"
+            android:hint="@string/typetofilter"
             android:inputType="text"
             android:maxLines="1"
             android:layout_weight="1">

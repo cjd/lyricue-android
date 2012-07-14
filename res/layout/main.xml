@@ -1,103 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical" >
+
     <com.viewpagerindicator.TabPageIndicator
-		android:id="@+id/indicator" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_alignParentTop="true"
-		android:background="#18FFFF00" android:textColor="#AA00FFFF"
-		app:footerColor="#FFAA2222" app:footerLineHeight="1dp"
-		app:footerIndicatorHeight="3dp" app:footerIndicatorStyle="underline"
-		app:selectedColor="#FFFFFFFF" app:selectedBold="true" />
-	<android.support.v4.view.ViewPager
-		android:id="@+id/viewpager" android:layout_width="fill_parent"
-		android:layout_above="@+id/hline1" android:layout_below="@+id/indicator"
-		android:layout_height="0dp" />
-    <View 
+        android:id="@+id/indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/hline1"
+        android:layout_below="@+id/indicator" />
+
+    <View
         android:id="@+id/hline1"
-        android:background="#FF33B5E5"
-        android:layout_width = "fill_parent"
+        android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:layout_centerVertical ="true"
-        android:layout_above="@+id/quickBar"/>
+        android:layout_above="@+id/quickBar"
+        android:layout_centerVertical="true"
+        android:background="#FF33B5E5" />
+
     <LinearLayout
         android:id="@+id/quickBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
-        
 
         <ImageButton
             android:id="@+id/ButtonQuickPP"
-            android:contentDescription="@string/prevpage"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="#FF000000"
+            android:clickable="true"
+            android:contentDescription="@string/prevpage"
             android:onClick="onClickControl"
-            android:textColor="#ffffffff"
-            android:clickable="true" 
-            android:src="@android:drawable/ic_media_rew"/>
+            android:src="@android:drawable/ic_media_rew"
+            android:textColor="#ffffffff" />
 
         <ImageButton
             android:id="@+id/ButtonQuickNP"
-                        android:contentDescription="@string/nextpage"
-            
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="#FF000000"
-            android:src="@android:drawable/ic_media_ff"
+            android:contentDescription="@string/nextpage"
             android:onClick="onClickControl"
+            android:src="@android:drawable/ic_media_ff"
             android:textColor="#ffffffff" />
 
         <ImageButton
             android:id="@+id/ButtonQuickPS"
-                        android:contentDescription="@string/prevsong"
-            
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="#FF000000"
-            android:src="@android:drawable/ic_media_previous"
+            android:contentDescription="@string/prevsong"
             android:onClick="onClickControl"
+            android:src="@android:drawable/ic_media_previous"
             android:textColor="#ffffffff" />
-        
+
         <ImageButton
             android:id="@+id/ButtonQuickNS"
-            android:contentDescription="@string/nextsong"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="#FF000000"
-            android:src="@android:drawable/ic_media_next"
+            android:contentDescription="@string/nextsong"
             android:onClick="onClickControl"
+            android:src="@android:drawable/ic_media_next"
             android:textColor="#ffffffff" />
 
         <ImageButton
             android:id="@+id/ButtonQuickBL"
-            android:contentDescription="@string/blank"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="#FF000000"
-            android:src="@android:drawable/ic_media_pause"
+            android:contentDescription="@string/blank"
             android:onClick="onClickControl"
+            android:src="@android:drawable/ic_media_pause"
             android:textColor="#ffffffff" />
-        
+
         <ImageButton
             android:id="@+id/ButtonQuickRS"
-            android:contentDescription="@string/redisplay"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="#FF000000"
-            android:src="@android:drawable/ic_media_play"
+            android:contentDescription="@string/redisplay"
             android:onClick="onClickControl"
+            android:src="@android:drawable/ic_media_play"
             android:textColor="#ffffffff" />
-        
-
     </LinearLayout>
 
 </RelativeLayout>
