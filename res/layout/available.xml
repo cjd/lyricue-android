@@ -24,15 +24,15 @@
             <requestFocus />
         </EditText>
 
-        <Button
+        <ImageButton
             android:id="@+id/ButtonClearSongSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@android:string/cancel"
+            android:layout_weight=".1"
             android:onClick="onClickAvailable"
-            android:text="X"
-            android:layout_weight=".1">
+            android:src="@android:drawable/ic_input_delete" />
 
-        </Button>
 </LinearLayout>
     <ListView
         android:id="@+id/available_songlist"
