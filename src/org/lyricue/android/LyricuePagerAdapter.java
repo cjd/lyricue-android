@@ -1,6 +1,7 @@
 package org.lyricue.android;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,13 +10,14 @@ import android.util.SparseArray;
 import android.view.View;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
-    public static String[] titles = new String[5];
+    public String[] titles = new String[5];
 
-	public static int CONTROL_ID = 0;
-	public static int PLAYLIST_ID = 1;
-	public static int AVAIL_ID = 2;
-	public static int BIBLE_ID = 3;
-	public static int DISPLAY_ID = 4;
+	public int CONTROL_ID = 0;
+	public int PLAYLIST_ID = 1;
+	public int AVAIL_ID = 2;
+	public int BIBLE_ID = 3;
+	public int DISPLAY_ID = 4;
+	public int pages = 5;  
 
 	public static final String PREFS_NAME = "LyricuePrefsFile";
 
@@ -24,6 +26,20 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 	public LyricuePagerAdapter(FragmentManager fm, Context context) {
 		super(fm);
 		Resources res = context.getResources();
+		Configuration conf = res.getConfiguration();
+
+		boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
+
+		boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
+		System.err.println("tablet:" +isLarge+":"+isLandscape);
+		if (isLarge && isLandscape) {
+			
+			AVAIL_ID=1;
+			BIBLE_ID=2;
+			DISPLAY_ID=3;
+			PLAYLIST_ID=4;
+			pages=4;
+		} 
 		titles[CONTROL_ID] = res.getString(R.string.control);
 		titles[PLAYLIST_ID] = res.getString(R.string.playlist);
 		titles[AVAIL_ID] = res.getString(R.string.available);
@@ -38,7 +54,7 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		return titles.length;
+		return pages;
 	}
 
 	@Override

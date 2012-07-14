@@ -17,7 +17,7 @@
         android:layout_height="0dp"
         android:layout_above="@+id/hline1"
         android:layout_below="@+id/indicator" />
-
+    
     <View
         android:id="@+id/hline1"
         android:layout_width="fill_parent"

@@ -23,11 +23,12 @@ public class ControlFragment extends Fragment {
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
-		if (activity != null && isVisibleToUser == true) { 
-			activity.setQuickBar(false);
-			
-		} else if (activity != null && isVisibleToUser == false) {
-			activity.setQuickBar(true);
+		if (activity != null) {
+			if (isVisibleToUser == true) { 
+				activity.setQuickBar(false);
+			} else  {
+				activity.setQuickBar(true);
+			}
 		}
 	}
 

@@ -30,10 +30,7 @@ public class PlaylistsDialogFragment extends DialogFragment {
 						activity.playlistid = activity.playlists_id[which];
 						activity.logDebug("Loading "
 								+ activity.playlists_text[which]);
-						LyricuePagerAdapter adapter = activity.adapter;
-						PlaylistFragment frag = (PlaylistFragment) adapter
-								.getFragment(1);
-						frag.load_playlist();
+						activity.load_playlist();
 					}
 				});
 		AlertDialog alert = builder.create();

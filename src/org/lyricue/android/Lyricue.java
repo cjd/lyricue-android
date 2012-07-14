@@ -7,8 +7,10 @@ import com.viewpagerindicator.TabPageIndicator;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -43,7 +45,7 @@ public class Lyricue extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.main);		
 		fragman = getSupportFragmentManager();
 		adapter = new LyricuePagerAdapter(fragman,this.getBaseContext());
 		pager = (ViewPager) findViewById(R.id.viewpager);
@@ -177,7 +179,7 @@ public class Lyricue extends FragmentActivity {
 		View v = (View) getWindow().getDecorView();
 		View quickBar = (View) v.findViewById(R.id.quickBar);
 		View hline1 = (View) v.findViewById(R.id.hline1);
-		if (quickBar != null) {
+		if (quickBar != null && hline1 != null) {
 			if (visible) {
 				quickBar.setVisibility(View.VISIBLE);
 				hline1.setVisibility(View.VISIBLE);
@@ -186,9 +188,8 @@ public class Lyricue extends FragmentActivity {
 				hline1.setVisibility(View.INVISIBLE);
 			}
 		}
-		
-		
 	}
+	
 	public void logError(String error_text) {
 		Log.d(TAG, error_text);
 		Toast.makeText(this, error_text, Toast.LENGTH_SHORT).show();
@@ -196,6 +197,16 @@ public class Lyricue extends FragmentActivity {
 
 	public void logDebug(String error_text) {
 		Log.d(TAG, error_text);
+	}
+
+	public void load_playlist() {
+		PlaylistFragment frag = (PlaylistFragment) getSupportFragmentManager().findFragmentById(R.id.playlist);
+		if (frag != null) {
+			frag.load_playlist();
+		} else {
+			frag = (PlaylistFragment) adapter.getFragment(1);
+			if (frag != null) frag.load_playlist();
+		}
 	}
 	
 }
