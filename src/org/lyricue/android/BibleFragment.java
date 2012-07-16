@@ -65,22 +65,17 @@ public class BibleFragment extends Fragment {
 				long id) {
 			switch (parent.getId()) {
 			case R.id.spinBibleBook:
-				activity.logDebug("book");
 				select_book(parent.getItemAtPosition(pos).toString());
 				break;
 			case R.id.spinBibleChapter:
-				activity.logDebug("chapter");
 				select_chapter(Integer.parseInt(parent.getItemAtPosition(pos)
 						.toString()));
 				break;
 			case R.id.spinBibleVerseStart:
-				activity.logDebug("start");
 				break;
 			case R.id.spinBibleVerseEnd:
-				activity.logDebug("end");
 				break;
 			}
-			activity.logDebug(parent.getItemAtPosition(pos).toString());
 		}
 
 		public void onNothingSelected(AdapterView<?> parent) {

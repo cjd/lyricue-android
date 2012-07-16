@@ -31,7 +31,6 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 		boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
 
 		boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
-		System.err.println("tablet:" +isLarge+":"+isLandscape);
 		if (isLarge && isLandscape) {
 			
 			AVAIL_ID=1;

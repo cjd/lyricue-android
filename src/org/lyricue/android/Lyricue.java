@@ -207,7 +207,11 @@ public class Lyricue extends FragmentActivity {
 			frag.load_playlist();
 		} else {
 			frag = (PlaylistFragment) adapter.getFragment(1);
-			if (frag != null) frag.load_playlist();
+			if (frag != null) {
+				frag.load_playlist();
+			} else {
+				logError("playlist fragment not found");
+			}
 		}
 	}
 	
