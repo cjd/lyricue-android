@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
-    <issue id="HardcodedText">
-        <ignore path="res/layout/available.xml" />
-    </issue>
-    <issue id="NestedWeights">
-        <ignore path="res/layout-land/control.xml" />
-        <ignore path="res/layout/control.xml" />
-        <ignore path="res/layout/control.xml" />
-    </issue>
-    <issue id="UnusedNamespace">
-        <ignore path="res/layout/playlist.xml" />
+    <issue id="StateListReachable">
+        <ignore path="res/drawable/list_selector_background.xml" />
     </issue>
     <issue id="UnusedResources">
         <ignore path="res/raw/collapsed.svg" />
