@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -45,7 +46,9 @@ public class LyricueDisplay extends Service {
 	
 	public boolean checkRunning() {
 		try {
-			sc = new Socket(hostip, 2346);
+			sc = new Socket();
+			InetSocketAddress hostaddr = new InetSocketAddress(hostip,2346); 
+			sc.connect(hostaddr, 10000);
 		} catch (UnknownHostException e){
 			logError("Don't know about host: " + hostip);
 			return false;

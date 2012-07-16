@@ -5,12 +5,11 @@ import java.net.Socket;
 
 import com.viewpagerindicator.TabPageIndicator;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -75,13 +74,16 @@ public class Lyricue extends FragmentActivity {
 		} else {
 			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
+		ProgressDialog progressSongs = ProgressDialog.show(this,"","Connecting to Lyricue",true);
 		ld = new LyricueDisplay(hostip);
 		if (!ld.checkRunning()) {
+			progressSongs.dismiss();
 			Intent accessActivity = new Intent(getBaseContext(),
 					UnableToAccess.class);
 			startActivityForResult(accessActivity, 1);
 			finish();
 		}
+		progressSongs.dismiss();
 	}
 
 	@Override
