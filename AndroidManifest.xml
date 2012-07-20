@@ -12,7 +12,7 @@
         android:label="@string/app_name" >
         <activity
             android:label="@string/app_name"
-            android:name=".Lyricue" 
+            android:name=".Lyricue"
             android:configChanges="orientation"
 			android:theme="@style/Theme.PageIndicatorDefaults">
             

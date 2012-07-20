@@ -9,3 +9,6 @@ inkscape -z  -e ../drawable-hdpi/lyricue_header.png -w 640 lyricue_header.svg
 inkscape -z  -e ../drawable-ldpi/lyricue_header.png -w 320 lyricue_header.svg
 inkscape -z  -e ../drawable-mdpi/lyricue_header.png -w 426 lyricue_header.svg
 inkscape -z  -e ../drawable-xhdpi/lyricue_header.png -w 853 lyricue_header.svg
+for SIZE in hdpi ldpi mdpi xhdpi
+do convert ../drawable-$SIZE/lyricue_header.png -rotate 270 ../drawable-$SIZE/lyricue_header_rotated.png
+done

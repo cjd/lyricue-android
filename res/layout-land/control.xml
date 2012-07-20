@@ -1,105 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/control_landscape"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <TableRow
-        android:id="@+id/tableRow4"
+    <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="fill_parent"
+        android:contentDescription="@string/lyricue"
+        android:scaleType="fitCenter"
+        android:src="@drawable/lyricue_header_rotated" />
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_span="3"
-            android:layout_weight="1"
-            android:contentDescription="@string/lyricue"
-            android:src="@drawable/lyricue_header" />
-    </TableRow>
-
-    <TableRow
-        android:id="@+id/tableRow1"
+    <TableLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" 
-        android:layout_weight="1"
-        >
+        android:layout_height="fill_parent"
+        android:layout_weight="1" >
 
-        <Button
-            android:id="@+id/ButtonNextPage"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="#FF000000"
-            android:drawableTop="@android:drawable/ic_media_ff"
-            android:onClick="onClickControl"
-            android:text="@string/nextpage"
-            android:textColor="#ffffffff" />
-
-        <Button
-            android:id="@+id/ButtonNextSong"
+        <TableRow
+            android:id="@+id/tableRow1"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="#FF000000"
-            android:drawableTop="@android:drawable/ic_media_next"
-            android:onClick="onClickControl"
-            android:text="@string/nextsong"
-            android:textColor="#ffffffff" />
+            android:layout_weight="1" >
 
-        <Button
-            android:id="@+id/ButtonRedisplay"
+            <Button
+                android:id="@+id/ButtonNextPage"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#FF000000"
+                android:drawableTop="@android:drawable/ic_media_ff"
+                android:onClick="onClickControl"
+                android:text="@string/nextpage"
+                android:textColor="#ffffffff" />
+
+            <Button
+                android:id="@+id/ButtonNextSong"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#FF000000"
+                android:drawableTop="@android:drawable/ic_media_next"
+                android:onClick="onClickControl"
+                android:text="@string/nextsong"
+                android:textColor="#ffffffff" />
+
+            <Button
+                android:id="@+id/ButtonRedisplay"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#FF000000"
+                android:drawableTop="@android:drawable/ic_media_play"
+                android:onClick="onClickControl"
+                android:text="@string/redisplay"
+                android:textColor="#ffffffff" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="#FF000000"
-            android:drawableTop="@android:drawable/ic_media_play"
-            android:onClick="onClickControl"
-            android:text="@string/redisplay"
-            android:textColor="#ffffffff" />
+            android:layout_weight="1" >
 
-    </TableRow>
+            <Button
+                android:id="@+id/ButtonPrevPage"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#FF000000"
+                android:drawableTop="@android:drawable/ic_media_rew"
+                android:onClick="onClickControl"
+                android:text="@string/prevpage"
+                android:textColor="#ffffffff" />
 
-    <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" 
-        android:layout_weight="1"
-        >
+            <Button
+                android:id="@+id/ButtonPrevSong"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#FF000000"
+                android:drawableTop="@android:drawable/ic_media_previous"
+                android:onClick="onClickControl"
+                android:text="@string/prevsong"
+                android:textColor="#ffffffff" />
 
-        <Button
-            android:id="@+id/ButtonPrevPage"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="#FF000000"
-            android:drawableTop="@android:drawable/ic_media_rew"
-            android:onClick="onClickControl"
-            android:text="@string/prevpage"
-            android:textColor="#ffffffff" />
+            <Button
+                android:id="@+id/ButtonBlank"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#FF000000"
+                android:drawableTop="@android:drawable/ic_media_pause"
+                android:onClick="onClickControl"
+                android:text="@string/blank"
+                android:textColor="#ffffffff" />
+        </TableRow>
+    </TableLayout>
 
-        <Button
-            android:id="@+id/ButtonPrevSong"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="#FF000000"
-            android:drawableTop="@android:drawable/ic_media_previous"
-            android:onClick="onClickControl"
-            android:text="@string/prevsong"
-            android:textColor="#ffffffff" />
-
-        <Button
-            android:id="@+id/ButtonBlank"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="#FF000000"
-            android:drawableTop="@android:drawable/ic_media_pause"
-            android:onClick="onClickControl"
-            android:text="@string/blank"
-            android:textColor="#ffffffff" />
-
-    </TableRow>
-
-</TableLayout>
+</LinearLayout>

@@ -33,7 +33,7 @@ public class AvailableSongsFragment extends Fragment {
 	AvailableSongsAdapter adapter = null;
 	private EditText filterText = null;
 	private ProgressDialog progressSongs = null;
-
+	private ArrayList<AvailableSongItem> items = null; 
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +44,8 @@ public class AvailableSongsFragment extends Fragment {
 		filterText.addTextChangedListener(filterTextWatcher);
 		setHasOptionsMenu(true);
 		activity = (Lyricue) getActivity();
+		items = new ArrayList<AvailableSongItem>();
+
 		load_available();
 		return v;
 
@@ -120,8 +122,7 @@ public class AvailableSongsFragment extends Fragment {
 			String Query = "SELECT COUNT(id) AS count FROM lyricMain WHERE id > 0";
 			int size = ld.runQuery_int("lyricDb", Query,"count");
 			if (size > 0) {
-				ArrayList<AvailableSongItem> items = new ArrayList<AvailableSongItem>();
-				for (int start = 0; start < size; start = start + 100) {
+					for (int start = 0; start < size; start = start + 100) {
 					Query = "SELECT id,title,songnum,book FROM lyricMain WHERE id > 0 LIMIT "
 							+ start + ", 100";
 					JSONArray jArray = ld.runQuery("lyricDb", Query);

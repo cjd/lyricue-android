@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.SparseArray;
 import android.view.View;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
@@ -17,16 +16,16 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 	public int AVAIL_ID = 2;
 	public int BIBLE_ID = 3;
 	public int DISPLAY_ID = 4;
-	public int pages = 5;  
+	public int pages = 5;
+	Lyricue activity = null;
 
 	public static final String PREFS_NAME = "LyricuePrefsFile";
 
-	private SparseArray<Fragment> mPageReferenceMap = new SparseArray<Fragment>();
-
-	public LyricuePagerAdapter(FragmentManager fm, Context context) {
+	public LyricuePagerAdapter(FragmentManager fm, Context context, Lyricue activity) {
 		super(fm);
 		Resources res = context.getResources();
 		Configuration conf = res.getConfiguration();
+		this.activity = activity;
 
 		boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
 
@@ -62,28 +61,43 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 
 		if (position == CONTROL_ID) {
 			f = new ControlFragment();
+			activity.fragments.put("control", f);
 		} else if (position == PLAYLIST_ID) {
 			f = new PlaylistFragment();
+			activity.fragments.put("playlist", f);
 		} else if (position == AVAIL_ID) {
 			f = new AvailableSongsFragment();
+			activity.fragments.put("avail", f);
 		} else if (position == BIBLE_ID) {
 			f = new BibleFragment();
+			activity.fragments.put("bible", f);
 		} else if (position == DISPLAY_ID) {
 			f = new DisplayFragment();
+			activity.fragments.put("display", f);
 		} else {
 			f = new ControlFragment();
+			activity.fragments.put("control", f);
 		}
-		mPageReferenceMap.put(position, f);
+		
+		
 		return f;
 	}
 
 	@Override
 	public void destroyItem(View container, int position, Object object) {
-		mPageReferenceMap.remove(position);
-	}
-
-	public Fragment getFragment(int position) {
-		return mPageReferenceMap.get(position);
+		String key = null;
+		if (position == CONTROL_ID) {;
+			key="control";
+		} else if (position == PLAYLIST_ID) {
+			key="playlist";
+		} else if (position == AVAIL_ID) {
+			key="avail";
+		} else if (position == BIBLE_ID) {
+			key="bible";
+		} else if (position == DISPLAY_ID) {
+			key="display";
+		}
+		if (key != null) activity.fragments.remove(key);
 	}
 
 }

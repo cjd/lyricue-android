@@ -49,10 +49,10 @@ public class PlaylistFragment extends Fragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		boolean newCollapsible;
 		activity = (Lyricue) this.getActivity();
+		fragment = this;
 		v = (View) inflater.inflate(R.layout.playlist, null);
 		treeView = (TreeViewList) v.findViewById(R.id.playlistView);
-		fragment = this;
-
+	
 		if (savedInstanceState == null) {
 			load_playlist();
 		} else {
@@ -82,7 +82,6 @@ public class PlaylistFragment extends Fragment {
 	public void onResume() {
 		activity.logDebug("resume playlist");
 		super.onResume();
-		load_playlist();
 	}
 
 	@Override

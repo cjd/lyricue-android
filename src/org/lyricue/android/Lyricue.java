@@ -2,6 +2,8 @@ package org.lyricue.android;
 
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -10,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -38,6 +41,8 @@ public class Lyricue extends FragmentActivity {
 	public int[] playlists_id = null;
 	public boolean togglescreen = false;
 	public LyricueDisplay ld = null;
+	public Map<String, Fragment> fragments = new HashMap<String, Fragment>();
+
 	FragmentManager fragman = null;
 
 	/** Called when the activity is first created. */
@@ -46,7 +51,7 @@ public class Lyricue extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);		
 		fragman = getSupportFragmentManager();
-		adapter = new LyricuePagerAdapter(fragman,this.getBaseContext());
+		adapter = new LyricuePagerAdapter(fragman,this.getBaseContext(),this);
 		pager = (ViewPager) findViewById(R.id.viewpager);
 		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		pager.setAdapter(adapter);
@@ -55,7 +60,31 @@ public class Lyricue extends FragmentActivity {
 		getPrefs();
 		pager.setCurrentItem(0);
 	}
+	/*
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+	    super.onConfigurationChanged(newConfig);
 
+	    // Checks the orientation of the screen
+	    if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+	    	ControlFragment frag = (ControlFragment) fragments.get("control");
+	    	View v = frag.getView();
+	    	ViewGroup vg = (ViewGroup) v.getParent();
+	    	int index = vg.indexOfChild(v);
+	        vg.removeView(v);
+	        v = getLayoutInflater().inflate(R.layout.control, vg, false);
+	        vg.addView(v, index);	    	
+	    } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+	    	ControlFragment frag = (ControlFragment) fragments.get("control");
+	    	View v = frag.getView();
+	    	ViewGroup vg = (ViewGroup) v.getParent();
+	    	int index = vg.indexOfChild(v);
+	        vg.removeView(v);
+	        v = getLayoutInflater().inflate(R.layout.control, vg, false);
+	        vg.addView(v, index);
+	    }
+	}
+*/
 	private void getPrefs() {
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -202,16 +231,14 @@ public class Lyricue extends FragmentActivity {
 	}
 
 	public void load_playlist() {
-		PlaylistFragment frag = (PlaylistFragment) getSupportFragmentManager().findFragmentById(R.id.playlist);
+		PlaylistFragment frag = (PlaylistFragment) fragments.get("playlist");
+		if (frag == null) {
+			frag = (PlaylistFragment) getSupportFragmentManager().findFragmentById(R.id.playlist);
+		}
 		if (frag != null) {
 			frag.load_playlist();
 		} else {
-			frag = (PlaylistFragment) adapter.getFragment(1);
-			if (frag != null) {
-				frag.load_playlist();
-			} else {
-				logError("playlist fragment not found");
-			}
+			logError("playlist fragment not found");
 		}
 	}
 	
