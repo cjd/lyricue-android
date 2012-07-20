@@ -31,6 +31,9 @@ public class UnableToAccess extends Activity {
 		case R.id.buttonRetry:
 			retry_connection();
 			break;
+		case R.id.buttonDemo:
+			setup_demo();
+			break;
 		case R.id.buttonSettings:
 			Intent settingsActivity = new Intent(getBaseContext(),
 					Preferences.class);
@@ -40,6 +43,15 @@ public class UnableToAccess extends Activity {
 			finish();
 			break;
 		}
+	}
+	
+	public void setup_demo() {
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+		SharedPreferences.Editor editor = settings.edit();
+        editor.putString("hostip", "#demo");
+        editor.commit();
+		retry_connection();
 	}
 	
 	public void retry_connection() {

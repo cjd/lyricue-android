@@ -99,5 +99,17 @@
             android:src="@android:drawable/ic_media_play"
             android:textColor="#ffffffff" />
     </LinearLayout>
+    
+    <TextView
+        android:id="@+id/textDemo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="@string/demo"
+        android:layout_alignParentBottom="true"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

@@ -20,13 +20,21 @@ public class InitialSetup extends Activity {
 	
 	public void onClickSetup(View v) {
 		Log.d(TAG,"onClickSetup");
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = settings.edit();
+		
 		switch (v.getId()) {
-		case R.id.buttonInitialApply:
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putString("hostip", ((EditText)findViewById(R.id.editHostname)).getText().toString());
+		case R.id.buttonInitialDemo:
+			editor.putString("hostip", "#demo");
 			editor.commit();
 			Intent lyricueActivity = new Intent(getBaseContext(), Lyricue.class);
+			startActivity(lyricueActivity);
+			finish();
+			break;
+		case R.id.buttonInitialApply:
+			editor.putString("hostip", ((EditText)findViewById(R.id.editHostname)).getText().toString());
+			editor.commit();
+			lyricueActivity = new Intent(getBaseContext(), Lyricue.class);
 			startActivity(lyricueActivity);
 			finish();
 			break;

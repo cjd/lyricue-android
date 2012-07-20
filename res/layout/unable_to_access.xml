@@ -22,7 +22,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="@string/quit" android:onClick="onClickSetup"/>
+        android:onClick="onClickSetup"
+        android:text="@string/quit" />
 
     <TextView
         android:id="@+id/textView1"
@@ -42,15 +43,27 @@
         android:layout_above="@+id/buttonQuit"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="@string/settings" android:onClick="onClickSetup"/>
+        android:onClick="onClickSetup"
+        android:text="@string/settings" />
 
     <Button
-        android:id="@+id/buttonRetry"
+        android:id="@+id/buttonDemo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonSettings"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="@string/retry" android:onClick="onClickSetup"/>
+        android:onClick="onClickSetup"
+        android:text="@string/demo" />
+
+    <Button
+        android:id="@+id/buttonRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonDemo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:onClick="onClickSetup"
+        android:text="@string/retry" />
 
 </RelativeLayout>

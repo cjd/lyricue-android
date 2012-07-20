@@ -33,7 +33,7 @@ public class AvailableSongsFragment extends Fragment {
 	AvailableSongsAdapter adapter = null;
 	private EditText filterText = null;
 	private ProgressDialog progressSongs = null;
-	private ArrayList<AvailableSongItem> items = null; 
+	private ArrayList<AvailableSongItem> items = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,8 +109,10 @@ public class AvailableSongsFragment extends Fragment {
 
 	public void load_available() {
 		activity.logDebug("load_available");
-		if (progressSongs != null) progressSongs.dismiss();
-		progressSongs = ProgressDialog.show(activity,"","Loading Song List..",true);
+		if (progressSongs != null)
+			progressSongs.dismiss();
+		progressSongs = ProgressDialog.show(activity, "",
+				"Loading Song List..", true);
 		new AvailableSongsTask().execute();
 	}
 
@@ -118,11 +120,22 @@ public class AvailableSongsFragment extends Fragment {
 			AsyncTask<Void, Void, AvailableSongsAdapter> {
 		@Override
 		protected AvailableSongsAdapter doInBackground(Void... arg0) {
+			if (activity.hostip.equals("#demo")) {
+				for (int a = 0; a < 100; a++) {
+					items.add(a, new AvailableSongItem());
+					items.get(a).main = "Demo Song " + a;
+					items.get(a).small = "First line of song here";
+				}
+				Collections.sort(items);
+				adapter = new AvailableSongsAdapter(
+						activity.getApplicationContext(), items);
+				return adapter;
+			}
 			LyricueDisplay ld = new LyricueDisplay(activity.hostip);
 			String Query = "SELECT COUNT(id) AS count FROM lyricMain WHERE id > 0";
-			int size = ld.runQuery_int("lyricDb", Query,"count");
+			int size = ld.runQuery_int("lyricDb", Query, "count");
 			if (size > 0) {
-					for (int start = 0; start < size; start = start + 100) {
+				for (int start = 0; start < size; start = start + 100) {
 					Query = "SELECT id,title,songnum,book FROM lyricMain WHERE id > 0 LIMIT "
 							+ start + ", 100";
 					JSONArray jArray = ld.runQuery("lyricDb", Query);
@@ -149,6 +162,7 @@ public class AvailableSongsFragment extends Fragment {
 						}
 					}
 				}
+
 				Collections.sort(items);
 				adapter = new AvailableSongsAdapter(
 						activity.getApplicationContext(), items);
@@ -172,54 +186,63 @@ public class AvailableSongsFragment extends Fragment {
 			registerForContextMenu(songlist);
 		}
 	}
-	
+
 	public void add_to_playlist(long itemid) {
-		if (activity.playlistid < 0) return;
+		if (activity.playlistid < 0)
+			return;
 		activity.logDebug("add to playlist");
 		new AddSongTask().execute(itemid);
-		
+
 	}
-	
-	private class AddSongTask extends
-			AsyncTask<Long, Void, Void> {
+
+	private class AddSongTask extends AsyncTask<Long, Void, Void> {
 		protected Void doInBackground(Long... args) {
 			Long itemid = args[0];
 			String Query = "SELECT MAX(playorder) as playorder FROM playlist";
-			int playorder = activity.ld.runQuery_int("lyricDb", Query,"playorder");
+			int playorder = activity.ld.runQuery_int("lyricDb", Query,
+					"playorder");
 			playorder++;
-			
+
 			Query = "SELECT MAX(id) as id FROM playlists";
-			int playlist=activity.ld.runQuery_int("lyricDb", Query,"id");
+			int playlist = activity.ld.runQuery_int("lyricDb", Query, "id");
 			playlist++;
-			
-			Query = "INSERT INTO playlist (playorder, playlist, data, type) VALUES ("+playorder+", "+activity.playlistid+", "+playlist+", \"play\")";
+
+			Query = "INSERT INTO playlist (playorder, playlist, data, type) VALUES ("
+					+ playorder
+					+ ", "
+					+ activity.playlistid
+					+ ", "
+					+ playlist
+					+ ", \"play\")";
 			activity.ld.runQuery("lyricDb", Query);
-			
-			Query = "SELECT title,pageid,keywords FROM lyricMain, page WHERE songid=id AND id="+itemid+" ORDER BY pagenum";
+
+			Query = "SELECT title,pageid,keywords FROM lyricMain, page WHERE songid=id AND id="
+					+ itemid + " ORDER BY pagenum";
 			JSONArray jArray = activity.ld.runQuery("lyricDb", Query);
-			if (jArray == null) {	return null; }
-			String title="Unknown";
+			if (jArray == null) {
+				return null;
+			}
+			String title = "Unknown";
 			for (int i = 0; i < jArray.length(); i++) {
 				try {
 					JSONObject results = jArray.getJSONObject(i);
 					title = results.getString("title");
 					playorder++;
 					Query = "INSERT INTO playlist (playorder, playlist, data,type) VALUES ("
-			          + playorder + ", "
-			          + playlist + ","
-			          + results.getString("pageid")
-			          + ", \"song\")";
+							+ playorder
+							+ ", "
+							+ playlist
+							+ ","
+							+ results.getString("pageid") + ", \"song\")";
 					activity.ld.runQuery("lyricDb", Query);
 				} catch (JSONException e) {
 					activity.logError("Error parsing data " + e.toString());
 					return null;
 				}
 			}
-			
-			Query = "INSERT INTO playlists (id,title,ref) VALUES ("
-		      + playlist + ",\""
-		      + title + "\","
-		      + itemid + ")";
+
+			Query = "INSERT INTO playlists (id,title,ref) VALUES (" + playlist
+					+ ",\"" + title + "\"," + itemid + ")";
 			activity.ld.runQuery("lyricDb", Query);
 			return null;
 		}
@@ -238,7 +261,8 @@ public class AvailableSongsFragment extends Fragment {
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before,
 				int count) {
-			if (adapter != null) adapter.getFilter().filter(s);
+			if (adapter != null)
+				adapter.getFilter().filter(s);
 		}
 
 	};

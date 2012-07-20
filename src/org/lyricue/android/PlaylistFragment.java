@@ -128,7 +128,7 @@ public class PlaylistFragment extends Fragment {
 						String.valueOf(itemid), "");
 			} else if (item.getItemId() == 1) {
 				activity.logDebug("remove item:" + itemid);
-				new RemoveItemTask().execute(itemid);
+				if (!activity.hostip.equals("#demo")) new RemoveItemTask().execute(itemid);
 			}
 			return true;
 		} else {
@@ -147,6 +147,14 @@ public class PlaylistFragment extends Fragment {
 
 	private class LoadPlaylistsTask extends AsyncTask<Void, Void, Void> {
 		protected Void doInBackground(Void... arg0) {
+			if(activity.hostip.equals("#demo")) {
+				activity.playlists_text = new String[1];
+				activity.playlists_id = new int[1];
+				activity.playlists_id[0]=1;
+				activity.playlists_text[0]="Demo playlist";
+				activity.showPlaylistsDialog(v);
+				return null;
+			}
 			String Query = "SELECT title,id FROM playlists"
 					+ " LEFT JOIN playlist ON playlist.data=playlists.id"
 					+ " AND playlist.data NOT LIKE '%-%'"
@@ -214,6 +222,10 @@ public class PlaylistFragment extends Fragment {
 	void add_playlist(TreeBuilder<Long> treeBuilder, int playlistid, int level) {
 		activity.logDebug("add_playlist:" + playlistid);
 
+		if (activity.hostip.equals("#demo")) {
+			load_demo_playlist(treeBuilder);
+			return;
+		}
 		if (playlistid <= 0) {
 			return;
 		}
@@ -266,7 +278,16 @@ public class PlaylistFragment extends Fragment {
 
 		}
 	}
-
+	
+	void load_demo_playlist(TreeBuilder<Long> treeBuilder) {
+	    int[] DEMO_NODES = new int[] { 0, 0, 1, 1, 1, 2, 2, 1,
+            1, 2, 1, 0, 0, 0, 1, 2, 3, 2, 0, 0, 1, 2, 0, 1, 2, 0, 1 };
+        for (int i = 0; i < DEMO_NODES.length; i++) {
+            treeBuilder.sequentiallyAddNextNode((long) i, DEMO_NODES[i]);
+            playlistmap.put((long) i, "Demo Item "+i);
+        }
+	}
+	
 	private class RemoveItemTask extends AsyncTask<Long, Void, Void> {
 		protected Void doInBackground(Long... args) {
 			Long itemid = args[0];

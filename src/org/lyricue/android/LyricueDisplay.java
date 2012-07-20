@@ -45,6 +45,9 @@ public class LyricueDisplay extends Service {
 	}
 	
 	public boolean checkRunning() {
+		if (hostip.equals("#demo")) {
+			return true;
+		}
 		try {
 			sc = new Socket();
 			InetSocketAddress hostaddr = new InetSocketAddress(hostip,2346); 
@@ -62,6 +65,9 @@ public class LyricueDisplay extends Service {
 
 	public String runCommand(String command, String option1, String option2) {
 		String result = "";
+		if (hostip.equals("demo")) {
+			return result;
+		}
 		if (sc == null) {
 			try {
 				sc = new Socket(hostip, 2346);

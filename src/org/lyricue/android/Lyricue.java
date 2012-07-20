@@ -60,31 +60,7 @@ public class Lyricue extends FragmentActivity {
 		getPrefs();
 		pager.setCurrentItem(0);
 	}
-	/*
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-	    super.onConfigurationChanged(newConfig);
 
-	    // Checks the orientation of the screen
-	    if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-	    	ControlFragment frag = (ControlFragment) fragments.get("control");
-	    	View v = frag.getView();
-	    	ViewGroup vg = (ViewGroup) v.getParent();
-	    	int index = vg.indexOfChild(v);
-	        vg.removeView(v);
-	        v = getLayoutInflater().inflate(R.layout.control, vg, false);
-	        vg.addView(v, index);	    	
-	    } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-	    	ControlFragment frag = (ControlFragment) fragments.get("control");
-	    	View v = frag.getView();
-	    	ViewGroup vg = (ViewGroup) v.getParent();
-	    	int index = vg.indexOfChild(v);
-	        vg.removeView(v);
-	        v = getLayoutInflater().inflate(R.layout.control, vg, false);
-	        vg.addView(v, index);
-	    }
-	}
-*/
 	private void getPrefs() {
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -111,6 +87,12 @@ public class Lyricue extends FragmentActivity {
 					UnableToAccess.class);
 			startActivityForResult(accessActivity, 1);
 			finish();
+		}
+		View v = (View) getWindow().getDecorView();
+		if (hostip.equals("#demo")) {
+			v.findViewById(R.id.textDemo).setVisibility(View.VISIBLE);
+		} else {
+			v.findViewById(R.id.textDemo).setVisibility(View.GONE);
 		}
 		progressSongs.dismiss();
 	}

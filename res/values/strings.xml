@@ -106,5 +106,6 @@ Please Enter the Hostname or IP where Lyricue is currently accessible.</string>
     <string name="unable_to_access">I am unable to contact the Lyricue Display\nIs it running?</string>
     <string name="retry">Retry</string>
     <string name="rightarrow">></string>
+    <string name="demo">Demo Mode</string>
     
 </resources>

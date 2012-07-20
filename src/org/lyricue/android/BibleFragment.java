@@ -46,15 +46,17 @@ public class BibleFragment extends Fragment {
 			activity.logDebug("onClickBible");
 			switch (vi.getId()) {
 			case R.id.buttonBibleAdd:
-				Spinner spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
-				String chapter = spin.getSelectedItem().toString();
-				spin = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
-				String startverse = spin.getSelectedItem().toString();
-				spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
-				String endverse = spin.getSelectedItem().toString();
-				activity.logDebug("Adding " + bookname + " " + chapter + ":" + startverse
-							+ "-" + endverse);
-				new AddVerseTask().execute(bookname, chapter, startverse, endverse);
+				if (!activity.hostip.equals("#demo")) {
+					Spinner spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
+					String chapter = spin.getSelectedItem().toString();
+					spin = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
+					String startverse = spin.getSelectedItem().toString();
+					spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
+					String endverse = spin.getSelectedItem().toString();
+					activity.logDebug("Adding " + bookname + " " + chapter + ":" + startverse
+								+ "-" + endverse);
+					new AddVerseTask().execute(bookname, chapter, startverse, endverse);
+				}
 				break;
 			}
 		}
@@ -86,6 +88,7 @@ public class BibleFragment extends Fragment {
 	void select_book(String book) {
 		bookname = book;
 		String status = activity.ld.runCommand("status", "", "");
+		if (status.equals("")) return;
 		String biblename = status.substring(status.indexOf(",T:") + 3);
 		biblename = biblename.substring(0, biblename.lastIndexOf(","));
 		String query = "SELECT MAX(chapternum) AS chapternum FROM " + biblename
@@ -103,6 +106,7 @@ public class BibleFragment extends Fragment {
 
 	void select_chapter(int chapter) {
 		String status = activity.ld.runCommand("status", "", "");
+		if (status.equals("")) return;
 		String biblename = status.substring(status.indexOf(",T:") + 3);
 		biblename = biblename.substring(0, biblename.lastIndexOf(","));
 		String query = "SELECT MAX(versenum) AS versenum FROM " + biblename

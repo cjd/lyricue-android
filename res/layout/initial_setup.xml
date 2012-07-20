@@ -46,4 +46,14 @@
         android:onClick="onClickSetup"
         android:text="@string/apply" />
 
+    <Button
+        android:id="@+id/buttonInitialDemo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonInitialApply"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:onClick="onClickSetup"
+        android:text="@string/demo" />
+
 </RelativeLayout>
