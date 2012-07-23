@@ -255,6 +255,7 @@ public class Lyricue extends FragmentActivity {
 		if (frag == null) {
 			frag = (PlaylistFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.playlist);
+			fragments.put("playlist", frag);
 		}
 		if (frag != null) {
 			frag.load_playlist();
