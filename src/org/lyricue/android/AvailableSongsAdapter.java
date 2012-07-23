@@ -67,8 +67,11 @@ public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
 
 	@Override
 	public int getPositionForSection(int section) {
-		String letter = sections[section];
-		return alphaIndexer.get(letter);
+		if (section < sections.length) {
+			String letter = sections[section];
+			return alphaIndexer.get(letter);
+		}
+		return 0;
 	}
 
 	@Override

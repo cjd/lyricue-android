@@ -116,6 +116,11 @@ public class Lyricue extends FragmentActivity {
 				}
 				PlaylistFragment frag1 = (PlaylistFragment) fragments
 						.get("playlist");
+				if (frag1 == null) {
+					frag1 = (PlaylistFragment) getSupportFragmentManager()
+							.findFragmentById(R.id.playlist);
+					fragments.put("playlist", frag1);
+				}
 				AvailableSongsFragment frag2 = (AvailableSongsFragment) fragments
 						.get("avail");
 				BibleFragment frag3 = (BibleFragment) fragments.get("bible");
