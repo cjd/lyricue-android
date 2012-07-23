@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
-    public String[] titles = new String[5];
+	public String[] titles = new String[5];
 
 	public int CONTROL_ID = 0;
 	public int PLAYLIST_ID = 1;
@@ -21,7 +21,8 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 
 	public static final String PREFS_NAME = "LyricuePrefsFile";
 
-	public LyricuePagerAdapter(FragmentManager fm, Context context, Lyricue activity) {
+	public LyricuePagerAdapter(FragmentManager fm, Context context,
+			Lyricue activity) {
 		super(fm);
 		Resources res = context.getResources();
 		Configuration conf = res.getConfiguration();
@@ -31,13 +32,13 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 
 		boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
 		if (isLarge && isLandscape) {
-			
-			AVAIL_ID=1;
-			BIBLE_ID=2;
-			DISPLAY_ID=3;
-			PLAYLIST_ID=4;
-			pages=4;
-		} 
+
+			AVAIL_ID = 1;
+			BIBLE_ID = 2;
+			DISPLAY_ID = 3;
+			PLAYLIST_ID = 4;
+			pages = 4;
+		}
 		titles[CONTROL_ID] = res.getString(R.string.control);
 		titles[PLAYLIST_ID] = res.getString(R.string.playlist);
 		titles[AVAIL_ID] = res.getString(R.string.available);
@@ -78,26 +79,27 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 			f = new ControlFragment();
 			activity.fragments.put("control", f);
 		}
-		
-		
+
 		return f;
 	}
 
 	@Override
 	public void destroyItem(View container, int position, Object object) {
 		String key = null;
-		if (position == CONTROL_ID) {;
-			key="control";
+		if (position == CONTROL_ID) {
+			;
+			key = "control";
 		} else if (position == PLAYLIST_ID) {
-			key="playlist";
+			key = "playlist";
 		} else if (position == AVAIL_ID) {
-			key="avail";
+			key = "avail";
 		} else if (position == BIBLE_ID) {
-			key="bible";
+			key = "bible";
 		} else if (position == DISPLAY_ID) {
-			key="display";
+			key = "display";
 		}
-		if (key != null) activity.fragments.remove(key);
+		if (key != null)
+			activity.fragments.remove(key);
 	}
 
 }

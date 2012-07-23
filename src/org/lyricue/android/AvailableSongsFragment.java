@@ -44,9 +44,6 @@ public class AvailableSongsFragment extends Fragment {
 		filterText.addTextChangedListener(filterTextWatcher);
 		setHasOptionsMenu(true);
 		activity = (Lyricue) getActivity();
-		items = new ArrayList<AvailableSongItem>();
-
-		load_available();
 		return v;
 
 	}
@@ -120,6 +117,7 @@ public class AvailableSongsFragment extends Fragment {
 			AsyncTask<Void, Void, AvailableSongsAdapter> {
 		@Override
 		protected AvailableSongsAdapter doInBackground(Void... arg0) {
+			items = new ArrayList<AvailableSongItem>();
 			if (activity.hostip.equals("#demo")) {
 				for (int a = 0; a < 100; a++) {
 					items.add(a, new AvailableSongItem());

@@ -2,7 +2,6 @@ package org.lyricue.android;
 
 import java.util.ArrayList;
 
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +25,10 @@ public class BibleFragment extends Fragment {
 			Bundle savedInstanceState) {
 		activity = (Lyricue) getActivity();
 		v = (View) inflater.inflate(R.layout.bible, null);
+		return v;
+	}
+
+	public void load_bible() {
 		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
 		spin.setOnItemSelectedListener(new BookOnItemSelectedListener());
 		spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
@@ -36,8 +39,6 @@ public class BibleFragment extends Fragment {
 		spin.setOnItemSelectedListener(new BookOnItemSelectedListener());
 		Button b = (Button) v.findViewById(R.id.buttonBibleAdd);
 		b.setOnClickListener(new BibleOnClickListener());
-
-		return v;
 	}
 
 	public class BibleOnClickListener implements OnClickListener {
@@ -47,15 +48,17 @@ public class BibleFragment extends Fragment {
 			switch (vi.getId()) {
 			case R.id.buttonBibleAdd:
 				if (!activity.hostip.equals("#demo")) {
-					Spinner spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
+					Spinner spin = (Spinner) v
+							.findViewById(R.id.spinBibleChapter);
 					String chapter = spin.getSelectedItem().toString();
 					spin = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
 					String startverse = spin.getSelectedItem().toString();
 					spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
 					String endverse = spin.getSelectedItem().toString();
-					activity.logDebug("Adding " + bookname + " " + chapter + ":" + startverse
-								+ "-" + endverse);
-					new AddVerseTask().execute(bookname, chapter, startverse, endverse);
+					activity.logDebug("Adding " + bookname + " " + chapter
+							+ ":" + startverse + "-" + endverse);
+					new AddVerseTask().execute(bookname, chapter, startverse,
+							endverse);
 				}
 				break;
 			}
@@ -88,7 +91,8 @@ public class BibleFragment extends Fragment {
 	void select_book(String book) {
 		bookname = book;
 		String status = activity.ld.runCommand("status", "", "");
-		if (status.equals("")) return;
+		if (status.equals(""))
+			return;
 		String biblename = status.substring(status.indexOf(",T:") + 3);
 		biblename = biblename.substring(0, biblename.lastIndexOf(","));
 		String query = "SELECT MAX(chapternum) AS chapternum FROM " + biblename
@@ -106,7 +110,8 @@ public class BibleFragment extends Fragment {
 
 	void select_chapter(int chapter) {
 		String status = activity.ld.runCommand("status", "", "");
-		if (status.equals("")) return;
+		if (status.equals(""))
+			return;
 		String biblename = status.substring(status.indexOf(",T:") + 3);
 		biblename = biblename.substring(0, biblename.lastIndexOf(","));
 		String query = "SELECT MAX(versenum) AS versenum FROM " + biblename
@@ -135,14 +140,13 @@ public class BibleFragment extends Fragment {
 
 	}
 
-
 	private class AddVerseTask extends AsyncTask<String, Void, Void> {
 		protected Void doInBackground(String... args) {
 			String book = args[0];
-			int chapter=Integer.parseInt(args[1]);
-			int startverse=Integer.parseInt(args[2]);
-			int endverse=Integer.parseInt(args[3]);
-			
+			int chapter = Integer.parseInt(args[1]);
+			int startverse = Integer.parseInt(args[2]);
+			int endverse = Integer.parseInt(args[3]);
+
 			String Query = "SELECT MAX(playorder) as playorder FROM playlist";
 			int playorder = activity.ld.runQuery_int("lyricDb", Query,
 					"playorder");
@@ -164,20 +168,24 @@ public class BibleFragment extends Fragment {
 			for (int i = startverse; i <= endverse; i++) {
 				playorder++;
 				Query = "INSERT INTO playlist (playlist,playorder,type,data) VALUES ("
-				          + playlist + ", "
-				          + playorder
-				          + ", \"vers\", \""
-				          + i + "-"
-				          + i + "\")";
+						+ playlist
+						+ ", "
+						+ playorder
+						+ ", \"vers\", \""
+						+ i
+						+ "-" + i + "\")";
 				activity.ld.runQuery("lyricDb", Query);
 			}
 
-			String title=book+":"+chapter+":"+startverse+"-"+endverse;
+			String title = book + ":" + chapter + ":" + startverse + "-"
+					+ endverse;
 			Query = "INSERT INTO playlists (id,title) VALUES (" + playlist
 					+ ",\"" + title + "\")";
 			activity.ld.runQuery("lyricDb", Query);
-			/*PlaylistFragment frag = (PlaylistFragment) activity.adapter.getItem(1);
-			frag.load_playlist();*/
+			/*
+			 * PlaylistFragment frag = (PlaylistFragment)
+			 * activity.adapter.getItem(1); frag.load_playlist();
+			 */
 			return null;
 		}
 	}

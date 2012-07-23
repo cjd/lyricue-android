@@ -43,21 +43,20 @@ public class LyricueDisplay extends Service {
 			}
 		}).start();
 	}
-	
+
 	public boolean checkRunning() {
 		if (hostip.equals("#demo")) {
 			return true;
 		}
 		try {
 			sc = new Socket();
-			InetSocketAddress hostaddr = new InetSocketAddress(hostip,2346); 
-			sc.connect(hostaddr, 10000);
-		} catch (UnknownHostException e){
+			InetSocketAddress hostaddr = new InetSocketAddress(hostip, 2346);
+			sc.connect(hostaddr, 5000);
+		} catch (UnknownHostException e) {
 			logError("Don't know about host: " + hostip);
 			return false;
-		} catch (IOException e){
-			logError("Couldn't get I/O socket for the connection to: "
-					+ hostip);
+		} catch (IOException e) {
+			logError("Couldn't get I/O socket for the connection to: " + hostip);
 			return false;
 		}
 		return true;
@@ -90,8 +89,10 @@ public class LyricueDisplay extends Service {
 		}
 		if (sc != null && os != null) {
 			try {
-				option1=option1.replace("\n", "#BREAK#").replace(":", "#SEMI#");
-				option2=option2.replace("\n", "#BREAK#").replace(":", "#SEMI#");
+				option1 = option1.replace("\n", "#BREAK#").replace(":",
+						"#SEMI#");
+				option2 = option2.replace("\n", "#BREAK#").replace(":",
+						"#SEMI#");
 				os.writeBytes(command + ":" + option1 + ":" + option2 + "\n");
 				os.flush();
 				InputStream is = sc.getInputStream();

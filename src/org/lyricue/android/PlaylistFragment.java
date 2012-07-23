@@ -37,45 +37,21 @@ public class PlaylistFragment extends Fragment {
 	private static int LEVEL_NUMBER = 6;
 	private TreeStateManager<Long> manager = null;
 	private PlaylistAdapter adapter;
-	private boolean collapsible;
 	public HashMap<Long, String> playlistmap = new HashMap<Long, String>();
 	private PlaylistFragment fragment = null;
 	private ProgressDialog progressPlaylist = null;
-	
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		boolean newCollapsible;
 		activity = (Lyricue) this.getActivity();
 		fragment = this;
 		v = (View) inflater.inflate(R.layout.playlist, null);
 		treeView = (TreeViewList) v.findViewById(R.id.playlistView);
-	
-		if (savedInstanceState == null) {
-			load_playlist();
-		} else {
-			manager = (TreeStateManager<Long>) savedInstanceState
-					.getSerializable("treeManager");
-			newCollapsible = savedInstanceState.getBoolean("collapsible");
-			adapter = new PlaylistAdapter(activity, this, selected, manager,
-					LEVEL_NUMBER);
-			treeView.setAdapter(adapter);
-			treeView.setCollapsible(newCollapsible);
-			treeView.setCollapsedDrawable(getResources().getDrawable(R.drawable.collapsed));
-			treeView.setExpandedDrawable(getResources().getDrawable(R.drawable.expanded));
-		}
 		setHasOptionsMenu(true);
 		registerForContextMenu(treeView);
 		return v;
-	}
-
-	@Override
-	public void onSaveInstanceState(final Bundle outState) {
-		outState.putSerializable("treeManager", manager);
-		outState.putBoolean("collapsible", this.collapsible);
-		super.onSaveInstanceState(outState);
 	}
 
 	@Override
@@ -128,7 +104,8 @@ public class PlaylistFragment extends Fragment {
 						String.valueOf(itemid), "");
 			} else if (item.getItemId() == 1) {
 				activity.logDebug("remove item:" + itemid);
-				if (!activity.hostip.equals("#demo")) new RemoveItemTask().execute(itemid);
+				if (!activity.hostip.equals("#demo"))
+					new RemoveItemTask().execute(itemid);
 			}
 			return true;
 		} else {
@@ -147,11 +124,11 @@ public class PlaylistFragment extends Fragment {
 
 	private class LoadPlaylistsTask extends AsyncTask<Void, Void, Void> {
 		protected Void doInBackground(Void... arg0) {
-			if(activity.hostip.equals("#demo")) {
+			if (activity.hostip.equals("#demo")) {
 				activity.playlists_text = new String[1];
 				activity.playlists_id = new int[1];
-				activity.playlists_id[0]=1;
-				activity.playlists_text[0]="Demo playlist";
+				activity.playlists_id[0] = 1;
+				activity.playlists_text[0] = "Demo playlist";
 				activity.showPlaylistsDialog(v);
 				return null;
 			}
@@ -187,14 +164,16 @@ public class PlaylistFragment extends Fragment {
 
 	void load_playlist() {
 		activity.logDebug("load_playlist");
-		if (progressPlaylist != null) progressPlaylist.dismiss();
-		progressPlaylist = ProgressDialog.show(activity,"","Loading Playlist..",true);
+		if (progressPlaylist != null)
+			progressPlaylist.dismiss();
+		progressPlaylist = ProgressDialog.show(activity, "",
+				"Loading Playlist..", true);
 		new LoadPlaylistTask().execute(activity.playlistid);
 	}
 
 	private class LoadPlaylistTask extends
 			AsyncTask<Integer, Void, PlaylistAdapter> {
-		
+
 		protected PlaylistAdapter doInBackground(Integer... arg0) {
 			manager = new InMemoryTreeStateManager<Long>();
 			final TreeBuilder<Long> treeBuilder = new TreeBuilder<Long>(manager);
@@ -278,16 +257,16 @@ public class PlaylistFragment extends Fragment {
 
 		}
 	}
-	
+
 	void load_demo_playlist(TreeBuilder<Long> treeBuilder) {
-	    int[] DEMO_NODES = new int[] { 0, 0, 1, 1, 1, 2, 2, 1,
-            1, 2, 1, 0, 0, 0, 1, 2, 3, 2, 0, 0, 1, 2, 0, 1, 2, 0, 1 };
-        for (int i = 0; i < DEMO_NODES.length; i++) {
-            treeBuilder.sequentiallyAddNextNode((long) i, DEMO_NODES[i]);
-            playlistmap.put((long) i, "Demo Item "+i);
-        }
+		int[] DEMO_NODES = new int[] { 0, 0, 1, 1, 1, 2, 2, 1, 1, 2, 1, 0, 0,
+				0, 1, 2, 3, 2, 0, 0, 1, 2, 0, 1, 2, 0, 1 };
+		for (int i = 0; i < DEMO_NODES.length; i++) {
+			treeBuilder.sequentiallyAddNextNode((long) i, DEMO_NODES[i]);
+			playlistmap.put((long) i, "Demo Item " + i);
+		}
 	}
-	
+
 	private class RemoveItemTask extends AsyncTask<Long, Void, Void> {
 		protected Void doInBackground(Long... args) {
 			Long itemid = args[0];
