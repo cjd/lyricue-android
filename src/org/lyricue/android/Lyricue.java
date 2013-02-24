@@ -24,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -61,6 +62,7 @@ public class Lyricue extends FragmentActivity {
 		indicator.setViewPager(pager);
 		pager.setOffscreenPageLimit(5);
 		pager.setCurrentItem(0);
+      	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 	}
 
 	public void getPrefs() {

@@ -32,7 +32,6 @@ public class AvailableSongsFragment extends Fragment {
 	ListView songlist = null;
 	AvailableSongsAdapter adapter = null;
 	private EditText filterText = null;
-	private ProgressDialog progressSongs = null;
 	private ArrayList<AvailableSongItem> items = null;
 
 	@Override
@@ -106,10 +105,6 @@ public class AvailableSongsFragment extends Fragment {
 
 	public void load_available() {
 		activity.logDebug("load_available");
-		if (progressSongs != null)
-			progressSongs.dismiss();
-		progressSongs = ProgressDialog.show(activity, "",
-				"Loading Song List..", true);
 		new AvailableSongsTask().execute();
 	}
 
@@ -170,7 +165,6 @@ public class AvailableSongsFragment extends Fragment {
 		}
 
 		protected void onPostExecute(AvailableSongsAdapter result) {
-			progressSongs.dismiss();
 			activity.logDebug("Songlist loaded");
 			songlist.setAdapter(result);
 			songlist.setTextFilterEnabled(true);

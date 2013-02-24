@@ -14,6 +14,8 @@ import pl.polidea.treeview.TreeStateManager;
 import pl.polidea.treeview.TreeViewList;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,6 +40,8 @@ public class PlaylistFragment extends Fragment {
 	private TreeStateManager<Long> manager = null;
 	private PlaylistAdapter adapter;
 	public HashMap<Long, String> playlistmap = new HashMap<Long, String>();
+	public HashMap<Long, Bitmap> imagemap = new HashMap<Long, Bitmap>();
+	public boolean show_previews = false;
 	private PlaylistFragment fragment = null;
 	private ProgressDialog progressPlaylist = null;
 
@@ -74,6 +78,9 @@ public class PlaylistFragment extends Fragment {
 			return true;
 		case R.id.select_playlist_menu:
 			load_playlists();
+			return true;
+		case R.id.toggle_previews:
+			toggle_previews();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -164,10 +171,12 @@ public class PlaylistFragment extends Fragment {
 
 	void load_playlist() {
 		activity.logDebug("load_playlist");
-		if (progressPlaylist != null)
-			progressPlaylist.dismiss();
-		progressPlaylist = ProgressDialog.show(activity, "",
-				"Loading Playlist..", true);
+		if (activity.playlistid != -1) {
+			if (progressPlaylist != null)
+				progressPlaylist.dismiss();
+			progressPlaylist = ProgressDialog.show(activity, "",
+					"Loading Playlist..", true);
+		}
 		new LoadPlaylistTask().execute(activity.playlistid);
 	}
 
@@ -194,7 +203,8 @@ public class PlaylistFragment extends Fragment {
 			treeView.setAdapter(result);
 			manager.collapseChildren(null);
 			treeView.setCollapsible(true);
-			progressPlaylist.dismiss();
+			if (progressPlaylist != null)
+				progressPlaylist.dismiss();
 		}
 	}
 
@@ -208,8 +218,14 @@ public class PlaylistFragment extends Fragment {
 		if (playlistid <= 0) {
 			return;
 		}
-		String Query = "SELECT * FROM playlist" + " WHERE playlist="
-				+ playlistid + " ORDER BY playorder";
+		String Query;
+		if (show_previews) {
+			Query = "SELECT playorder, type, data, HEX(snapshot) FROM playlist"
+					+ " WHERE playlist=" + playlistid + " ORDER BY playorder";
+		} else {
+			Query = "SELECT playorder, type, data FROM playlist"
+					+ " WHERE playlist=" + playlistid + " ORDER BY playorder";
+		}
 		JSONArray jArray = activity.ld.runQuery("lyricDb", Query);
 		if (jArray == null) {
 			return;
@@ -246,9 +262,41 @@ public class PlaylistFragment extends Fragment {
 				} else if (results.getString("type").equals("file")) {
 					playlistmap.put(results.getLong("playorder"), "File:"
 							+ results.getString("data"));
+				} else if (results.getString("type").equals("imag")) {
+					String[] imageItem = results.getString("data")
+							.split(";", 2);
+					if (imageItem[0].equals("db")) {
+						String Query2 = "SELECT description FROM media WHERE id="
+								+ imageItem[1];
+						JSONArray pArray = activity.ld.runQuery("mediaDb",
+								Query2);
+						if (pArray != null && pArray.length() > 0) {
+							String desc = pArray.getJSONObject(0).getString(
+									"description");
+							playlistmap.put(results.getLong("playorder"),
+									"Image:" + desc);
+						} else {
+							playlistmap.put(results.getLong("playorder"),
+									"Image: unknown");
+						}
+					} else {
+						playlistmap.put(results.getLong("playorder"), "Image:"
+								+ imageItem[1]);
+					}
 				} else {
 					playlistmap.put(results.getLong("playorder"),
 							"Unknown item type");
+				}
+				if (show_previews) {
+					if (results.getString("HEX(snapshot)") != null) {
+						byte[] imageBytes = hexStringToByteArray(results
+								.getString("HEX(snapshot)"));
+						imagemap.put(results.getLong("playorder"),
+								BitmapFactory.decodeByteArray(imageBytes, 0,
+										imageBytes.length));
+					} else {
+						imagemap.put(results.getLong("playorder"),null);
+					}
 				}
 			} catch (JSONException e) {
 				activity.logError("Error parsing data " + e.toString());
@@ -256,6 +304,16 @@ public class PlaylistFragment extends Fragment {
 			}
 
 		}
+	}
+
+	public static byte[] hexStringToByteArray(String s) {
+		int len = s.length();
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
+					.digit(s.charAt(i + 1), 16));
+		}
+		return data;
 	}
 
 	void load_demo_playlist(TreeBuilder<Long> treeBuilder) {
@@ -312,6 +370,11 @@ public class PlaylistFragment extends Fragment {
 			activity.logError("Error parsing data " + e.toString());
 			return;
 		}
+	}
+
+	void toggle_previews() {
+		show_previews = !show_previews;
+		load_playlist();
 	}
 
 }

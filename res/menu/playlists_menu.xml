@@ -2,4 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/refresh_playlist" android:title="@string/refresh_playlist"></item>
     <item android:id="@+id/select_playlist_menu" android:title="@string/select_playlist"></item>
+    <item android:id="@+id/toggle_previews" android:title="@string/toggle_previews"></item>
 </menu>
