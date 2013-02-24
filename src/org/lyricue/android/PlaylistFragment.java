@@ -322,6 +322,7 @@ public class PlaylistFragment extends Fragment {
 		for (int i = 0; i < DEMO_NODES.length; i++) {
 			treeBuilder.sequentiallyAddNextNode((long) i, DEMO_NODES[i]);
 			playlistmap.put((long) i, "Demo Item " + i);
+			imagemap.put((long) i, null);
 		}
 	}
 
