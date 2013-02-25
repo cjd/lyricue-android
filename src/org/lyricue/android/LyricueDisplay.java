@@ -96,15 +96,16 @@ public class LyricueDisplay extends Service {
 				os.writeBytes(command + ":" + option1 + ":" + option2 + "\n");
 				os.flush();
 				InputStream is = sc.getInputStream();
+				StringBuilder sb = new StringBuilder();
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(is, "utf-8"), 128);
-				StringBuilder sb = new StringBuilder();
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					sb.append(line + "\n");
 				}
 				is.close();
 				result = sb.toString();
+				logError("Length: "+sb.length());
 				try {
 					os.close();
 					sc.close();

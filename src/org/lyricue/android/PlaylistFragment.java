@@ -219,13 +219,8 @@ public class PlaylistFragment extends Fragment {
 			return;
 		}
 		String Query;
-		if (show_previews) {
-			Query = "SELECT playorder, type, data, HEX(snapshot) FROM playlist"
-					+ " WHERE playlist=" + playlistid + " ORDER BY playorder";
-		} else {
-			Query = "SELECT playorder, type, data FROM playlist"
-					+ " WHERE playlist=" + playlistid + " ORDER BY playorder";
-		}
+		Query = "SELECT playorder, type, data FROM playlist"
+				+ " WHERE playlist=" + playlistid + " ORDER BY playorder";
 		JSONArray jArray = activity.ld.runQuery("lyricDb", Query);
 		if (jArray == null) {
 			return;
@@ -288,14 +283,20 @@ public class PlaylistFragment extends Fragment {
 							"Unknown item type");
 				}
 				if (show_previews) {
-					if (results.getString("HEX(snapshot)") != null) {
-						byte[] imageBytes = hexStringToByteArray(results
-								.getString("HEX(snapshot)"));
+					String Query2 = "SELECT HEX(snapshot) FROM playlist WHERE playorder="
+							+ results.getLong("playorder");
+					JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
+					if (pArray != null
+							&& pArray.length() > 0
+							&& pArray.getJSONObject(0).getString(
+									"HEX(snapshot)") != null) {
+						byte[] imageBytes = hexStringToByteArray(pArray
+								.getJSONObject(0).getString("HEX(snapshot)"));
 						imagemap.put(results.getLong("playorder"),
 								BitmapFactory.decodeByteArray(imageBytes, 0,
 										imageBytes.length));
 					} else {
-						imagemap.put(results.getLong("playorder"),null);
+						imagemap.put(results.getLong("playorder"), null);
 					}
 				}
 			} catch (JSONException e) {

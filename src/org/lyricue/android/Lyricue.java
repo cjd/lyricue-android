@@ -78,8 +78,8 @@ public class Lyricue extends FragmentActivity {
 		protected Integer doInBackground(Context... arg0) {
 			SharedPreferences settings = PreferenceManager
 					.getDefaultSharedPreferences(arg0[0]);
-			PreferenceManager.setDefaultValues(arg0[0], R.xml.preferences,
-					false);
+			//PreferenceManager.setDefaultValues(arg0[0], R.xml.preferences,
+			//		false);
 			if (settings.getBoolean("togglescreen", true)) {
 				togglescreen = true;
 			} else {
@@ -100,7 +100,8 @@ public class Lyricue extends FragmentActivity {
 
 		@Override
 		protected void onPostExecute(Integer result) {
-			progressLoad.dismiss();
+			if (progressLoad != null)
+				progressLoad.dismiss();
 			if (result == 0) {
 				View v = (View) getWindow().getDecorView();
 				if (togglescreen) {
@@ -121,14 +122,21 @@ public class Lyricue extends FragmentActivity {
 					frag1 = (PlaylistFragment) getSupportFragmentManager()
 							.findFragmentById(R.id.playlist);
 					fragments.put("playlist", frag1);
+					
 				}
-				AvailableSongsFragment frag2 = (AvailableSongsFragment) fragments
-						.get("avail");
-				BibleFragment frag3 = (BibleFragment) fragments.get("bible");
 				playlistid = -1;
 				frag1.load_playlist();
-				frag2.load_available();
-				frag3.load_bible();
+				AvailableSongsFragment frag2 = (AvailableSongsFragment) fragments
+						.get("avail");
+				if (frag2 != null) {
+					frag2.load_available();
+					
+				}
+				BibleFragment frag3 = (BibleFragment) fragments.get("bible");
+				if (frag3 != null) {
+					frag3.load_bible();
+				}
+				
 			} else if (result == 1) {
 				Intent setupActivity = new Intent(getBaseContext(),
 						InitialSetup.class);
@@ -150,8 +158,8 @@ public class Lyricue extends FragmentActivity {
 
 	@Override
 	protected void onStart() {
-		getPrefs();
 		super.onStart();
+		getPrefs();
 	}
 
 	@Override

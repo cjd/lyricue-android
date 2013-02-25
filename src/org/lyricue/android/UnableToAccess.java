@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -55,20 +56,30 @@ public class UnableToAccess extends Activity {
 	}
 	
 	public void retry_connection() {
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-		String hostip = settings.getString("hostip", "");
-		LyricueDisplay ld = new LyricueDisplay(hostip);
-		if (!ld.checkRunning()) {
-			Context context = getApplicationContext();
-			CharSequence text = "Retry Failed";
-			int duration = Toast.LENGTH_SHORT;
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
-		} else {
-			Intent lyricueActivity = new Intent(getBaseContext(), Lyricue.class);
-			startActivity(lyricueActivity);
-			finish();
+		new RetryConnectionTask().execute(this);
+	}
+	private class RetryConnectionTask extends AsyncTask<Context,Integer, Boolean> {
+		protected Boolean doInBackground(Context... context) {
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context[0]);
+			PreferenceManager.setDefaultValues(context[0], R.xml.preferences, false);
+			String hostip = settings.getString("hostip", "");
+			LyricueDisplay ld = new LyricueDisplay(hostip);
+			return ld.checkRunning();
 		}
+		
+		protected void onPostExecute(Boolean result) {
+			if (!result) {
+				Context context = getApplicationContext();
+				CharSequence text = "Retry Failed";
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.show();
+			} else {
+				Intent lyricueActivity = new Intent(getBaseContext(), Lyricue.class);
+				startActivity(lyricueActivity);
+				finish();
+			}
+		}
+
 	}
 }
