@@ -3,14 +3,16 @@
 
     <PreferenceCategory android:title="Lyricue preferences" >
         <EditTextPreference
+            android:defaultValue=""
             android:key="hostip"
             android:summary="Enter the hostname/IP of where lyricue display is running"
-            android:title="Address of projector" android:defaultValue="#demo"/>
+            android:title="Address of projector" />
 
         <CheckBoxPreference
+            android:defaultValue="0"
             android:key="togglescreen"
             android:summary="Should the screen stay on?"
-            android:title="Keep display on" android:defaultValue="0"/>
+            android:title="Keep display on" />
     </PreferenceCategory>
 
 </PreferenceScreen>

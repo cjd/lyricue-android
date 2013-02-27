@@ -61,7 +61,7 @@ public class LyricueDisplay extends Service {
 		}
 		return true;
 	}
-
+	
 	public String runCommand(String command, String option1, String option2) {
 		String result = "";
 		if (hostip.equals("demo")) {
@@ -139,6 +139,7 @@ public class LyricueDisplay extends Service {
 		return result;
 	}
 
+	
 	public JSONArray runQuery(String database, String query) {
 		String result = runCommand("query", database, query);
 		if (result == "") {

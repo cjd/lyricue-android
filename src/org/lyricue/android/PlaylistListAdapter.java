@@ -2,6 +2,7 @@ package org.lyricue.android;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,15 +35,14 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 				.findViewById(R.id.playlist_item_description);
 		final ImageView imageView = (ImageView) viewLayout
 				.findViewById(R.id.playlist_item_image);
+		descriptionView.setText(getDescription(treeNodeInfo.getId()));
+		descriptionView.setTextSize(20 - 2 * treeNodeInfo.getLevel());
+		
 		if (fragment.show_previews && (getImage(treeNodeInfo.getId()) != null)) {
-			
-			imageView.setImageBitmap(getImage(treeNodeInfo.getId()));
-			descriptionView.setVisibility(View.GONE);
+			imageView.setImageBitmap(getImage(treeNodeInfo.getId()));	
 			imageView.setVisibility(View.VISIBLE);
+			descriptionView.setGravity(Gravity.CENTER);
 		} else {
-			descriptionView.setText(getDescription(treeNodeInfo.getId()));
-			descriptionView.setTextSize(20 - 2 * treeNodeInfo.getLevel());
-			descriptionView.setVisibility(View.VISIBLE);
 			imageView.setVisibility(View.GONE);
 		}
 		return viewLayout;

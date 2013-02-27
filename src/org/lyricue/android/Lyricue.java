@@ -70,6 +70,8 @@ public class Lyricue extends FragmentActivity {
 			progressLoad.dismiss();
 		progressLoad = ProgressDialog.show(this, "", "Loading Preferences..",
 				true);
+		PreferenceManager.setDefaultValues(this, R.xml.preferences,
+				false);
 		new GetPrefsTask().execute(this);
 	}
 
@@ -78,8 +80,6 @@ public class Lyricue extends FragmentActivity {
 		protected Integer doInBackground(Context... arg0) {
 			SharedPreferences settings = PreferenceManager
 					.getDefaultSharedPreferences(arg0[0]);
-			//PreferenceManager.setDefaultValues(arg0[0], R.xml.preferences,
-			//		false);
 			if (settings.getBoolean("togglescreen", true)) {
 				togglescreen = true;
 			} else {
