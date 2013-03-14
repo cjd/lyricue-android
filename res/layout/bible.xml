@@ -6,9 +6,25 @@
     android:orientation="vertical" >
 
     <TextView
+        android:id="@+id/textBibleVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bible_version"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Spinner
+        android:id="@+id/spinBibleVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textBibleVersion"
+        android:prompt="@string/selectbible" />
+
+    <TextView
         android:id="@+id/textViewBook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/spinBibleVersion"
         android:text="@string/book"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -17,17 +33,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewBook"
         android:entries="@array/bible_books"
-        android:prompt="@string/selectbook" android:layout_below="@+id/textViewBook"/>
+        android:prompt="@string/selectbook" />
 
     <TextView
         android:id="@+id/textViewChapter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/spinBibleBook"
         android:text="@string/chapter"
-        android:textAppearance="?android:attr/textAppearanceMedium" 
-        android:layout_below="@+id/spinBibleBook"/>
-    
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <Spinner
         android:id="@+id/spinBibleChapter"
         android:layout_width="match_parent"
@@ -35,21 +52,22 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textViewChapter"
         android:prompt="@string/selectchapter" />
-    
-	<TextView
+
+    <TextView
         android:id="@+id/textViewVerse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/spinBibleChapter"
         android:text="@string/verses"
-        android:textAppearance="?android:attr/textAppearanceMedium" 
-        android:layout_below="@+id/spinBibleChapter"/>
-    
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <Spinner
         android:id="@+id/spinBibleVerseStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textViewVerse"
+        android:layout_alignTop="@+id/spinBibleVerseEnd"
+        android:layout_toLeftOf="@+id/textViewDash"
         android:prompt="@string/selectversestart" />
 
     <Spinner
@@ -58,14 +76,35 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textViewVerse"
+        android:layout_toRightOf="@+id/textViewDash"
         android:prompt="@string/selectverseend" />
+
+    <TextView
+        android:id="@+id/textViewDash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewVerse"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:text="-"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/buttonShowVerse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinBibleVerseEnd"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Show" />
 
     <Button
         android:id="@+id/buttonBibleAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/add_verse_to_playlist"/>
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/textViewDash"
+        android:text="@string/add_verse_to_playlist" />
 
 </RelativeLayout>

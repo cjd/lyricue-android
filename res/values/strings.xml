@@ -18,6 +18,8 @@
     <string name="select_playlist">Select Playlist</string>
     <string name="playlist">Playlist</string>
     <string name="bible">Bible</string>
+    <string name="bible_version">Bible Translation</string>
+    <string name="selectbible">Select Bible</string>
     <string name="available">Available Songs</string>
     <string name="lyricue">Lyricue</string>
     <string name="typetofilter">type to filter</string>

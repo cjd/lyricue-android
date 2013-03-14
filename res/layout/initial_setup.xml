@@ -14,7 +14,7 @@
         android:src="@drawable/lyricue_header" android:contentDescription="@string/lyricue"/>
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/textViewDash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView1"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/textViewDash"
         android:ems="10"
         android:gravity="center" 
         android:singleLine="true" android:inputType="textNoSuggestions">
