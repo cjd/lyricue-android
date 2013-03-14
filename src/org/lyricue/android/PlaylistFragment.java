@@ -41,7 +41,6 @@ public class PlaylistFragment extends Fragment {
 	private PlaylistAdapter adapter;
 	public HashMap<Long, String> playlistmap = new HashMap<Long, String>();
 	public HashMap<Long, Bitmap> imagemap = new HashMap<Long, Bitmap>();
-	public boolean show_previews = false;
 	private PlaylistFragment fragment = null;
 	private ProgressDialog progressPlaylist = null;
 
@@ -255,8 +254,13 @@ public class PlaylistFragment extends Fragment {
 					playlistmap.put(results.getLong("playorder"), "Verses "
 							+ results.getString("data"));
 				} else if (results.getString("type").equals("file")) {
-					playlistmap.put(results.getLong("playorder"), "File:"
-							+ results.getString("data"));
+					String filename = results.getString("data"); 
+					if (filename.startsWith("/var/tmp/lyricue-")) {
+						filename = filename.substring(filename.lastIndexOf("/")+1, filename.length()-4).replace("_", " ");
+						playlistmap.put(results.getLong("playorder"), "Presentation: "+ filename);
+					} else {
+						playlistmap.put(results.getLong("playorder"), "File:" + results.getString("data").substring(results.getString("data").lastIndexOf("/")+1));
+					}
 				} else if (results.getString("type").equals("imag")) {
 					String[] imageItem = results.getString("data")
 							.split(";", 2);
@@ -274,6 +278,8 @@ public class PlaylistFragment extends Fragment {
 							playlistmap.put(results.getLong("playorder"),
 									"Image: unknown");
 						}
+					} else if (imageItem[0].equals("dir")) {
+						playlistmap.put(results.getLong("playorder"), "Image:" + imageItem[1].substring(imageItem[1].lastIndexOf("/")+1));
 					} else {
 						playlistmap.put(results.getLong("playorder"), "Image:"
 								+ imageItem[1]);
@@ -282,7 +288,7 @@ public class PlaylistFragment extends Fragment {
 					playlistmap.put(results.getLong("playorder"),
 							"Unknown item type");
 				}
-				if (show_previews) {
+				if (activity.imageplaylist) {
 					String Query2 = "SELECT HEX(snapshot) FROM playlist WHERE playorder="
 							+ results.getLong("playorder");
 					JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
@@ -375,7 +381,7 @@ public class PlaylistFragment extends Fragment {
 	}
 
 	void toggle_previews() {
-		show_previews = !show_previews;
+		activity.imageplaylist = !activity.imageplaylist;
 		load_playlist();
 	}
 

@@ -42,6 +42,7 @@ public class Lyricue extends FragmentActivity {
 	public String[] playlists_text = null;
 	public int[] playlists_id = null;
 	public boolean togglescreen = false;
+	public boolean imageplaylist = true;
 	public LyricueDisplay ld = null;
 	public Map<String, Fragment> fragments = new HashMap<String, Fragment>();
 	private ProgressDialog progressLoad = null;
@@ -84,6 +85,12 @@ public class Lyricue extends FragmentActivity {
 				togglescreen = true;
 			} else {
 				togglescreen = false;
+			}
+
+			if (settings.getBoolean("imageplaylist", true)) {
+				imageplaylist = true;
+			} else {
+				imageplaylist = false;
 			}
 
 			hostip = settings.getString("hostip", "not set");
@@ -272,5 +279,4 @@ public class Lyricue extends FragmentActivity {
 			logError("playlist fragment not found");
 		}
 	}
-
 }

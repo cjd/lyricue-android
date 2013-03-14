@@ -105,7 +105,6 @@ public class LyricueDisplay extends Service {
 				}
 				is.close();
 				result = sb.toString();
-				logError("Length: "+sb.length());
 				try {
 					os.close();
 					sc.close();
