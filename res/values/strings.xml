@@ -110,5 +110,7 @@ Please Enter the Hostname or IP where Lyricue is currently accessible.</string>
     <string name="rightarrow">></string>
     <string name="demo">Demo Mode</string>
     <string name="snapshot">Snapshot</string>
+    <string name="dash">-</string>
+    <string name="show">Show</string>
     
 </resources>

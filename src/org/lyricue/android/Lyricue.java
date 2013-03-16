@@ -43,6 +43,7 @@ public class Lyricue extends FragmentActivity {
 	public int[] playlists_id = null;
 	public String[] bibles_text = null;
 	public String[] bibles_id = null;
+	public String[] bibles_type = null;
 	public boolean togglescreen = false;
 	public boolean imageplaylist = true;
 	public LyricueDisplay ld = null;

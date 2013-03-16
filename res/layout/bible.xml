@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textViewBook"
+        android:clickable="false"
         android:entries="@array/bible_books"
         android:prompt="@string/selectbook" />
 
@@ -51,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textViewChapter"
+        android:clickable="false"
         android:prompt="@string/selectchapter" />
 
     <TextView
@@ -68,6 +70,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/spinBibleVerseEnd"
         android:layout_toLeftOf="@+id/textViewDash"
+        android:clickable="false"
         android:prompt="@string/selectversestart" />
 
     <Spinner
@@ -77,6 +80,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textViewVerse"
         android:layout_toRightOf="@+id/textViewDash"
+        android:clickable="false"
         android:prompt="@string/selectverseend" />
 
     <TextView
@@ -86,17 +90,18 @@
         android:layout_below="@+id/textViewVerse"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="false"
-        android:text="-"
+        android:text="@string/dash"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/buttonShowVerse"
+        android:id="@+id/buttonBibleShow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/spinBibleVerseEnd"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="Show" />
+        android:clickable="false"
+        android:text="@string/show" />
 
     <Button
         android:id="@+id/buttonBibleAdd"
@@ -105,6 +110,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/textViewDash"
+        android:clickable="false"
         android:text="@string/add_verse_to_playlist" />
 
 </RelativeLayout>
