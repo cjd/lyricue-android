@@ -277,6 +277,10 @@ public class Lyricue extends FragmentActivity {
 			fragments.put("playlist", frag);
 		}
 		if (frag != null) {
+			if (frag.progressPlaylist != null)
+				frag.progressPlaylist.dismiss();
+			frag.progressPlaylist = ProgressDialog.show(this, "",
+					"Loading Playlist..", true);
 			frag.load_playlist();
 		} else {
 			logError("playlist fragment not found");

@@ -14,6 +14,7 @@
 
     <Spinner
         android:id="@+id/spinBibleVersion"
+        style="android:spinnerStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -67,9 +68,9 @@
         android:id="@+id/spinBibleVerseStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/spinBibleVerseEnd"
+        android:layout_below="@+id/textViewVerse"
         android:layout_toLeftOf="@+id/textViewDash"
+        android:layout_toRightOf="@+id/imageBiblePrev"
         android:clickable="false"
         android:prompt="@string/selectversestart" />
 
@@ -77,8 +78,8 @@
         android:id="@+id/spinBibleVerseEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/textViewVerse"
+        android:layout_toLeftOf="@+id/imageBibleNext"
         android:layout_toRightOf="@+id/textViewDash"
         android:clickable="false"
         android:prompt="@string/selectverseend" />
@@ -112,5 +113,40 @@
         android:layout_toLeftOf="@+id/textViewDash"
         android:clickable="false"
         android:text="@string/add_verse_to_playlist" />
+
+    <Spinner
+        android:id="@+id/spinBiblePrevious"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonBibleShow"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/textViewPrevVerses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/spinBiblePrevious"
+        android:layout_alignParentLeft="true"
+        android:text="@string/prevverses"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageButton
+        android:id="@+id/imageBiblePrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewVerse"
+        android:contentDescription="@string/prevverse"
+        android:src="@android:drawable/ic_media_rew" />
+
+    <ImageButton
+        android:id="@+id/imageBibleNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textViewVerse"
+        android:contentDescription="@string/nextverse"
+        android:src="@android:drawable/ic_media_ff" />
 
 </RelativeLayout>

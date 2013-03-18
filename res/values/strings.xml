@@ -112,5 +112,8 @@ Please Enter the Hostname or IP where Lyricue is currently accessible.</string>
     <string name="snapshot">Snapshot</string>
     <string name="dash">-</string>
     <string name="show">Show</string>
+    <string name="prevverses">Previously Shown Verses</string>
+    <string name="prevverse">Previous Verse</string>
+    <string name="nextverse">Next Verse</string>
     
 </resources>

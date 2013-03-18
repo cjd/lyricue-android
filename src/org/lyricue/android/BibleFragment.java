@@ -17,12 +17,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 public class BibleFragment extends Fragment {
 	Lyricue activity = null;
 	View v = null;
 	String biblename = "";
+	ArrayList<String> prevArray = new ArrayList<String>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,12 +47,23 @@ public class BibleFragment extends Fragment {
 		b.setOnClickListener(new BibleOnClickListener());
 		b = (Button) v.findViewById(R.id.buttonBibleShow);
 		b.setOnClickListener(new BibleOnClickListener());
+		ImageButton ib = (ImageButton) v.findViewById(R.id.imageBibleNext);
+		ib.setOnClickListener(new BibleOnClickListener());
+		ib = (ImageButton) v.findViewById(R.id.imageBiblePrev);
+		ib.setOnClickListener(new BibleOnClickListener());
 
 		String status = activity.ld.runCommand("status", "", "");
 		if (status.equals(""))
 			return;
 		String biblename = status.substring(status.indexOf(",T:") + 3);
 		biblename = biblename.substring(0, biblename.lastIndexOf(","));
+
+		// Setup previous verses spinner
+		spin = (Spinner) v.findViewById(R.id.spinBiblePrevious);
+		ArrayAdapter<String> prevAdapter = new ArrayAdapter<String>(activity,
+				android.R.layout.simple_spinner_item, prevArray);
+		spin.setAdapter(prevAdapter);
+		spin.setOnItemSelectedListener(new BookOnItemSelectedListener());
 
 		// Find Bibles
 		String bibles = activity.ld.runCommand("bible", "available", "");
@@ -62,19 +75,18 @@ public class BibleFragment extends Fragment {
 			activity.bibles_text = new String[jArray.length()];
 			activity.bibles_id = new String[jArray.length()];
 			activity.bibles_type = new String[jArray.length()];
-			int selected=0;
-				
+			int selected = 0;
+
 			for (int i = 0; i < jArray.length(); i++) {
 				JSONObject results = jArray.getJSONObject(i);
-				activity.bibles_id[i]=results.getString("name");
-				activity.bibles_type[i]=results.getString("type");
+				activity.bibles_id[i] = results.getString("name");
+				activity.bibles_type[i] = results.getString("type");
 				if (activity.bibles_type[i].equals("db")) {
-					activity.bibles_id[i]+="@bibleDb";
+					activity.bibles_id[i] += "@bibleDb";
 				}
-				activity.bibles_text[i]=results.getString("description");
-				//activity.logDebug(activity.bibles_id[i]+":"+activity.bibles_type[i] + ":" + activity.bibles_text[i] + "="+ biblename);
+				activity.bibles_text[i] = results.getString("description");
 				if (biblename.equals(results.getString("name"))) {
-					selected=i;
+					selected = i;
 				}
 				spinArray.add(activity.bibles_text[i]);
 			}
@@ -86,7 +98,7 @@ public class BibleFragment extends Fragment {
 					.setOnItemSelectedListener(new BookOnItemSelectedListener());
 			book.setClickable(true);
 			book.setSelection(0);
-			select_book(book.getItemAtPosition(0).toString());
+			select_book();
 		} catch (JSONException e) {
 			activity.logError("Error parsing data " + e.toString());
 		}
@@ -104,23 +116,59 @@ public class BibleFragment extends Fragment {
 			String startverse = spin.getSelectedItem().toString();
 			spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
 			String endverse = spin.getSelectedItem().toString();
+			String verse = bookname + ":" + chapter + ":" + startverse + "-"
+					+ chapter + ":" + endverse;
 
 			switch (vi.getId()) {
-			case R.id.buttonBibleAdd:
+			case R.id.imageBibleNext:
+				spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
+				if (spin.getItemAtPosition(Integer.parseInt(endverse)) != null) {
+					spin.setSelection(Integer.parseInt(endverse));
+				}
+				verse = bookname + ":" + chapter + ":" + startverse + "-"
+						+ chapter + ":" + spin.getSelectedItem().toString();
 				if (!activity.hostip.equals("#demo")) {
-					activity.logDebug("Adding " + bookname + " " + chapter
-							+ ":" + startverse + "-" + endverse);
-					new AddVerseTask().execute(bookname, chapter, startverse,
-							endverse);
+					show_verse(verse, "verse");
+				}
+				break;
+			case R.id.imageBiblePrev:
+				spin = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
+				if (spin.getItemAtPosition(Integer.parseInt(startverse) - 1) != null) {
+					spin.setSelection(Integer.parseInt(startverse) - 2);
+				}
+				verse = bookname + ":" + chapter + ":"
+						+ spin.getSelectedItem().toString() + "-" + chapter
+						+ ":" + endverse;
+				if (!activity.hostip.equals("#demo")) {
+					show_verse(verse, "verse_start");
+				}
+				break;
+			case R.id.buttonBibleAdd:
+				activity.logDebug("Adding " + bookname + " " + chapter + ":"
+						+ startverse + "-" + endverse);
+				if (!activity.hostip.equals("#demo")) {
+					if (activity.playlistid != -1) {
+						new AddVerseTask().execute(bookname, chapter,
+								startverse, endverse);
+					}
 				}
 				break;
 			case R.id.buttonBibleShow:
-				activity.logDebug("Showing " + bookname + " " + chapter + ":"
-						+ startverse + "-" + endverse);
-				activity.ld.runCommand_noreturn("bible", "verse", bookname + ":" + chapter + ":"
-						+ startverse + "-" + chapter + ":" + endverse);
+				spin = (Spinner) v.findViewById(R.id.spinBiblePrevious);
+				if (!prevArray.contains(verse)) {
+					prevArray.add(verse);
+					ArrayAdapter<String> prevAdapter = new ArrayAdapter<String>(
+							activity, android.R.layout.simple_spinner_item,
+							prevArray);
+					spin.setAdapter(prevAdapter);
+					spin.setSelection(prevArray.size() - 1);
+				}
+				if (!activity.hostip.equals("#demo")) {
+					show_verse(verse, "verse_start");
+				}
 				break;
 			}
+
 		}
 	}
 
@@ -132,15 +180,17 @@ public class BibleFragment extends Fragment {
 				select_bible(pos);
 				break;
 			case R.id.spinBibleBook:
-				select_book(parent.getItemAtPosition(pos).toString());
+				select_book();
 				break;
 			case R.id.spinBibleChapter:
-				select_chapter(Integer.parseInt(parent.getItemAtPosition(pos)
-						.toString()));
+				select_chapter();
 				break;
 			case R.id.spinBibleVerseStart:
 				break;
 			case R.id.spinBibleVerseEnd:
+				break;
+			case R.id.spinBiblePrevious:
+				select_verse(parent.getItemAtPosition(pos).toString());
 				break;
 			}
 		}
@@ -150,52 +200,124 @@ public class BibleFragment extends Fragment {
 		}
 	}
 
-	void select_bible(int bible) {
-		activity.ld.runCommand("change_to_db", activity.bibles_id[bible],activity.bibles_type[bible]);
-		Spinner book=(Spinner) v.findViewById(R.id.spinBibleBook);
-		book.setClickable(true);
-		book.setSelection(0);
-		select_book(book.getItemAtPosition(0).toString());
+	String show_verse(String verse, String command) {
+		activity.logDebug("Showing " + verse);
+		String shown = activity.ld.runCommand("bible", command, verse).trim();
+		if (shown != "") {
+			activity.logDebug("Ret " + shown);
+			if (!shown.equals(verse)) {
+				String[] tokens = shown.split("[-:]");
+				String startverse = tokens[2];
+				String endverse = tokens[4];
+				Spinner spin = (Spinner) v
+						.findViewById(R.id.spinBibleVerseStart);
+				spin.setSelection(Integer.parseInt(startverse) - 1);
+				spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
+				spin.setSelection(Integer.parseInt(endverse) - 1);
+			}
+			return shown;
+		}
+		return null;
 	}
 
-	void select_book(String book) {
+	void select_verse(String verse) {
+		activity.logDebug("Select Verse " + verse);
+		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
+		String[] tokens = verse.split("[-:]");
+		String bible = tokens[0];
+		int chapter = Integer.parseInt(tokens[1]);
+		int start_verse = Integer.parseInt(tokens[2]);
+		int end_verse = Integer.parseInt(tokens[4]);
+		for (int i = 0; i < spin.getCount(); i++) {
+			if (spin.getItemAtPosition(i).toString().equals(bible)) {
+				spin.setSelection(i);
+			}
+		}
+		spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
+		spin.setSelection(chapter - 1);
+		spin = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
+		spin.setSelection(start_verse - 1);
+		spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
+		spin.setSelection(end_verse - 1);
+	}
+
+	void select_bible(int bible) {
+		activity.ld.runCommand("change_to_db", activity.bibles_id[bible],
+				activity.bibles_type[bible]);
+		Spinner book = (Spinner) v.findViewById(R.id.spinBibleBook);
+		book.setClickable(true);
+		book.setSelection(0);
+		select_book();
+	}
+
+	void select_book() {
+		activity.logDebug("select_book");
 		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
 		String bookname = spin.getSelectedItem().toString();
-		String maxchap = activity.ld.runCommand("bible", "maxchapter", bookname).trim();
+		Integer maxchap = Integer.parseInt(activity.ld.runCommand("bible",
+				"maxchapter", bookname).trim());
 		Spinner spinChap = (Spinner) v.findViewById(R.id.spinBibleChapter);
 		ArrayList<String> spinArray = new ArrayList<String>();
-		activity.logDebug(maxchap+"maxchap");
-		for (int i = 1; i <= Integer.parseInt(maxchap); i++) {
+		int current_chapter = 1;
+		if (spinChap.getSelectedItem() != null) {
+			current_chapter = Integer.parseInt(spinChap.getSelectedItem()
+					.toString());
+			if (current_chapter > maxchap) {
+				current_chapter = maxchap;
+			}
+		}
+		for (int i = 1; i <= maxchap; i++) {
 			spinArray.add(String.valueOf(i));
 		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
 				android.R.layout.simple_spinner_item, spinArray);
 		spinChap.setAdapter(adapter);
+		spinChap.setSelection(current_chapter - 1);
 		v.findViewById(R.id.spinBibleChapter).setClickable(true);
 	}
 
-	void select_chapter(int chapter) {
-		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
+	void select_chapter() {
+		activity.logDebug("select_chapter");
+		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
+		int chapter = Integer.parseInt(spin.getSelectedItem().toString());
+		spin = (Spinner) v.findViewById(R.id.spinBibleBook);
 		String bookname = spin.getSelectedItem().toString();
-		String maxverse = activity.ld.runCommand("bible", "maxverse", bookname+";"+chapter).trim();
-		
+		Integer maxverse = Integer.parseInt(activity.ld.runCommand("bible",
+				"maxverse", bookname + ";" + chapter).trim());
+		int start_verse = 1;
+		int end_verse = 1;
+		Spinner spinS = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
+		if (spinS.getSelectedItem() != null) {
+			start_verse = Integer.parseInt(spinS.getSelectedItem().toString());
+			if (start_verse >= maxverse) {
+				start_verse = maxverse;
+			}
+		}
+		Spinner spinE = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
+		if (spinE.getSelectedItem() != null) {
+			end_verse = Integer.parseInt(spinE.getSelectedItem().toString());
+			if (end_verse >= maxverse) {
+				end_verse = maxverse;
+			}
+		}
+
 		ArrayList<String> spinArrayS = new ArrayList<String>();
 		ArrayList<String> spinArrayE = new ArrayList<String>();
-		for (int i = 1; i <= Integer.parseInt(maxverse); i++) {
+		for (int i = 1; i <= maxverse; i++) {
 			spinArrayS.add(String.valueOf(i));
 			spinArrayE.add(String.valueOf(i));
 		}
 
-		Spinner spinS = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
 		ArrayAdapter<String> adapterS = new ArrayAdapter<String>(activity,
 				android.R.layout.simple_spinner_item, spinArrayS);
 		spinS.setAdapter(adapterS);
+		spinS.setSelection(start_verse - 1);
 		spinS.setOnItemSelectedListener(new BookOnItemSelectedListener());
 
-		Spinner spinE = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
 				android.R.layout.simple_spinner_item, spinArrayE);
 		spinE.setAdapter(adapter);
+		spinE.setSelection(end_verse - 1);
 		spinE.setOnItemSelectedListener(new BookOnItemSelectedListener());
 		v.findViewById(R.id.spinBibleVerseStart).setClickable(true);
 		v.findViewById(R.id.spinBibleVerseEnd).setClickable(true);
@@ -208,6 +330,7 @@ public class BibleFragment extends Fragment {
 			int startverse = Integer.parseInt(args[2]);
 			int endverse = Integer.parseInt(args[3]);
 
+			// Create playlist for verse
 			String Query = "SELECT MAX(playorder) as playorder FROM playlist";
 			int playorder = activity.ld.runQuery_int("lyricDb", Query,
 					"playorder");
@@ -226,27 +349,48 @@ public class BibleFragment extends Fragment {
 					+ ", \"play\")";
 			activity.ld.runQuery("lyricDb", Query);
 
-			for (int i = startverse; i <= endverse; i++) {
+			String title = book + ":" + chapter + ":" + startverse + "-"
+					+ endverse;
+			Query = "INSERT INTO playlists (id,title) VALUES (" + playlist
+					+ ",\"" + title + "\")";
+			activity.ld.runQuery("lyricDb", Query);
+
+			// Add actual verses
+			String verse = book + ":" + chapter + ":" + startverse + "-"
+					+ chapter + ":" + endverse;
+			String result = activity.ld.runCommand("bible", "verse_start",
+					verse).trim();
+			activity.logDebug(result + "=" + verse);
+			while (!result.equals(verse)) {
+				String tokens[] = result.split("[-:]");
 				playorder++;
 				Query = "INSERT INTO playlist (playlist,playorder,type,data) VALUES ("
 						+ playlist
 						+ ", "
 						+ playorder
 						+ ", \"vers\", \""
-						+ i
-						+ "-" + i + "\")";
+						+ tokens[2] + "-" + tokens[4] + "\")";
+				String tokens2[] = verse.split("[-:]");
 				activity.ld.runQuery("lyricDb", Query);
+				verse = tokens2[0] + ":" + tokens2[1] + ":"
+						+ (Integer.parseInt(tokens[4]) + 1) + "-" + tokens2[3]
+						+ ":" + tokens2[4];
+				result = activity.ld.runCommand("bible", "verse_start", verse)
+						.trim();
+				activity.logDebug(result + "=" + verse);
 			}
-
-			String title = book + ":" + chapter + ":" + startverse + "-"
-					+ endverse;
-			Query = "INSERT INTO playlists (id,title) VALUES (" + playlist
-					+ ",\"" + title + "\")";
+			String tokens[] = result.split("[-:]");
+			playorder++;
+			Query = "INSERT INTO playlist (playlist,playorder,type,data) VALUES ("
+					+ playlist
+					+ ", "
+					+ playorder
+					+ ", \"vers\", \""
+					+ tokens[2] + "-" + tokens[4] + "\")";
 			activity.ld.runQuery("lyricDb", Query);
-			/*
-			 * PlaylistFragment frag = (PlaylistFragment)
-			 * activity.adapter.getItem(1); frag.load_playlist();
-			 */
+		
+			PlaylistFragment frag = (PlaylistFragment) activity.fragments.get("playlist");
+			frag.load_playlist();
 			return null;
 		}
 	}

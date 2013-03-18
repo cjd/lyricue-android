@@ -42,7 +42,7 @@ public class PlaylistFragment extends Fragment {
 	public HashMap<Long, String> playlistmap = new HashMap<Long, String>();
 	public HashMap<Long, Bitmap> imagemap = new HashMap<Long, Bitmap>();
 	private PlaylistFragment fragment = null;
-	private ProgressDialog progressPlaylist = null;
+	public ProgressDialog progressPlaylist = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -171,10 +171,7 @@ public class PlaylistFragment extends Fragment {
 	void load_playlist() {
 		activity.logDebug("load_playlist");
 		if (activity.playlistid != -1) {
-			if (progressPlaylist != null)
-				progressPlaylist.dismiss();
-			progressPlaylist = ProgressDialog.show(activity, "",
-					"Loading Playlist..", true);
+			
 		}
 		new LoadPlaylistTask().execute(activity.playlistid);
 	}
