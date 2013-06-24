@@ -18,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +50,7 @@ public class Lyricue extends FragmentActivity {
 	public LyricueDisplay ld = null;
 	public Map<String, Fragment> fragments = new HashMap<String, Fragment>();
 	private ProgressDialog progressLoad = null;
+	public int thumbnail_width = 0;
 
 	FragmentManager fragman = null;
 
@@ -66,6 +68,9 @@ public class Lyricue extends FragmentActivity {
 		pager.setOffscreenPageLimit(5);
 		pager.setCurrentItem(0);
       	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+      	DisplayMetrics displaymetrics = new DisplayMetrics();
+      	getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+      	thumbnail_width = Math.min(displaymetrics.widthPixels, displaymetrics.heightPixels) / 2;
 	}
 
 	public void getPrefs() {

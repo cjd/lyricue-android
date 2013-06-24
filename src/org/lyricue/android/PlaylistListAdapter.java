@@ -38,7 +38,8 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 		descriptionView.setTextSize(20 - 2 * treeNodeInfo.getLevel());
 		
 		if (activity.imageplaylist && (getImage(treeNodeInfo.getId()) != null)) {
-			imageView.setImageBitmap(getImage(treeNodeInfo.getId()));	
+			imageView.setImageBitmap(getImage(treeNodeInfo.getId()));
+			imageView.setScaleType(ImageView.ScaleType.FIT_START);
 			imageView.setVisibility(View.VISIBLE);
 		} else {
 			imageView.setVisibility(View.GONE);
@@ -51,7 +52,12 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 	}
 
 	private Bitmap getImage(final long id) {
-		return fragment.imagemap.get(id);
+		Bitmap b = fragment.imagemap.get(id);
+		if (b != null) {
+			int height = (b.getHeight()*activity.thumbnail_width)/b.getWidth();
+			return Bitmap.createScaledBitmap(fragment.imagemap.get(id), activity.thumbnail_width,height, false);
+		}
+		return null;
 	}
 
 	@Override
