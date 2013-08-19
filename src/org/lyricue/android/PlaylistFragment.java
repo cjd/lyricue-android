@@ -50,7 +50,7 @@ public class PlaylistFragment extends Fragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		activity = (Lyricue) this.getActivity();
 		fragment = this;
-		v = inflater.inflate(R.layout.playlist, null);
+		v = (View) inflater.inflate(R.layout.playlist, null);
 		treeView = (TreeViewList) v.findViewById(R.id.playlistView);
 		setHasOptionsMenu(true);
 		registerForContextMenu(treeView);

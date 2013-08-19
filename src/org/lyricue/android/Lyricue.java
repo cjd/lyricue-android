@@ -118,7 +118,7 @@ public class Lyricue extends FragmentActivity {
 			if (progressLoad != null)
 				progressLoad.dismiss();
 			if (result == 0) {
-				View v = getWindow().getDecorView();
+				View v = (View) getWindow().getDecorView();
 				if (togglescreen) {
 					getWindow().addFlags(
 							WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -251,9 +251,9 @@ public class Lyricue extends FragmentActivity {
 	}
 
 	public void setQuickBar(boolean visible) {
-		View v = getWindow().getDecorView();
-		View quickBar = v.findViewById(R.id.quickBar);
-		View hline1 = v.findViewById(R.id.hline1);
+		View v = (View) getWindow().getDecorView();
+		View quickBar = (View) v.findViewById(R.id.quickBar);
+		View hline1 = (View) v.findViewById(R.id.hline1);
 		if (quickBar != null && hline1 != null) {
 			if (visible) {
 				quickBar.setVisibility(View.VISIBLE);

@@ -111,7 +111,6 @@ public class LyricueDisplay extends Service {
 					os = null;
 					sc = null;
 				} catch (IOException f) {
-                    logError("connection already closed");
 				}
 			} catch (UnknownHostException e) {
 				logError("Trying to connect to unknown host: " + e);

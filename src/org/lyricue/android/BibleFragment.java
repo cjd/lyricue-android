@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,7 +31,7 @@ public class BibleFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		activity = (Lyricue) getActivity();
-		v = inflater.inflate(R.layout.bible, null);
+		v = (View) inflater.inflate(R.layout.bible, null);
 		return v;
 	}
 
@@ -51,13 +52,6 @@ public class BibleFragment extends Fragment {
 		ib.setOnClickListener(new BibleOnClickListener());
 		ib = (ImageButton) v.findViewById(R.id.imageBiblePrev);
 		ib.setOnClickListener(new BibleOnClickListener());
-
-		String status = activity.ld.runCommand("status", "", "");
-		if (status.equals(""))
-			return;
-		String biblename = status.substring(status.indexOf(",T:") + 3);
-		biblename = biblename.substring(0, biblename.lastIndexOf(","));
-
 		// Setup previous verses spinner
 		spin = (Spinner) v.findViewById(R.id.spinBiblePrevious);
 		ArrayAdapter<String> prevAdapter = new ArrayAdapter<String>(activity,
@@ -65,42 +59,81 @@ public class BibleFragment extends Fragment {
 		spin.setAdapter(prevAdapter);
 		spin.setOnItemSelectedListener(new BookOnItemSelectedListener());
 
-		// Find Bibles
-		String bibles = activity.ld.runCommand("bible", "available", "");
-		try {
-			JSONObject json = new JSONObject(bibles);
-			JSONArray jArray = json.getJSONArray("results");
-			Spinner spinBible = (Spinner) v.findViewById(R.id.spinBibleVersion);
-			ArrayList<String> spinArray = new ArrayList<String>();
-			activity.bibles_text = new String[jArray.length()];
-			activity.bibles_id = new String[jArray.length()];
-			activity.bibles_type = new String[jArray.length()];
-			int selected = 0;
+		new LoadBibleTask().execute(activity);
+	}
 
-			for (int i = 0; i < jArray.length(); i++) {
-				JSONObject results = jArray.getJSONObject(i);
-				activity.bibles_id[i] = results.getString("name");
-				activity.bibles_type[i] = results.getString("type");
-				if (activity.bibles_type[i].equals("db")) {
-					activity.bibles_id[i] += "@bibleDb";
+	private class LoadBibleTask extends
+			AsyncTask<Context, Void, ArrayList<String>> {
+		private Exception exception;
+		private int selected;
+
+		@Override
+		protected ArrayList<String> doInBackground(Context... arg0) {
+			try {
+				String status = activity.ld.runCommand("status", "", "");
+				if (!status.equals("")) {
+
+					String biblename = status
+							.substring(status.indexOf(",T:") + 3);
+					biblename = biblename.substring(0,
+							biblename.lastIndexOf(","));
+
+					// Find Bibles
+					String bibles = activity.ld.runCommand("bible",
+							"available", "");
+					JSONObject json = new JSONObject(bibles);
+					JSONArray jArray = json.getJSONArray("results");
+					ArrayList<String> spinArray = new ArrayList<String>();
+					activity.bibles_text = new String[jArray.length()];
+					activity.bibles_id = new String[jArray.length()];
+					activity.bibles_type = new String[jArray.length()];
+					selected = 0;
+
+					for (int i = 0; i < jArray.length(); i++) {
+						JSONObject results = jArray.getJSONObject(i);
+						activity.bibles_id[i] = results.getString("name");
+						activity.bibles_type[i] = results.getString("type");
+						if (activity.bibles_type[i].equals("db")) {
+							activity.bibles_id[i] += "@bibleDb";
+						}
+						activity.bibles_text[i] = results
+								.getString("description");
+						if (biblename.equals(results.getString("name"))) {
+							selected = i;
+						}
+						spinArray.add(activity.bibles_text[i]);
+					}
+					return spinArray;
 				}
-				activity.bibles_text[i] = results.getString("description");
-				if (biblename.equals(results.getString("name"))) {
-					selected = i;
-				}
-				spinArray.add(activity.bibles_text[i]);
+				return null;
+			} catch (JSONException e) {
+				this.exception = e;
+
+				return null;
 			}
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
-					android.R.layout.simple_spinner_item, spinArray);
-			spinBible.setAdapter(adapter);
-			spinBible.setSelection(selected);
-			spinBible
-					.setOnItemSelectedListener(new BookOnItemSelectedListener());
-			book.setClickable(true);
-			book.setSelection(0);
-			select_book();
-		} catch (JSONException e) {
-			activity.logError("Error parsing data " + e.toString());
+		}
+
+		protected void onPostExecute(ArrayList<String> spinArray) {
+
+			if (this.exception != null) {
+				activity.logError("Error parsing data "
+						+ this.exception.toString());
+
+			} else {
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+						activity, android.R.layout.simple_spinner_item,
+						spinArray);
+				Spinner spinBible = (Spinner) v
+						.findViewById(R.id.spinBibleVersion);
+				spinBible.setAdapter(adapter);
+				spinBible.setSelection(selected);
+				spinBible
+						.setOnItemSelectedListener(new BookOnItemSelectedListener());
+				Spinner book = (Spinner) v.findViewById(R.id.spinBibleBook);
+				book.setClickable(true);
+				book.setSelection(0);
+				select_book();
+			}
 		}
 	}
 
@@ -200,24 +233,34 @@ public class BibleFragment extends Fragment {
 		}
 	}
 
-	String show_verse(String verse, String command) {
+	void show_verse(String verse, String command) {
 		activity.logDebug("Showing " + verse);
-		String shown = activity.ld.runCommand("bible", command, verse).trim();
-		if (shown != "") {
-			activity.logDebug("Ret " + shown);
-			if (!shown.equals(verse)) {
-				String[] tokens = shown.split("[-:]");
-				String startverse = tokens[2];
-				String endverse = tokens[4];
-				Spinner spin = (Spinner) v
-						.findViewById(R.id.spinBibleVerseStart);
-				spin.setSelection(Integer.parseInt(startverse) - 1);
-				spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
-				spin.setSelection(Integer.parseInt(endverse) - 1);
-			}
+		new ShowVerseTask().execute(command+"#"+verse);
+	}
+
+	private class ShowVerseTask extends AsyncTask<String, Void, String> {
+		private String verse_passed;
+		protected String doInBackground(String... verse) {
+			String[] tokens = verse[0].split("#",2);
+			String shown = activity.ld.runCommand("bible", tokens[0], tokens[1]).trim();
 			return shown;
 		}
-		return null;
+
+		protected void onPostExecute(String shown) {
+			if (shown != "") {
+				activity.logDebug("Ret " + shown);
+				if (!shown.equals(verse_passed)) {
+					String[] tokens = shown.split("[-:]");
+					String startverse = tokens[2];
+					String endverse = tokens[4];
+					Spinner spin = (Spinner) v
+							.findViewById(R.id.spinBibleVerseStart);
+					spin.setSelection(Integer.parseInt(startverse) - 1);
+					spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
+					spin.setSelection(Integer.parseInt(endverse) - 1);
+				}
+			}
+		}
 	}
 
 	void select_verse(String verse) {
@@ -242,38 +285,59 @@ public class BibleFragment extends Fragment {
 	}
 
 	void select_bible(int bible) {
-		activity.ld.runCommand("change_to_db", activity.bibles_id[bible],
-				activity.bibles_type[bible]);
-		Spinner book = (Spinner) v.findViewById(R.id.spinBibleBook);
-		book.setClickable(true);
-		book.setSelection(0);
-		select_book();
+		new SelectBibleTask().execute(bible);
+	}
+
+	private class SelectBibleTask extends AsyncTask<Integer, Void, Integer> {
+		protected Integer doInBackground(Integer... bible) {
+			activity.ld.runCommand("change_to_db",
+					activity.bibles_id[bible[0]],
+					activity.bibles_type[bible[0]]);
+			return 1;
+		}
+
+		protected void onPostExecute(Integer ret) {
+			Spinner book = (Spinner) v.findViewById(R.id.spinBibleBook);
+			book.setClickable(true);
+			book.setSelection(0);
+			select_book();
+		}
 	}
 
 	void select_book() {
 		activity.logDebug("select_book");
 		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
 		String bookname = spin.getSelectedItem().toString();
-		Integer maxchap = Integer.parseInt(activity.ld.runCommand("bible",
-				"maxchapter", bookname).trim());
-		Spinner spinChap = (Spinner) v.findViewById(R.id.spinBibleChapter);
-		ArrayList<String> spinArray = new ArrayList<String>();
-		int current_chapter = 1;
-		if (spinChap.getSelectedItem() != null) {
-			current_chapter = Integer.parseInt(spinChap.getSelectedItem()
-					.toString());
-			if (current_chapter > maxchap) {
-				current_chapter = maxchap;
+		new SelectBookTask().execute(bookname);
+	}
+
+	private class SelectBookTask extends AsyncTask<String, Void, Integer> {
+		protected Integer doInBackground(String... books) {
+			Integer maxchap = Integer.parseInt(activity.ld.runCommand("bible",
+					"maxchapter", books[0]).trim());
+			return maxchap;
+		}
+
+		protected void onPostExecute(Integer maxchap) {
+			Spinner spinChap = (Spinner) v.findViewById(R.id.spinBibleChapter);
+			ArrayList<String> spinArray = new ArrayList<String>();
+			int current_chapter = 1;
+			if (spinChap.getSelectedItem() != null) {
+				current_chapter = Integer.parseInt(spinChap.getSelectedItem()
+						.toString());
+				if (current_chapter > maxchap) {
+					current_chapter = maxchap;
+				}
 			}
+			for (int i = 1; i <= maxchap; i++) {
+				spinArray.add(String.valueOf(i));
+			}
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
+					android.R.layout.simple_spinner_item, spinArray);
+			spinChap.setAdapter(adapter);
+			spinChap.setSelection(current_chapter - 1);
+			v.findViewById(R.id.spinBibleChapter).setClickable(true);
 		}
-		for (int i = 1; i <= maxchap; i++) {
-			spinArray.add(String.valueOf(i));
-		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
-				android.R.layout.simple_spinner_item, spinArray);
-		spinChap.setAdapter(adapter);
-		spinChap.setSelection(current_chapter - 1);
-		v.findViewById(R.id.spinBibleChapter).setClickable(true);
 	}
 
 	void select_chapter() {
@@ -282,45 +346,57 @@ public class BibleFragment extends Fragment {
 		int chapter = Integer.parseInt(spin.getSelectedItem().toString());
 		spin = (Spinner) v.findViewById(R.id.spinBibleBook);
 		String bookname = spin.getSelectedItem().toString();
-		Integer maxverse = Integer.parseInt(activity.ld.runCommand("bible",
-				"maxverse", bookname + ";" + chapter).trim());
-		int start_verse = 1;
-		int end_verse = 1;
-		Spinner spinS = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
-		if (spinS.getSelectedItem() != null) {
-			start_verse = Integer.parseInt(spinS.getSelectedItem().toString());
-			if (start_verse >= maxverse) {
-				start_verse = maxverse;
+		new SelectChapterTask().execute(bookname + ";" + chapter);
+	}
+
+	private class SelectChapterTask extends AsyncTask<String, Void, Integer> {
+		protected Integer doInBackground(String... lookup) {
+			Integer maxverse = Integer.parseInt(activity.ld.runCommand("bible",
+					"maxverse", lookup[0]).trim());
+			return maxverse;
+		}
+
+		protected void onPostExecute(Integer maxverse) {
+			int start_verse = 1;
+			int end_verse = 1;
+			Spinner spinS = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
+			if (spinS.getSelectedItem() != null) {
+				start_verse = Integer.parseInt(spinS.getSelectedItem()
+						.toString());
+				if (start_verse >= maxverse) {
+					start_verse = maxverse;
+				}
 			}
-		}
-		Spinner spinE = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
-		if (spinE.getSelectedItem() != null) {
-			end_verse = Integer.parseInt(spinE.getSelectedItem().toString());
-			if (end_verse >= maxverse) {
-				end_verse = maxverse;
+			Spinner spinE = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
+			if (spinE.getSelectedItem() != null) {
+				end_verse = Integer
+						.parseInt(spinE.getSelectedItem().toString());
+				if (end_verse >= maxverse) {
+					end_verse = maxverse;
+				}
 			}
+
+			ArrayList<String> spinArrayS = new ArrayList<String>();
+			ArrayList<String> spinArrayE = new ArrayList<String>();
+			for (int i = 1; i <= maxverse; i++) {
+				spinArrayS.add(String.valueOf(i));
+				spinArrayE.add(String.valueOf(i));
+			}
+
+			ArrayAdapter<String> adapterS = new ArrayAdapter<String>(activity,
+					android.R.layout.simple_spinner_item, spinArrayS);
+			spinS.setAdapter(adapterS);
+			spinS.setSelection(start_verse - 1);
+			spinS.setOnItemSelectedListener(new BookOnItemSelectedListener());
+
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
+					android.R.layout.simple_spinner_item, spinArrayE);
+			spinE.setAdapter(adapter);
+			spinE.setSelection(end_verse - 1);
+			spinE.setOnItemSelectedListener(new BookOnItemSelectedListener());
+			v.findViewById(R.id.spinBibleVerseStart).setClickable(true);
+			v.findViewById(R.id.spinBibleVerseEnd).setClickable(true);
 		}
-
-		ArrayList<String> spinArrayS = new ArrayList<String>();
-		ArrayList<String> spinArrayE = new ArrayList<String>();
-		for (int i = 1; i <= maxverse; i++) {
-			spinArrayS.add(String.valueOf(i));
-			spinArrayE.add(String.valueOf(i));
-		}
-
-		ArrayAdapter<String> adapterS = new ArrayAdapter<String>(activity,
-				android.R.layout.simple_spinner_item, spinArrayS);
-		spinS.setAdapter(adapterS);
-		spinS.setSelection(start_verse - 1);
-		spinS.setOnItemSelectedListener(new BookOnItemSelectedListener());
-
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
-				android.R.layout.simple_spinner_item, spinArrayE);
-		spinE.setAdapter(adapter);
-		spinE.setSelection(end_verse - 1);
-		spinE.setOnItemSelectedListener(new BookOnItemSelectedListener());
-		v.findViewById(R.id.spinBibleVerseStart).setClickable(true);
-		v.findViewById(R.id.spinBibleVerseEnd).setClickable(true);
 	}
 
 	private class AddVerseTask extends AsyncTask<String, Void, Void> {
@@ -388,8 +464,9 @@ public class BibleFragment extends Fragment {
 					+ ", \"vers\", \""
 					+ tokens[2] + "-" + tokens[4] + "\")";
 			activity.ld.runQuery("lyricDb", Query);
-		
-			PlaylistFragment frag = (PlaylistFragment) activity.fragments.get("playlist");
+
+			PlaylistFragment frag = (PlaylistFragment) activity.fragments
+					.get("playlist");
 			frag.load_playlist();
 			return null;
 		}
