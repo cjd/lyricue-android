@@ -24,6 +24,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.MotionEventCompat;
@@ -73,7 +74,8 @@ public class CirclePageIndicator extends View implements PageIndicator {
         this(context, attrs, R.attr.vpiCirclePageIndicatorStyle);
     }
 
-    public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
+    @SuppressWarnings("deprecation")
+	public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         if (isInEditMode()) return;
 
@@ -102,6 +104,11 @@ public class CirclePageIndicator extends View implements PageIndicator {
         mPaintFill.setColor(a.getColor(R.styleable.CirclePageIndicator_fillColor, defaultFillColor));
         mRadius = a.getDimension(R.styleable.CirclePageIndicator_radius, defaultRadius);
         mSnap = a.getBoolean(R.styleable.CirclePageIndicator_snap, defaultSnap);
+
+        Drawable background = a.getDrawable(R.styleable.CirclePageIndicator_android_background);
+        if (background != null) {
+          setBackgroundDrawable(background);
+        }
 
         a.recycle();
 
@@ -282,9 +289,8 @@ public class CirclePageIndicator extends View implements PageIndicator {
             return false;
         }
 
-        final int action = ev.getAction();
-
-        switch (action & MotionEventCompat.ACTION_MASK) {
+        final int action = ev.getAction() & MotionEventCompat.ACTION_MASK;
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 mLastMotionX = ev.getX();
@@ -320,10 +326,14 @@ public class CirclePageIndicator extends View implements PageIndicator {
                     final float sixthWidth = width / 6f;
 
                     if ((mCurrentPage > 0) && (ev.getX() < halfWidth - sixthWidth)) {
-                        mViewPager.setCurrentItem(mCurrentPage - 1);
+                        if (action != MotionEvent.ACTION_CANCEL) {
+                            mViewPager.setCurrentItem(mCurrentPage - 1);
+                        }
                         return true;
                     } else if ((mCurrentPage < count - 1) && (ev.getX() > halfWidth + sixthWidth)) {
-                        mViewPager.setCurrentItem(mCurrentPage + 1);
+                        if (action != MotionEvent.ACTION_CANCEL) {
+                            mViewPager.setCurrentItem(mCurrentPage + 1);
+                        }
                         return true;
                     }
                 }
@@ -335,8 +345,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
             case MotionEventCompat.ACTION_POINTER_DOWN: {
                 final int index = MotionEventCompat.getActionIndex(ev);
-                final float x = MotionEventCompat.getX(ev, index);
-                mLastMotionX = x;
+                mLastMotionX = MotionEventCompat.getX(ev, index);
                 mActivePointerId = MotionEventCompat.getPointerId(ev, index);
                 break;
             }
@@ -353,7 +362,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
         }
 
         return true;
-    };
+    }
 
     @Override
     public void setViewPager(ViewPager view) {
@@ -452,7 +461,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
      * @return The width of the view, honoring constraints from measureSpec
      */
     private int measureLong(int measureSpec) {
-        int result = 0;
+        int result;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
@@ -480,7 +489,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
      * @return The height of the view, honoring constraints from measureSpec
      */
     private int measureShort(int measureSpec) {
-        int result = 0;
+        int result;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 

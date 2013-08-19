@@ -225,13 +225,14 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
         }
     }
 
-    public final LinearLayout populateTreeItem(final LinearLayout layout,
+    @SuppressWarnings("deprecation")
+	public final LinearLayout populateTreeItem(final LinearLayout layout,
             final View childView, final TreeNodeInfo<T> nodeInfo,
             final boolean newChildView) {
         final Drawable individualRowDrawable = getBackgroundDrawable(nodeInfo);
         layout.setBackgroundDrawable(individualRowDrawable == null ? getDrawableOrDefaultBackground(rowBackgroundDrawable)
                 : individualRowDrawable);
-        final LinearLayout.LayoutParams indicatorLayoutParams = new LinearLayout.LayoutParams(
+		final LinearLayout.LayoutParams indicatorLayoutParams = new LinearLayout.LayoutParams(
                 calculateIndentation(nodeInfo), LayoutParams.FILL_PARENT);
         final LinearLayout indicatorLayout = (LinearLayout) layout
                 .findViewById(R.id.treeview_list_item_image_layout);
@@ -251,7 +252,7 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
         layout.setTag(nodeInfo.getId());
         final FrameLayout frameLayout = (FrameLayout) layout
                 .findViewById(R.id.treeview_list_item_frame);
-        final FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(
+		final FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         if (newChildView) {
             frameLayout.addView(childView, childParams);
