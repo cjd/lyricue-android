@@ -44,9 +44,6 @@ import static android.widget.LinearLayout.VERTICAL;
  */
 public class CirclePageIndicator extends View implements PageIndicator {
     private static final int INVALID_POINTER = -1;
-    private Context mcontext;
-    private AttributeSet mattrs;
-    private final int defStyle;
 
     private float mRadius;
     private final Paint mPaintPageFill = new Paint(ANTI_ALIAS_FLAG);
@@ -74,15 +71,10 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
     public CirclePageIndicator(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.vpiCirclePageIndicatorStyle);
-        this.mcontext = context;
-        this.mattrs = attrs;
     }
 
     public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        this.mcontext = context;
-        this.mattrs = attrs;
-        this.defStyle = defStyle;
         if (isInEditMode()) return;
 
         //Load defaults from resources
