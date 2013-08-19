@@ -7,11 +7,16 @@ import java.util.Map;
 
 import com.viewpagerindicator.TabPageIndicator;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -55,6 +60,7 @@ public class Lyricue extends FragmentActivity {
 	FragmentManager fragman = null;
 
 	/** Called when the activity is first created. */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,10 +73,37 @@ public class Lyricue extends FragmentActivity {
 		indicator.setViewPager(pager);
 		pager.setOffscreenPageLimit(5);
 		pager.setCurrentItem(0);
-      	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-      	DisplayMetrics displaymetrics = new DisplayMetrics();
-      	getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-      	thumbnail_width = Math.min(displaymetrics.widthPixels, displaymetrics.heightPixels) / 2;
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		thumbnail_width = Math.min(displaymetrics.widthPixels,
+				displaymetrics.heightPixels) / 2;
+		
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			Intent intent = new Intent(this, Lyricue.class);
+			PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent,
+					0);
+
+			// Build notification
+			// Actions are just fake
+			Notification noti = new Notification.Builder(this)
+					.setContentTitle("Lyricue Control")
+					.setContentText("")
+					.setSmallIcon(R.drawable.ic_launcher)
+					.setContentIntent(pIntent)
+					.addAction(R.drawable.ic_launcher, "Call", pIntent)
+					.addAction(R.drawable.ic_launcher, "More", pIntent)
+					.addAction(R.drawable.ic_launcher, "And more", pIntent)
+					.build();
+
+			NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+			// Hide the notification after its selected
+			noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+			notificationManager.notify(0, noti);
+		}
 	}
 
 	public void getPrefs() {
@@ -79,8 +112,7 @@ public class Lyricue extends FragmentActivity {
 			progressLoad.dismiss();
 		progressLoad = ProgressDialog.show(this, "", "Loading Preferences..",
 				true);
-		PreferenceManager.setDefaultValues(this, R.xml.preferences,
-				false);
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		new GetPrefsTask().execute(this);
 	}
 
@@ -137,7 +169,7 @@ public class Lyricue extends FragmentActivity {
 					frag1 = (PlaylistFragment) getSupportFragmentManager()
 							.findFragmentById(R.id.playlist);
 					fragments.put("playlist", frag1);
-					
+
 				}
 				playlistid = -1;
 				frag1.load_playlist();
@@ -145,13 +177,13 @@ public class Lyricue extends FragmentActivity {
 						.get("avail");
 				if (frag2 != null) {
 					frag2.load_available();
-					
+
 				}
 				BibleFragment frag3 = (BibleFragment) fragments.get("bible");
 				if (frag3 != null) {
 					frag3.load_bible();
 				}
-				
+
 			} else if (result == 1) {
 				Intent setupActivity = new Intent(getBaseContext(),
 						InitialSetup.class);
