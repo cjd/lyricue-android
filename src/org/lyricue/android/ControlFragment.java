@@ -16,7 +16,7 @@ public class ControlFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		this.inflater = inflater;
-		v = (View) inflater.inflate(R.layout.control, null);
+		v = inflater.inflate(R.layout.control, null);
 		activity = (Lyricue) this.getActivity();
 		activity.setQuickBar(false);
 		return v;

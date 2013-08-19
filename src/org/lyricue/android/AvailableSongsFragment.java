@@ -36,7 +36,7 @@ public class AvailableSongsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		v = (View) inflater.inflate(R.layout.available, null);
+		v = inflater.inflate(R.layout.available, null);
 		songlist = (ListView) v.findViewById(R.id.available_songlist);
 		filterText = (EditText) v.findViewById(R.id.available_search);
 		filterText.addTextChangedListener(filterTextWatcher);

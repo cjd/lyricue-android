@@ -23,7 +23,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/vpi__dark_theme</item>
     </style>
-    
+
     <style parent="@android:attr/listViewStyle" name="treeViewListStyle">
         <item name="android:background">@android:color/white</item>
         <item name="android:divider">@drawable/divider</item>

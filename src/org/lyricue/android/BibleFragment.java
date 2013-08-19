@@ -30,7 +30,7 @@ public class BibleFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		activity = (Lyricue) getActivity();
-		v = (View) inflater.inflate(R.layout.bible, null);
+		v = inflater.inflate(R.layout.bible, null);
 		return v;
 	}
 
