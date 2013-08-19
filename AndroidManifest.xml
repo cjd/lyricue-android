@@ -18,7 +18,7 @@
             android:name=".Lyricue"
             android:configChanges="orientation"
             android:label="@string/app_name"
-            android:theme="@style/Theme.PageIndicatorDefaults" >
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
