@@ -23,6 +23,7 @@ public class LyricueDisplay extends Service {
 	private static final String TAG = Lyricue.class.getSimpleName();
 	Socket sc = null;
 	DataOutputStream os = null;
+
 	public String hostip = "";
 	public Context context = null;
 

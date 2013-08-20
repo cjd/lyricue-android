@@ -15,9 +15,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -81,26 +83,37 @@ public class Lyricue extends FragmentActivity {
 				displaymetrics.heightPixels) / 2;
 		
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			Intent intent = new Intent(this, Lyricue.class);
-			PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent,
-					0);
+			Intent intentPrev = new Intent(this, NotificationReceiver.class);
+			intentPrev.putExtra("command","prev");
+			intentPrev.setData((Uri.parse("foobar://"+SystemClock.elapsedRealtime())));
+			intentPrev.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			PendingIntent pIntentPrev = PendingIntent.getActivity(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
+			
+			Intent intentNext = new Intent(this, NotificationReceiver.class);
+			intentNext.putExtra("command","next");
+			intentNext.setData((Uri.parse("foobar://"+SystemClock.elapsedRealtime())));
+			intentNext.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			PendingIntent pIntentNext = PendingIntent.getActivity(this, 0, intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
+			
+			Intent intentBlank = new Intent(this, NotificationReceiver.class);
+			intentBlank.putExtra("command","blank");
+			intentBlank.setData((Uri.parse("foobar://"+SystemClock.elapsedRealtime())));
+			intentBlank.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			PendingIntent pIntentBlank = PendingIntent.getActivity(this, 0, intentBlank, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			// Build notification
-			// Actions are just fake
 			Notification noti = new Notification.Builder(this)
 					.setContentTitle("Lyricue Control")
-					.setContentText("")
 					.setSmallIcon(R.drawable.ic_launcher)
-					.setContentIntent(pIntent)
-					.addAction(R.drawable.ic_launcher, "Call", pIntent)
-					.addAction(R.drawable.ic_launcher, "More", pIntent)
-					.addAction(R.drawable.ic_launcher, "And more", pIntent)
+					.addAction(android.R.drawable.ic_media_rew, "Prev", pIntentPrev)
+					.addAction(android.R.drawable.ic_media_ff, "Next", pIntentNext)
+					.addAction(android.R.drawable.ic_media_pause, "Blank", pIntentBlank)
 					.build();
 
 			NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 			// Hide the notification after its selected
-			noti.flags |= Notification.FLAG_AUTO_CANCEL;
+			noti.flags |= Notification.FLAG_ONGOING_EVENT;
 
 			notificationManager.notify(0, noti);
 		}

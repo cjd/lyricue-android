@@ -120,19 +120,21 @@ public class BibleFragment extends Fragment {
 						+ this.exception.toString());
 
 			} else {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						activity, android.R.layout.simple_spinner_item,
-						spinArray);
-				Spinner spinBible = (Spinner) v
-						.findViewById(R.id.spinBibleVersion);
-				spinBible.setAdapter(adapter);
-				spinBible.setSelection(selected);
-				spinBible
-						.setOnItemSelectedListener(new BookOnItemSelectedListener());
-				Spinner book = (Spinner) v.findViewById(R.id.spinBibleBook);
-				book.setClickable(true);
-				book.setSelection(0);
-				select_book();
+				if (spinArray != null) {
+					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+							activity, android.R.layout.simple_spinner_item,
+							spinArray);
+					Spinner spinBible = (Spinner) v
+							.findViewById(R.id.spinBibleVersion);
+					spinBible.setAdapter(adapter);
+					spinBible.setSelection(selected);
+					spinBible
+							.setOnItemSelectedListener(new BookOnItemSelectedListener());
+					Spinner book = (Spinner) v.findViewById(R.id.spinBibleBook);
+					book.setClickable(true);
+					book.setSelection(0);
+					select_book();
+				}
 			}
 		}
 	}
@@ -235,14 +237,16 @@ public class BibleFragment extends Fragment {
 
 	void show_verse(String verse, String command) {
 		activity.logDebug("Showing " + verse);
-		new ShowVerseTask().execute(command+"#"+verse);
+		new ShowVerseTask().execute(command + "#" + verse);
 	}
 
 	private class ShowVerseTask extends AsyncTask<String, Void, String> {
 		private String verse_passed;
+
 		protected String doInBackground(String... verse) {
-			String[] tokens = verse[0].split("#",2);
-			String shown = activity.ld.runCommand("bible", tokens[0], tokens[1]).trim();
+			String[] tokens = verse[0].split("#", 2);
+			String shown = activity.ld
+					.runCommand("bible", tokens[0], tokens[1]).trim();
 			return shown;
 		}
 
