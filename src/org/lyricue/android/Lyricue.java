@@ -74,12 +74,8 @@ public class Lyricue extends FragmentActivity {
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		thumbnail_width = Math.min(displaymetrics.widthPixels,
 				displaymetrics.heightPixels) / 2;
-		
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			new MyNotification(this);
-		}
-	}
 
+	}
 
 	public void getPrefs() {
 		logDebug("getPrefs");
@@ -111,13 +107,15 @@ public class Lyricue extends FragmentActivity {
 			hostip = settings.getString("hostip", "not set");
 			logDebug("hostip:" + hostip);
 
-
 			if (hostip.equals("not set") || hostip.equals("")) {
 				return 1;
 			}
-			//notify.setHostip(hostip);
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+				notify = new MyNotification(arg0[0], hostip);
+			}
+
 			ld = new LyricueDisplay(hostip);
-			
+
 			if (!ld.checkRunning()) {
 				return 2;
 			}
