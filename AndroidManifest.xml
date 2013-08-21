@@ -36,12 +36,8 @@
             android:theme="@android:style/Theme.NoTitleBar" />
 
         <service android:name=".LyricueDisplay" />
+        <service android:name=".NotificationHandler" />
         
-        <activity
-            android:name="NotificationReceiver"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTask" >
-        </activity>
     </application>
 
 </manifest>

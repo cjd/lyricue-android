@@ -7,19 +7,12 @@ import java.util.Map;
 
 import com.viewpagerindicator.TabPageIndicator;
 
-import android.annotation.TargetApi;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -58,11 +51,11 @@ public class Lyricue extends FragmentActivity {
 	public Map<String, Fragment> fragments = new HashMap<String, Fragment>();
 	private ProgressDialog progressLoad = null;
 	public int thumbnail_width = 0;
+	public MyNotification notify = null;
 
 	FragmentManager fragman = null;
 
 	/** Called when the activity is first created. */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,41 +76,10 @@ public class Lyricue extends FragmentActivity {
 				displaymetrics.heightPixels) / 2;
 		
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			Intent intentPrev = new Intent(this, NotificationReceiver.class);
-			intentPrev.putExtra("command","prev");
-			intentPrev.setData((Uri.parse("foobar://"+SystemClock.elapsedRealtime())));
-			intentPrev.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			PendingIntent pIntentPrev = PendingIntent.getActivity(this, 0, intentPrev, PendingIntent.FLAG_UPDATE_CURRENT);
-			
-			Intent intentNext = new Intent(this, NotificationReceiver.class);
-			intentNext.putExtra("command","next");
-			intentNext.setData((Uri.parse("foobar://"+SystemClock.elapsedRealtime())));
-			intentNext.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			PendingIntent pIntentNext = PendingIntent.getActivity(this, 0, intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
-			
-			Intent intentBlank = new Intent(this, NotificationReceiver.class);
-			intentBlank.putExtra("command","blank");
-			intentBlank.setData((Uri.parse("foobar://"+SystemClock.elapsedRealtime())));
-			intentBlank.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			PendingIntent pIntentBlank = PendingIntent.getActivity(this, 0, intentBlank, PendingIntent.FLAG_UPDATE_CURRENT);
-
-			// Build notification
-			Notification noti = new Notification.Builder(this)
-					.setContentTitle("Lyricue Control")
-					.setSmallIcon(R.drawable.ic_launcher)
-					.addAction(android.R.drawable.ic_media_rew, "Prev", pIntentPrev)
-					.addAction(android.R.drawable.ic_media_ff, "Next", pIntentNext)
-					.addAction(android.R.drawable.ic_media_pause, "Blank", pIntentBlank)
-					.build();
-
-			NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-			// Hide the notification after its selected
-			noti.flags |= Notification.FLAG_ONGOING_EVENT;
-
-			notificationManager.notify(0, noti);
+			new MyNotification(this);
 		}
 	}
+
 
 	public void getPrefs() {
 		logDebug("getPrefs");
@@ -148,10 +110,14 @@ public class Lyricue extends FragmentActivity {
 
 			hostip = settings.getString("hostip", "not set");
 			logDebug("hostip:" + hostip);
+
+
 			if (hostip.equals("not set") || hostip.equals("")) {
 				return 1;
 			}
+			//notify.setHostip(hostip);
 			ld = new LyricueDisplay(hostip);
+			
 			if (!ld.checkRunning()) {
 				return 2;
 			}
