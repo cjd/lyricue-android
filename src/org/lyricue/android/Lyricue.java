@@ -1,9 +1,14 @@
 package org.lyricue.android;
 
 import java.io.DataOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceListener;
 
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -11,6 +16,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -38,7 +45,7 @@ public class Lyricue extends FragmentActivity {
 	public LyricuePagerAdapter adapter = null;
 	Socket sc = null;
 	DataOutputStream os = null;
-	public String hostip = "";
+	public String[][] hosts = null; 
 	public int playlistid = -1;
 	public String[] playlists_text = null;
 	public int[] playlists_id = null;
@@ -52,6 +59,8 @@ public class Lyricue extends FragmentActivity {
 	private ProgressDialog progressLoad = null;
 	public int thumbnail_width = 0;
 	public MyNotification notify = null;
+	private static JmDNS mJmDNS = null;
+
 
 	FragmentManager fragman = null;
 
@@ -74,9 +83,82 @@ public class Lyricue extends FragmentActivity {
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		thumbnail_width = Math.min(displaymetrics.widthPixels,
 				displaymetrics.heightPixels) / 2;
-
+		start_mdns();
 	}
+	
+	private void start_mdns() {
+		new Thread(new Runnable() {
 
+			@Override
+			public void run() {
+				try {
+					WifiManager wifi = (WifiManager) Lyricue.this
+							.getSystemService(Context.WIFI_SERVICE);
+					WifiInfo wifiinfo = wifi.getConnectionInfo();
+					int intaddr = wifiinfo.getIpAddress();
+					byte[] byteaddr = new byte[] { (byte) (intaddr & 0xff),
+							(byte) (intaddr >> 8 & 0xff),
+							(byte) (intaddr >> 16 & 0xff),
+							(byte) (intaddr >> 24 & 0xff) };
+
+					mJmDNS = JmDNS.create(InetAddress.getByAddress(byteaddr));
+					mJmDNS.addServiceListener(
+							"_lyricue._tcp.local.", new ServiceListener() {
+
+								@Override
+								public void serviceAdded(ServiceEvent arg0) {
+									System.out.println("TXT:"
+											+ new String(arg0.getInfo()
+													.getTextBytes()));
+									Log.w(TAG, String.format(
+											"serviceAdded(event=\n%s\n)",
+											arg0.toString()));
+								}
+
+								@Override
+								public void serviceRemoved(ServiceEvent arg0) {
+									Log.w(TAG, String.format(
+											"serviceRemoved(event=\n%s\n)",
+											arg0.toString()));
+								}
+
+								@Override
+								public void serviceResolved(ServiceEvent arg0) {
+									if (arg0.getName().startsWith("Lyricue Display")) {
+										byte[] txt = arg0.getInfo().getTextBytes();
+										Log.i(TAG, "host:"+arg0.getInfo().getHostAddresses()[0]+":"+arg0.getInfo().getPort());
+										if (txt.length > 0) {
+											HashMap<String, String> txts = new HashMap<String, String>();
+											for (int i = 0; i < txt.length; ++i) {
+												// first byte is length of the
+												// "key=value"
+												int len = (txt[i] & 0xff);
+												int begin_at = i + 1;
+												i += len;
+												String[] keypair = new String(txt, begin_at, len).split("=",2);
+												txts.put(keypair[0], keypair[1]);
+												System.out
+													.println("TXT KeyValuePair:["+keypair[0]+"=="+keypair[1]);
+												if (arg0.getInfo().getHostAddresses()[0] != hostip) {
+													SharedPreferences settings = PreferenceManager
+															.getDefaultSharedPreferences(Lyricue.this);
+													SharedPreferences.Editor editor = settings.edit();
+													editor.putString("hostip",arg0.getInfo().getHostAddresses()[0]);
+													editor.commit();
+													getPrefs();
+												}
+											}
+										}
+									}
+								}
+							});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	
 	public void getPrefs() {
 		logDebug("getPrefs");
 		if (progressLoad != null)
