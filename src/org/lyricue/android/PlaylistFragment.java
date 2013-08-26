@@ -110,7 +110,7 @@ public class PlaylistFragment extends Fragment {
 						String.valueOf(itemid), "");
 			} else if (item.getItemId() == 1) {
 				activity.logDebug("remove item:" + itemid);
-				if (!activity.hostip.equals("#demo"))
+				if (!activity.hosts.isEmpty())
 					new RemoveItemTask().execute(itemid);
 			}
 			return true;
@@ -130,7 +130,7 @@ public class PlaylistFragment extends Fragment {
 
 	private class LoadPlaylistsTask extends AsyncTask<Void, Void, Void> {
 		protected Void doInBackground(Void... arg0) {
-			if (activity.hostip.equals("#demo")) {
+			if (activity.hosts.isEmpty()) {
 				activity.playlists_text = new String[1];
 				activity.playlists_id = new int[1];
 				activity.playlists_id[0] = 1;
@@ -144,7 +144,7 @@ public class PlaylistFragment extends Fragment {
 					+ " AND (type='play' OR type='sub')"
 					+ " WHERE data IS NULL AND playlists.id > 0"
 					+ " ORDER BY id";
-			LyricueDisplay ld = new LyricueDisplay(activity.hostip);
+			LyricueDisplay ld = new LyricueDisplay(activity.hosts, activity.profile);
 
 			JSONArray jArray = ld.runQuery("lyricDb", Query);
 			if (jArray == null) {
@@ -207,7 +207,7 @@ public class PlaylistFragment extends Fragment {
 	void add_playlist(TreeBuilder<Long> treeBuilder, int playlistid, int level) {
 		activity.logDebug("add_playlist:" + playlistid);
 
-		if (activity.hostip.equals("#demo")) {
+		if (activity.hosts.isEmpty()) {
 			load_demo_playlist(treeBuilder);
 			return;
 		}

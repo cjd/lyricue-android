@@ -34,7 +34,7 @@
             android:name=".Preferences"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
-            android:name=".InitialSetup"
+            android:name=".ChooseProfile"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".UnableToAccess"

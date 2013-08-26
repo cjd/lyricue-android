@@ -9,7 +9,7 @@
         android:layout_height="wrap_content" >
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/imageProfileHeader"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_span="2"

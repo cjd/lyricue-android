@@ -112,7 +112,7 @@ public class AvailableSongsFragment extends Fragment {
 		@Override
 		protected AvailableSongsAdapter doInBackground(Void... arg0) {
 			items = new ArrayList<AvailableSongItem>();
-			if (activity.hostip.equals("#demo")) {
+			if (activity.hosts.isEmpty()) {
 				for (int a = 0; a < 100; a++) {
 					items.add(a, new AvailableSongItem());
 					items.get(a).main = "Demo Song " + a;
@@ -123,7 +123,7 @@ public class AvailableSongsFragment extends Fragment {
 						activity.getApplicationContext(), items);
 				return adapter;
 			}
-			LyricueDisplay ld = new LyricueDisplay(activity.hostip);
+			LyricueDisplay ld = new LyricueDisplay(activity.hosts, activity.profile);
 			String Query = "SELECT COUNT(id) AS count FROM lyricMain WHERE id > 0";
 			int size = ld.runQuery_int("lyricDb", Query, "count");
 			if (size > 0) {

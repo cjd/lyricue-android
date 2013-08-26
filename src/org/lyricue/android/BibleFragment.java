@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,7 +71,7 @@ public class BibleFragment extends Fragment {
 		@Override
 		protected ArrayList<String> doInBackground(Context... arg0) {
 			try {
-				String status = activity.ld.runCommand("status", "", "");
+				String status = activity.ld.runCommand(0,"status", "", "");
 				if (!status.equals("")) {
 
 					String biblename = status
@@ -79,7 +80,7 @@ public class BibleFragment extends Fragment {
 							biblename.lastIndexOf(","));
 
 					// Find Bibles
-					String bibles = activity.ld.runCommand("bible",
+					String bibles = activity.ld.runCommand(0,"bible",
 							"available", "");
 					JSONObject json = new JSONObject(bibles);
 					JSONArray jArray = json.getJSONArray("results");
@@ -162,7 +163,7 @@ public class BibleFragment extends Fragment {
 				}
 				verse = bookname + ":" + chapter + ":" + startverse + "-"
 						+ chapter + ":" + spin.getSelectedItem().toString();
-				if (!activity.hostip.equals("#demo")) {
+				if (!activity.hosts.isEmpty()) {
 					show_verse(verse, "verse");
 				}
 				break;
@@ -174,14 +175,14 @@ public class BibleFragment extends Fragment {
 				verse = bookname + ":" + chapter + ":"
 						+ spin.getSelectedItem().toString() + "-" + chapter
 						+ ":" + endverse;
-				if (!activity.hostip.equals("#demo")) {
+				if (!activity.hosts.isEmpty()) {
 					show_verse(verse, "verse_start");
 				}
 				break;
 			case R.id.buttonBibleAdd:
 				activity.logDebug("Adding " + bookname + " " + chapter + ":"
 						+ startverse + "-" + endverse);
-				if (!activity.hostip.equals("#demo")) {
+				if (!activity.hosts.isEmpty()) {
 					if (activity.playlistid != -1) {
 						new AddVerseTask().execute(bookname, chapter,
 								startverse, endverse);
@@ -198,7 +199,7 @@ public class BibleFragment extends Fragment {
 					spin.setAdapter(prevAdapter);
 					spin.setSelection(prevArray.size() - 1);
 				}
-				if (!activity.hostip.equals("#demo")) {
+				if (!activity.hosts.isEmpty()) {
 					show_verse(verse, "verse_start");
 				}
 				break;
@@ -246,7 +247,7 @@ public class BibleFragment extends Fragment {
 		protected String doInBackground(String... verse) {
 			String[] tokens = verse[0].split("#", 2);
 			String shown = activity.ld
-					.runCommand("bible", tokens[0], tokens[1]).trim();
+					.runCommand(0,"bible", tokens[0], tokens[1]).trim();
 			return shown;
 		}
 
@@ -294,7 +295,7 @@ public class BibleFragment extends Fragment {
 
 	private class SelectBibleTask extends AsyncTask<Integer, Void, Integer> {
 		protected Integer doInBackground(Integer... bible) {
-			activity.ld.runCommand("change_to_db",
+			activity.ld.runCommand(0,"change_to_db",
 					activity.bibles_id[bible[0]],
 					activity.bibles_type[bible[0]]);
 			return 1;
@@ -317,9 +318,12 @@ public class BibleFragment extends Fragment {
 
 	private class SelectBookTask extends AsyncTask<String, Void, Integer> {
 		protected Integer doInBackground(String... books) {
-			Integer maxchap = Integer.parseInt(activity.ld.runCommand("bible",
-					"maxchapter", books[0]).trim());
-			return maxchap;
+			String ret = activity.ld.runCommand(0,"bible","maxchapter", books[0]).trim();
+			if (ret.isEmpty()) {
+				return 1;
+			} else { 
+				return Integer.parseInt(ret);
+			}
 		}
 
 		protected void onPostExecute(Integer maxchap) {
@@ -355,9 +359,12 @@ public class BibleFragment extends Fragment {
 
 	private class SelectChapterTask extends AsyncTask<String, Void, Integer> {
 		protected Integer doInBackground(String... lookup) {
-			Integer maxverse = Integer.parseInt(activity.ld.runCommand("bible",
-					"maxverse", lookup[0]).trim());
-			return maxverse;
+			String ret = activity.ld.runCommand(0,"bible","maxverse", lookup[0]).trim();
+			if (ret.isEmpty()) {
+				return 1;
+			} else {
+				return Integer.parseInt(ret);
+			}
 		}
 
 		protected void onPostExecute(Integer maxverse) {
@@ -438,7 +445,7 @@ public class BibleFragment extends Fragment {
 			// Add actual verses
 			String verse = book + ":" + chapter + ":" + startverse + "-"
 					+ chapter + ":" + endverse;
-			String result = activity.ld.runCommand("bible", "verse_start",
+			String result = activity.ld.runCommand(0,"bible", "verse_start",
 					verse).trim();
 			activity.logDebug(result + "=" + verse);
 			while (!result.equals(verse)) {
@@ -455,7 +462,7 @@ public class BibleFragment extends Fragment {
 				verse = tokens2[0] + ":" + tokens2[1] + ":"
 						+ (Integer.parseInt(tokens[4]) + 1) + "-" + tokens2[3]
 						+ ":" + tokens2[4];
-				result = activity.ld.runCommand("bible", "verse_start", verse)
+				result = activity.ld.runCommand(0,"bible", "verse_start", verse)
 						.trim();
 				activity.logDebug(result + "=" + verse);
 			}

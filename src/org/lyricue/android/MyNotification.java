@@ -1,5 +1,6 @@
 package org.lyricue.android;
 
+
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,14 +11,14 @@ import android.os.Build;
 import android.widget.RemoteViews;
 
 public class MyNotification extends Notification {
-	private String hostip = "";
+	private String[] hosts = null;
 	private Context context = null;
 	private RemoteViews contentView = null;
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public MyNotification(Context ctx, String hostip) {
+	public MyNotification(Context ctx, String[] hosts) {
 		super();
 		this.context = ctx;
-		this.hostip = hostip;
+		this.hosts = hosts;
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -35,7 +36,7 @@ public class MyNotification extends Notification {
 	private void setListeners(RemoteViews view, Context ctx) {
 		Intent intentPrev = new Intent(ctx, NotificationHandler.class);
 		intentPrev.putExtra("command", "prev_page");
-		intentPrev.putExtra("hostip", hostip);
+		intentPrev.putExtra("hosts", hosts);
 		intentPrev.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
 				| Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pIntentPrev = PendingIntent.getService(ctx, 0,
@@ -44,7 +45,7 @@ public class MyNotification extends Notification {
 
 		Intent intentNext = new Intent(ctx, NotificationHandler.class);
 		intentNext.putExtra("command", "next_page");
-		intentNext.putExtra("hostip", hostip);
+		intentNext.putExtra("hosts", hosts);
 		intentNext.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
 				| Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pIntentNext = PendingIntent.getService(ctx, 1,
@@ -53,7 +54,7 @@ public class MyNotification extends Notification {
 
 		Intent intentBlank = new Intent(ctx, NotificationHandler.class);
 		intentBlank.putExtra("command", "blank");
-		intentBlank.putExtra("hostip", hostip);
+		intentBlank.putExtra("hosts", hosts);
 		intentBlank.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
 				| Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pIntentBlank = PendingIntent.getService(ctx, 2,
@@ -62,7 +63,7 @@ public class MyNotification extends Notification {
 
 		Intent intentReshow = new Intent(ctx, NotificationHandler.class);
 		intentReshow.putExtra("command", "reshow");
-		intentReshow.putExtra("hostip", hostip);
+		intentReshow.putExtra("hosts", hosts);
 		intentReshow.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
 				| Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pIntentReshow = PendingIntent.getService(ctx, 3,

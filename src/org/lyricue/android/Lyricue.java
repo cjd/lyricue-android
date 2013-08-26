@@ -5,10 +5,15 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -18,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.MulticastLock;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,7 +51,10 @@ public class Lyricue extends FragmentActivity {
 	public LyricuePagerAdapter adapter = null;
 	Socket sc = null;
 	DataOutputStream os = null;
-	public String[][] hosts = null; 
+	public Map<String, String> hosts = new HashMap<String, String>();
+	public String[] output_names = null;
+	public String[] output_profiles = null;
+	public String profile = "";
 	public int playlistid = -1;
 	public String[] playlists_text = null;
 	public int[] playlists_id = null;
@@ -60,7 +69,7 @@ public class Lyricue extends FragmentActivity {
 	public int thumbnail_width = 0;
 	public MyNotification notify = null;
 	private static JmDNS mJmDNS = null;
-
+	Lyricue activity = null;
 
 	FragmentManager fragman = null;
 
@@ -68,97 +77,22 @@ public class Lyricue extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		fragman = getSupportFragmentManager();
-		adapter = new LyricuePagerAdapter(fragman, this.getBaseContext(), this);
-		pager = (ViewPager) findViewById(R.id.viewpager);
-		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
-		pager.setAdapter(adapter);
-		indicator.setViewPager(pager);
-		pager.setOffscreenPageLimit(5);
-		pager.setCurrentItem(0);
-		getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-		thumbnail_width = Math.min(displaymetrics.widthPixels,
-				displaymetrics.heightPixels) / 2;
-		start_mdns();
+		Log.i(TAG,"onCreate()");
+		activity=this;
+		getPrefs();
 	}
-	
-	private void start_mdns() {
-		new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				try {
-					WifiManager wifi = (WifiManager) Lyricue.this
-							.getSystemService(Context.WIFI_SERVICE);
-					WifiInfo wifiinfo = wifi.getConnectionInfo();
-					int intaddr = wifiinfo.getIpAddress();
-					byte[] byteaddr = new byte[] { (byte) (intaddr & 0xff),
-							(byte) (intaddr >> 8 & 0xff),
-							(byte) (intaddr >> 16 & 0xff),
-							(byte) (intaddr >> 24 & 0xff) };
-
-					mJmDNS = JmDNS.create(InetAddress.getByAddress(byteaddr));
-					mJmDNS.addServiceListener(
-							"_lyricue._tcp.local.", new ServiceListener() {
-
-								@Override
-								public void serviceAdded(ServiceEvent arg0) {
-									System.out.println("TXT:"
-											+ new String(arg0.getInfo()
-													.getTextBytes()));
-									Log.w(TAG, String.format(
-											"serviceAdded(event=\n%s\n)",
-											arg0.toString()));
-								}
-
-								@Override
-								public void serviceRemoved(ServiceEvent arg0) {
-									Log.w(TAG, String.format(
-											"serviceRemoved(event=\n%s\n)",
-											arg0.toString()));
-								}
-
-								@Override
-								public void serviceResolved(ServiceEvent arg0) {
-									if (arg0.getName().startsWith("Lyricue Display")) {
-										byte[] txt = arg0.getInfo().getTextBytes();
-										Log.i(TAG, "host:"+arg0.getInfo().getHostAddresses()[0]+":"+arg0.getInfo().getPort());
-										if (txt.length > 0) {
-											HashMap<String, String> txts = new HashMap<String, String>();
-											for (int i = 0; i < txt.length; ++i) {
-												// first byte is length of the
-												// "key=value"
-												int len = (txt[i] & 0xff);
-												int begin_at = i + 1;
-												i += len;
-												String[] keypair = new String(txt, begin_at, len).split("=",2);
-												txts.put(keypair[0], keypair[1]);
-												System.out
-													.println("TXT KeyValuePair:["+keypair[0]+"=="+keypair[1]);
-												if (arg0.getInfo().getHostAddresses()[0] != hostip) {
-													SharedPreferences settings = PreferenceManager
-															.getDefaultSharedPreferences(Lyricue.this);
-													SharedPreferences.Editor editor = settings.edit();
-													editor.putString("hostip",arg0.getInfo().getHostAddresses()[0]);
-													editor.commit();
-													getPrefs();
-												}
-											}
-										}
-									}
-								}
-							});
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
+	public void rebuild_hostmap() {
+		output_names = new String[hosts.size()];
+		output_profiles = new String[hosts.size()];
+		int i = 0;
+		for (Map.Entry<String, String> entry : hosts.entrySet()) {
+			output_names[i] = entry.getKey();
+			output_profiles[i] = entry.getValue();
+			i++;
+		}
 	}
-	
+
 	public void getPrefs() {
 		logDebug("getPrefs");
 		if (progressLoad != null)
@@ -170,6 +104,12 @@ public class Lyricue extends FragmentActivity {
 	}
 
 	private class GetPrefsTask extends AsyncTask<Context, Void, Integer> {
+		String found_host = "";
+		int found_port = 0;
+		Integer SELECT_PROFILE = 1;
+		Integer DEMO_MODE = 2;
+		Integer SUCCESS = 0;
+
 		@Override
 		protected Integer doInBackground(Context... arg0) {
 			SharedPreferences settings = PreferenceManager
@@ -186,29 +126,122 @@ public class Lyricue extends FragmentActivity {
 				imageplaylist = false;
 			}
 
-			hostip = settings.getString("hostip", "not set");
-			logDebug("hostip:" + hostip);
-
-			if (hostip.equals("not set") || hostip.equals("")) {
-				return 1;
+			profile = settings.getString("profile", "not set");
+			logDebug("profile:" + profile);
+			if (profile.equals("#demo")) {
+				hosts.clear();
+				return DEMO_MODE;
 			}
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-				notify = new MyNotification(arg0[0], hostip);
-			}
+			
+			Log.i(TAG, "start_mdns()");
+			try {
+				WifiManager wifi = (WifiManager) Lyricue.this
+						.getSystemService(Context.WIFI_SERVICE);
+				MulticastLock lock = wifi.createMulticastLock("mylock");
+				lock.acquire();
+				WifiInfo wifiinfo = wifi.getConnectionInfo();
+				int intaddr = wifiinfo.getIpAddress();
+				byte[] byteaddr = new byte[] { (byte) (intaddr & 0xff),
+						(byte) (intaddr >> 8 & 0xff),
+						(byte) (intaddr >> 16 & 0xff),
+						(byte) (intaddr >> 24 & 0xff) };
 
-			ld = new LyricueDisplay(hostip);
+				mJmDNS = JmDNS.create(InetAddress.getByAddress(byteaddr));
 
-			if (!ld.checkRunning()) {
-				return 2;
+				mJmDNS.addServiceListener("_lyricue._tcp.local.",
+						new ServiceListener() {
+
+							@Override
+							public void serviceAdded(ServiceEvent arg0) {
+							}
+
+							@Override
+							public void serviceRemoved(ServiceEvent arg0) {
+							}
+
+							@Override
+							public void serviceResolved(ServiceEvent arg0) {
+								Log.i(TAG, "host:"
+										+ arg0.getInfo().getHostAddresses()[0]
+										+ ":" + arg0.getInfo().getPort());
+								found_host = arg0.getInfo().getHostAddresses()[0];
+								found_port = arg0.getInfo().getPort();
+							}
+						});
+				lock.release();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			return 0;
+	        for (long stop=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);stop>System.nanoTime();) {
+	        	if (found_port != 0) break;
+	        	try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+				}
+	        }
+			Log.i(TAG,"Found values:"+found_host+":"+found_port);
+			if (found_port == 0) {
+				profile = "#demo";
+				hosts.clear();
+				rebuild_hostmap();
+				return DEMO_MODE;
+			} else {
+				String[] myhosts = new String[1];
+				myhosts[0] = found_host + ":" + found_port;
+				
+				if (profile.equals("not set") || profile.equals("")) {
+					return SELECT_PROFILE;
+				}
+				LyricueDisplay ld = new LyricueDisplay(myhosts);
+				JSONArray jArray = ld.runQuery("lyricDb",
+						"SELECT host, type FROM status WHERE TIMEDIFF(NOW(), lastupdate) < '00:00:02' AND profile='"+profile+"'");
+				if (jArray != null) {
+					try {
+						for (int i = 0; i < jArray.length(); i++) {
+							JSONObject results = jArray.getJSONObject(i);
+							if (results.getString("type").equals("normal") || results.getString("type").equals("simple")) {
+								hosts.put(results.getString("host"),profile);
+								Log.i(TAG,"Adding host:"+results.getString("host"));
+							}
+						}
+					} catch (JSONException e) {
+						Log.e(TAG, "Error parsing data "
+								+ e.toString());
+					}
+					rebuild_hostmap();
+					return SUCCESS;
+				} else {
+					return SELECT_PROFILE;
+				}
+			}			
 		}
 
 		@Override
 		protected void onPostExecute(Integer result) {
 			if (progressLoad != null)
 				progressLoad.dismiss();
-			if (result == 0) {
+			Log.i(TAG,"return:"+result);
+			if ((result == SUCCESS) || (result == DEMO_MODE)) {
+				setContentView(R.layout.main);
+				fragman = getSupportFragmentManager();
+				adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(), activity);
+				pager = (ViewPager) findViewById(R.id.viewpager);
+				TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
+				pager.setAdapter(adapter);
+				indicator.setViewPager(pager);
+				pager.setOffscreenPageLimit(5);
+				pager.setCurrentItem(0);
+				getWindow().setSoftInputMode(
+						WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+				DisplayMetrics displaymetrics = new DisplayMetrics();
+				getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+				thumbnail_width = Math.min(displaymetrics.widthPixels,
+						displaymetrics.heightPixels) / 2;
+				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+					//notify = new MyNotification(this, hostmap);
+				}
+				ld = new LyricueDisplay(output_names);
+
 				View v = (View) getWindow().getDecorView();
 				if (togglescreen) {
 					getWindow().addFlags(
@@ -217,7 +250,7 @@ public class Lyricue extends FragmentActivity {
 					getWindow().clearFlags(
 							WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 				}
-				if (hostip.equals("#demo")) {
+				if (result == DEMO_MODE) {
 					v.findViewById(R.id.textDemo).setVisibility(View.VISIBLE);
 				} else {
 					v.findViewById(R.id.textDemo).setVisibility(View.GONE);
@@ -243,15 +276,11 @@ public class Lyricue extends FragmentActivity {
 					frag3.load_bible();
 				}
 
-			} else if (result == 1) {
-				Intent setupActivity = new Intent(getBaseContext(),
-						InitialSetup.class);
-				startActivityForResult(setupActivity, 1);
-				finish();
-			} else if (result == 2) {
-				Intent accessActivity = new Intent(getBaseContext(),
-						UnableToAccess.class);
-				startActivityForResult(accessActivity, 1);
+			} else if (result == SELECT_PROFILE) {
+				Intent profileActivity = new Intent(getBaseContext(),
+						ChooseProfile.class);
+				profileActivity.putExtra("host", found_host+":"+found_port);
+				startActivityForResult(profileActivity, 1);
 				finish();
 			}
 		}
@@ -259,17 +288,20 @@ public class Lyricue extends FragmentActivity {
 
 	@Override
 	protected void onStop() {
+		Log.i(TAG,"onStop()");
 		super.onStop();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		getPrefs();
+		Log.i(TAG,"onStart()");
+		//getPrefs();
 	}
 
 	@Override
 	protected void onDestroy() {
+		Log.i(TAG,"onDestroy()");
 		super.onDestroy();
 	}
 
@@ -330,6 +362,14 @@ public class Lyricue extends FragmentActivity {
 					Preferences.class);
 			startActivity(settingsActivity);
 			return true;
+		case R.id.profile_menu:
+			SharedPreferences settings = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putString("profile", "");
+			editor.commit();
+			getPrefs();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -357,12 +397,12 @@ public class Lyricue extends FragmentActivity {
 	}
 
 	public void logError(String error_text) {
-		Log.d(TAG, error_text);
+		Log.e(TAG, error_text);
 		Toast.makeText(this, error_text, Toast.LENGTH_SHORT).show();
 	}
 
 	public void logDebug(String error_text) {
-		Log.d(TAG, error_text);
+		Log.i(TAG, error_text);
 	}
 
 	public void load_playlist() {

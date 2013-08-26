@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textViewVerse"
-        android:layout_toLeftOf="@+id/textViewDash"
+        android:layout_toLeftOf="@+id/textChooseProfile"
         android:layout_toRightOf="@+id/imageBiblePrev"
         android:clickable="false"
         android:prompt="@string/selectversestart" />
@@ -80,12 +80,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textViewVerse"
         android:layout_toLeftOf="@+id/imageBibleNext"
-        android:layout_toRightOf="@+id/textViewDash"
+        android:layout_toRightOf="@+id/textChooseProfile"
         android:clickable="false"
         android:prompt="@string/selectverseend" />
 
     <TextView
-        android:id="@+id/textViewDash"
+        android:id="@+id/textChooseProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textViewVerse"
@@ -110,7 +110,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/textViewDash"
+        android:layout_toLeftOf="@+id/textChooseProfile"
         android:clickable="false"
         android:text="@string/add_verse_to_playlist" />
 

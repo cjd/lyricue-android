@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,14 +22,27 @@ import android.util.Log;
 
 public class LyricueDisplay extends Service {
 	private static final String TAG = Lyricue.class.getSimpleName();
-	Socket sc = null;
-	DataOutputStream os = null;
 
-	public String hostip = "";
+	public String[] hosts = null;
 	public Context context = null;
 
-	public LyricueDisplay(String hostip) {
-		this.hostip = hostip;
+	public LyricueDisplay(Map<String, String> hostmap, String profile) {
+		hosts = new String[hostmap.size()];
+		int i = 0;
+		for (Map.Entry<String, String> entry : hostmap.entrySet()) {
+			if (entry.getValue().equals(profile) || profile.isEmpty()) {
+				hosts[i] = entry.getKey();
+				i++;
+			}
+		}
+	}
+	
+	public LyricueDisplay(String host) {
+		hosts = new String[1];
+		hosts[0] = host;
+	}
+	public LyricueDisplay(String[] hosts) {
+		this.hosts = hosts;
 	}
 
 	public void logError(String error_text) {
@@ -39,53 +53,64 @@ public class LyricueDisplay extends Service {
 			final String option2) {
 		new Thread(new Runnable() {
 			public void run() {
-				LyricueDisplay ld = new LyricueDisplay(hostip);
-				ld.runCommand(command, option1, option2);
+				LyricueDisplay ld = new LyricueDisplay(hosts);
+				for (int i = 0; i < hosts.length; i++) {
+					if (hosts[i] != null) {
+						ld.runCommand(i, command, option1, option2);
+					}
+				}
 			}
 		}).start();
 	}
 
 	public boolean checkRunning() {
-		if (hostip.equals("#demo")) {
+		if (hosts.length == 0) {
 			return true;
 		}
+
 		try {
-			sc = new Socket();
-			InetSocketAddress hostaddr = new InetSocketAddress(hostip, 2346);
+			Socket sc = new Socket();
+			String[] host = hosts[0].split(":");
+			InetSocketAddress hostaddr = new InetSocketAddress(host[0],
+					Integer.parseInt(host[1]));
 			sc.connect(hostaddr, 5000);
+			sc.close();
+			return true;
 		} catch (UnknownHostException e) {
-			logError("Don't know about host: " + hostip);
+			logError("Don't know about host: " + hosts[0]);
 			return false;
 		} catch (IOException e) {
-			logError("Couldn't get I/O socket for the connection to: " + hostip);
+			logError("Couldn't get I/O socket for the connection to: "
+					+ hosts[0]);
 			return false;
 		}
-		return true;
 	}
-	
-	public String runCommand(String command, String option1, String option2) {
+
+	public String runCommand(Integer hostnum, String command, String option1,
+			String option2) {
 		String result = "";
-		if (hostip.equals("demo")) {
+		if ((hosts.length == 0) || (hosts[hostnum] == null)) {
 			return result;
 		}
-		if (sc == null) {
-			try {
-				sc = new Socket(hostip, 2346);
-			} catch (UnknownHostException e) {
-				logError("Don't know about host: " + hostip);
-			} catch (IOException e) {
-				logError("Couldn't get I/O socket for the connection to: "
-						+ hostip);
-			}
+		Socket sc = null;
+		DataOutputStream os = null;
+		String[] host = hosts[hostnum].split(":");
+		try {
+			sc = new Socket(host[0], Integer.parseInt(host[1]));
+		} catch (UnknownHostException e) {
+			logError("Don't know about host: " + hosts[hostnum]);
+		} catch (IOException e) {
+			logError("Couldn't get I/O socket for the connection to: "
+					+ hosts[hostnum]);
 		}
-		if (sc != null && os == null) {
+		if (sc != null) {
 			try {
 				os = new DataOutputStream(sc.getOutputStream());
 			} catch (UnknownHostException e) {
-				logError("Don't know about host: " + hostip);
+				logError("Don't know about host: " + hosts[hostnum]);
 			} catch (IOException e) {
 				logError("Couldn't get I/O output for the connection to: "
-						+ hostip);
+						+ hosts[hostnum]);
 			}
 		}
 		if (sc != null && os != null) {
@@ -109,8 +134,6 @@ public class LyricueDisplay extends Service {
 				try {
 					os.close();
 					sc.close();
-					os = null;
-					sc = null;
 				} catch (IOException f) {
 				}
 			} catch (UnknownHostException e) {
@@ -122,7 +145,6 @@ public class LyricueDisplay extends Service {
 			if (sc != null) {
 				try {
 					sc.close();
-					sc = null;
 				} catch (IOException e) {
 					logError("IOException:  " + e);
 				}
@@ -130,7 +152,6 @@ public class LyricueDisplay extends Service {
 			if (os != null) {
 				try {
 					os.close();
-					os = null;
 				} catch (IOException e) {
 					logError("IOException:  " + e);
 				}
@@ -139,9 +160,8 @@ public class LyricueDisplay extends Service {
 		return result;
 	}
 
-	
 	public JSONArray runQuery(String database, String query) {
-		String result = runCommand("query", database, query);
+		String result = runCommand(0, "query", database, query);
 		if (result == "") {
 			return null;
 		} else {

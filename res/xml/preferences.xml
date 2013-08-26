@@ -3,9 +3,9 @@
 
     <PreferenceCategory android:title="Lyricue preferences" >
         <EditTextPreference
-            android:key="hostip"
-            android:summary="Enter the hostname/IP of where lyricue display is running"
-            android:title="Address of projector" />
+            android:key="profile"
+            android:title="Enter the profile to look for"
+            android:summary="leave blank to auto search on startup" />
 
         <CheckBoxPreference
             android:defaultValue="1"
