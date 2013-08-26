@@ -89,7 +89,7 @@ public class LyricueDisplay extends Service {
 	public String runCommand(Integer hostnum, String command, String option1,
 			String option2) {
 		String result = "";
-		if ((hosts.length == 0) || (hosts[hostnum] == null)) {
+		if ((hosts == null) || (hosts.length == 0) || (hosts[hostnum] == null)) {
 			return result;
 		}
 		Socket sc = null;

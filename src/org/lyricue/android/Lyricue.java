@@ -79,6 +79,21 @@ public class Lyricue extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG,"onCreate()");
 		activity=this;
+		setContentView(R.layout.main);
+		fragman = getSupportFragmentManager();
+		adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(), activity);
+		pager = (ViewPager) findViewById(R.id.viewpager);
+		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
+		pager.setAdapter(adapter);
+		indicator.setViewPager(pager);
+		pager.setOffscreenPageLimit(5);
+		pager.setCurrentItem(0);
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		thumbnail_width = Math.min(displaymetrics.widthPixels,
+				displaymetrics.heightPixels) / 2;
 		getPrefs();
 	}
 
@@ -222,21 +237,6 @@ public class Lyricue extends FragmentActivity {
 				progressLoad.dismiss();
 			Log.i(TAG,"return:"+result);
 			if ((result == SUCCESS) || (result == DEMO_MODE)) {
-				setContentView(R.layout.main);
-				fragman = getSupportFragmentManager();
-				adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(), activity);
-				pager = (ViewPager) findViewById(R.id.viewpager);
-				TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
-				pager.setAdapter(adapter);
-				indicator.setViewPager(pager);
-				pager.setOffscreenPageLimit(5);
-				pager.setCurrentItem(0);
-				getWindow().setSoftInputMode(
-						WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-				DisplayMetrics displaymetrics = new DisplayMetrics();
-				getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-				thumbnail_width = Math.min(displaymetrics.widthPixels,
-						displaymetrics.heightPixels) / 2;
 				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 					//notify = new MyNotification(this, hostmap);
 				}
