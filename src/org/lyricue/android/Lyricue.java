@@ -22,6 +22,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuInflater;
 import com.viewpagerindicator.TabPageIndicator;
 
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -396,6 +397,11 @@ public class Lyricue extends SherlockFragmentActivity {
 			editor.putString("profile", "");
 			editor.commit();
 			getPrefs();
+			return true;
+		case R.id.exit_menu:
+			NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.cancelAll();
+			finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

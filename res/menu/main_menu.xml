@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/settings_menu" android:title="@string/settings" android:showAsAction="never" android:icon="@drawable/ic_launcher_settings"></item>
-    <item android:id="@+id/profile_menu" android:title="@string/changeprofile" android:showAsAction="never"></item>
-    
+
+    <item
+        android:id="@+id/profile_menu"
+        android:menuCategory="system"
+        android:orderInCategory="8"
+        android:showAsAction="never"
+        android:title="@string/changeprofile">
+    </item>
+    <item
+        android:id="@+id/settings_menu"
+        android:icon="@drawable/ic_launcher_settings"
+        android:menuCategory="system"
+        android:orderInCategory="9"
+        android:showAsAction="never"
+        android:title="@string/settings">
+    </item>
+    <item
+        android:id="@+id/exit_menu"
+        android:menuCategory="system"
+        android:orderInCategory="10"
+        android:showAsAction="never"
+        android:title="@string/exit">
+    </item>
 
 </menu>
