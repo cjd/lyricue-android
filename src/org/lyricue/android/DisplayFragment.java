@@ -1,7 +1,8 @@
 package org.lyricue.android;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class DisplayFragment extends Fragment {
+public class DisplayFragment extends SherlockFragment {
 	private static final String TAG = Lyricue.class.getSimpleName();
 
 	Lyricue activity = null;

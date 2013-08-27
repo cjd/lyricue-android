@@ -15,6 +15,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuInflater;
 import com.viewpagerindicator.TabPageIndicator;
 
 import android.app.ProgressDialog;
@@ -27,21 +32,16 @@ import android.net.wifi.WifiManager.MulticastLock;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class Lyricue extends FragmentActivity {
+public class Lyricue extends SherlockFragmentActivity {
 
 	/** Called when the activity is first created. */
 	public static final String PREFS_NAME = "LyricuePrefsFile";
@@ -64,7 +64,7 @@ public class Lyricue extends FragmentActivity {
 	public boolean togglescreen = false;
 	public boolean imageplaylist = true;
 	public LyricueDisplay ld = null;
-	public Map<String, Fragment> fragments = new HashMap<String, Fragment>();
+	public Map<String, SherlockFragment> fragments = new HashMap<String, SherlockFragment>();
 	private ProgressDialog progressLoad = null;
 	public int thumbnail_width = 0;
 	public MyNotification notify = null;
@@ -373,9 +373,10 @@ public class Lyricue extends FragmentActivity {
 		}
 	}
 
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
+		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
 		return true;
 	}

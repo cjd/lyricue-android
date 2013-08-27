@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/refresh_playlist" android:title="@string/refresh_playlist"></item>
-    <item android:id="@+id/select_playlist_menu" android:title="@string/select_playlist"></item>
-    <item android:id="@+id/toggle_previews" android:title="@string/toggle_previews"></item>
+
+    <item
+        android:id="@+id/refresh_playlist"
+        android:icon="@drawable/ic_refresh"
+        android:showAsAction="always"
+        android:title="@string/refresh_playlist">
+    </item>
+    <item
+        android:id="@+id/select_playlist_menu"
+        android:showAsAction="ifRoom"
+        android:title="@string/select_playlist">
+    </item>
+    <item
+        android:id="@+id/toggle_previews"
+        android:showAsAction="never"
+        android:title="@string/toggle_previews">
+    </item>
+
 </menu>

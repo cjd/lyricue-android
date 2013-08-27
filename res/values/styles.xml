@@ -15,6 +15,11 @@
 -->
 
 <resources>
+     <style name="Theme.PageIndicatorCustom" parent="android:Theme.NoTitleBar">
+        <item name="vpiIconPageIndicatorStyle">@style/Widget.IconPageIndicator</item>
+        <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
+    </style>
+    
     <style name="StyledIndicators" parent="@android:style/Theme.Light">
         <item name="vpiCirclePageIndicatorStyle">@style/CustomCirclePageIndicator</item>
         <item name="vpiLinePageIndicatorStyle">@style/CustomLinePageIndicator</item>
@@ -73,5 +78,34 @@
         <item name="fadeLength">1000</item>
         <item name="fadeDelay">1000</item>
     </style>
+      <style name="treeViewListStyle" parent="@android:attr/listViewStyle">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:divider">@drawable/divider</item>
+    </style>
     
+    <!-- This is our main ActionBarSherlock theme -->
+    <style name="Theme.Styled" parent="Theme.Sherlock">
+        <item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+        <item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+    </style><!-- This is our ViewPagerIndicator theme. We inherit from the ABS theme -->
+    <style name="Theme.VPI" parent="Theme.Styled">
+       <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+    </style>    
+    <!-- "Implementation" of our ABS custom theme -->
+    <style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar">
+        <item name="titleTextStyle">@style/TitleText</item>
+        <item name="android:titleTextStyle">@style/TitleText</item>
+    </style>
+    
+    <!-- "Implementation" of VPI theme. We just set the text size and color. -->
+    <style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
+<!--         <item name="android:textSize">20sp</item> -->
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    
+    <!-- More customizations for ABS -->
+     <style name="TitleText" >
+        <item name="android:textColor">@android:color/white</item>
+<!--         <item name="android:textSize">17sp</item> -->
+    </style>
 </resources>

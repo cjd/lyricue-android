@@ -6,10 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
-public class BibleFragment extends Fragment {
+public class BibleFragment extends SherlockFragment {
 	private static final String TAG = Lyricue.class.getSimpleName();
 
 	Lyricue activity = null;
@@ -322,7 +323,7 @@ public class BibleFragment extends Fragment {
 		protected Integer doInBackground(String... books) {
 			String ret = activity.ld.runCommand(0, "bible", "maxchapter",
 					books[0]).trim();
-			if (ret.isEmpty()) {
+			if (ret.length()==0) {
 				return 1;
 			} else {
 				return Integer.parseInt(ret);
@@ -364,7 +365,7 @@ public class BibleFragment extends Fragment {
 		protected Integer doInBackground(String... lookup) {
 			String ret = activity.ld.runCommand(0, "bible", "maxverse",
 					lookup[0]).trim();
-			if (ret.isEmpty()) {
+			if (ret.length()==0) {
 				return 1;
 			} else {
 				return Integer.parseInt(ret);

@@ -30,7 +30,7 @@ public class LyricueDisplay extends Service {
 		hosts = new String[hostmap.size()];
 		int i = 0;
 		for (Map.Entry<String, String> entry : hostmap.entrySet()) {
-			if (entry.getValue().equals(profile) || profile.isEmpty()) {
+			if (entry.getValue().equals(profile) || profile.length()==0) {
 				hosts[i] = entry.getKey();
 				i++;
 			}

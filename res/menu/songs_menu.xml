@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/refresh_songlist" android:title="@string/refresh_songlist"></item>
+
+    <item
+        android:id="@+id/refresh_songlist"
+        android:icon="@drawable/ic_refresh"
+        android:showAsAction="always"
+        android:title="@string/refresh_songlist">
+    </item>
+
 </menu>

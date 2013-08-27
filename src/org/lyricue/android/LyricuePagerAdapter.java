@@ -1,9 +1,10 @@
 package org.lyricue.android;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
@@ -57,8 +58,8 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 	}
 
 	@Override
-	public Fragment getItem(int position) {
-		Fragment f = null;
+	public SherlockFragment getItem(int position) {
+		SherlockFragment f = null;
 
 		if (position == CONTROL_ID) {
 			f = new ControlFragment();
