@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class AvailableSongsFragment extends Fragment {
+	private static final String TAG = Lyricue.class.getSimpleName();
 	Lyricue activity = null;
 	View v = null;
 	ListView songlist = null;
@@ -79,12 +81,12 @@ public class AvailableSongsFragment extends Fragment {
 					.getMenuInfo();
 
 			if (adapter != null) {
-				activity.logDebug("pos:" + info.position);
+				Log.i(TAG,"pos:" + info.position);
 				long itemid = adapter.getItemId(info.position);
 				String itemtext = adapter.getItem(info.position).main;
 
 				if (item.getItemId() == 0) {
-					activity.logDebug("add to playlist:" + itemid + "-"
+					Log.i(TAG,"add to playlist:" + itemid + "-"
 							+ itemtext);
 					add_to_playlist(itemid);
 				}
@@ -98,12 +100,12 @@ public class AvailableSongsFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		activity.logDebug("resume available");
+		Log.i(TAG,"resume available");
 		super.onResume();
 	}
 
 	public void load_available() {
-		activity.logDebug("load_available");
+		Log.i(TAG,"load_available");
 		new AvailableSongsTask().execute();
 	}
 
@@ -164,13 +166,13 @@ public class AvailableSongsFragment extends Fragment {
 		}
 
 		protected void onPostExecute(AvailableSongsAdapter result) {
-			activity.logDebug("Songlist loaded");
+			Log.i(TAG,"Songlist loaded");
 			songlist.setAdapter(result);
 			songlist.setTextFilterEnabled(true);
 			songlist.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
-					activity.logDebug("pos:" + position + " pid:"
+					Log.i(TAG,"pos:" + position + " pid:"
 							+ activity.playlistid);
 				}
 			});
@@ -181,7 +183,7 @@ public class AvailableSongsFragment extends Fragment {
 	public void add_to_playlist(long itemid) {
 		if (activity.playlistid < 0)
 			return;
-		activity.logDebug("add to playlist");
+		Log.i(TAG,"add to playlist");
 		new AddSongTask().execute(itemid);
 
 	}

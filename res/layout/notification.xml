@@ -14,39 +14,39 @@
         android:src="@drawable/ic_launcher" />
 
     <ImageButton
-        android:id="@+id/imageButtonNotifyPrev"
+        android:id="@+id/imageButtonNotifyReshow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageProfileHeader"
-        android:contentDescription="@string/prevpage"
-        android:src="@android:drawable/ic_media_rew" />
-
-    <ImageButton
-        android:id="@+id/imageButtonNotifyNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageButtonNotifyPrev"
-        android:contentDescription="@string/nextpage"
-        android:src="@android:drawable/ic_media_ff" />
+        android:contentDescription="@string/display"
+        android:src="@android:drawable/ic_media_play" />
 
     <ImageButton
         android:id="@+id/imageButtonNotifyBlank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageButtonNotifyNext"
+        android:layout_toLeftOf="@+id/imageButtonNotifyReshow"
         android:contentDescription="@string/blank"
         android:src="@android:drawable/ic_media_pause" />
 
     <ImageButton
-        android:id="@+id/imageButtonNotifyReshow"
+        android:id="@+id/imageButtonNotifyNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageButtonNotifyBlank"
-        android:contentDescription="@string/display"
-        android:src="@android:drawable/ic_media_play" />
+        android:layout_toLeftOf="@+id/imageButtonNotifyBlank"
+        android:contentDescription="@string/nextpage"
+        android:src="@android:drawable/ic_media_ff" />
+
+    <ImageButton
+        android:id="@+id/imageButtonNotifyPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/imageButtonNotifyNext"
+        android:contentDescription="@string/prevpage"
+        android:src="@android:drawable/ic_media_rew" />
 
 </RelativeLayout>

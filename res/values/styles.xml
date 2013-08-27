@@ -73,4 +73,5 @@
         <item name="fadeLength">1000</item>
         <item name="fadeDelay">1000</item>
     </style>
+    
 </resources>

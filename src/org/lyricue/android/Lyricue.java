@@ -77,11 +77,12 @@ public class Lyricue extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.i(TAG,"onCreate()");
-		activity=this;
+		Log.i(TAG, "onCreate()");
+		activity = this;
 		setContentView(R.layout.main);
 		fragman = getSupportFragmentManager();
-		adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(), activity);
+		adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(),
+				activity);
 		pager = (ViewPager) findViewById(R.id.viewpager);
 		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		pager.setAdapter(adapter);
@@ -109,7 +110,7 @@ public class Lyricue extends FragmentActivity {
 	}
 
 	public void getPrefs() {
-		logDebug("getPrefs");
+		Log.i(TAG, "getPrefs");
 		if (progressLoad != null)
 			progressLoad.dismiss();
 		progressLoad = ProgressDialog.show(this, "", "Loading Preferences..",
@@ -142,12 +143,14 @@ public class Lyricue extends FragmentActivity {
 			}
 
 			profile = settings.getString("profile", "not set");
-			logDebug("profile:" + profile);
+			Log.i(TAG, "profile:" + profile);
 			if (profile.equals("#demo")) {
 				hosts.clear();
 				return DEMO_MODE;
 			}
-			
+
+			// Find a display server to talk to (doesn't matter which - we are
+			// just using it to ask the DB for a full list)
 			Log.i(TAG, "start_mdns()");
 			try {
 				WifiManager wifi = (WifiManager) Lyricue.this
@@ -181,20 +184,26 @@ public class Lyricue extends FragmentActivity {
 										+ ":" + arg0.getInfo().getPort());
 								found_host = arg0.getInfo().getHostAddresses()[0];
 								found_port = arg0.getInfo().getPort();
+								if (android.os.Build.MODEL.equals("google_sdk")
+										|| android.os.Build.MODEL.equals("sdk")) {
+									found_host = "10.0.2.2";
+								}
 							}
 						});
 				lock.release();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-	        for (long stop=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);stop>System.nanoTime();) {
-	        	if (found_port != 0) break;
-	        	try {
+			for (long stop = System.nanoTime() + TimeUnit.SECONDS.toNanos(5); stop > System
+					.nanoTime();) {
+				if (found_port != 0)
+					break;
+				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
 				}
-	        }
-			Log.i(TAG,"Found values:"+found_host+":"+found_port);
+			}
+			Log.i(TAG, "Found values:" + found_host + ":" + found_port);
 			if (found_port == 0) {
 				profile = "#demo";
 				hosts.clear();
@@ -203,42 +212,59 @@ public class Lyricue extends FragmentActivity {
 			} else {
 				String[] myhosts = new String[1];
 				myhosts[0] = found_host + ":" + found_port;
-				
+
 				if (profile.equals("not set") || profile.equals("")) {
 					return SELECT_PROFILE;
 				}
 				LyricueDisplay ld = new LyricueDisplay(myhosts);
-				JSONArray jArray = ld.runQuery("lyricDb",
-						"SELECT host, type FROM status WHERE TIMEDIFF(NOW(), lastupdate) < '00:00:02' AND profile='"+profile+"'");
+				JSONArray jArray = ld
+						.runQuery(
+								"lyricDb",
+								"SELECT host, type FROM status WHERE TIMEDIFF(NOW(), lastupdate) < '00:00:02' AND profile='"
+										+ profile + "'");
 				if (jArray != null) {
 					try {
 						for (int i = 0; i < jArray.length(); i++) {
 							JSONObject results = jArray.getJSONObject(i);
-							if (results.getString("type").equals("normal") || results.getString("type").equals("simple")) {
-								hosts.put(results.getString("host"),profile);
-								Log.i(TAG,"Adding host:"+results.getString("host"));
+							if (results.getString("type").equals("normal")
+									|| results.getString("type").equals(
+											"simple")) {
+								if (android.os.Build.MODEL.equals("google_sdk")
+										|| android.os.Build.MODEL.equals("sdk")) {
+									String[] values = results.getString("host")
+											.split(":");
+									hosts.put("10.0.2.2:" + values[1], profile);
+									Log.i(TAG, "Adding host:" + "10.0.2.2:"
+											+ values[1]);
+								} else {
+									hosts.put(results.getString("host"),
+											profile);
+									Log.i(TAG,
+											"Adding host:"
+													+ results.getString("host"));
+								}
+
 							}
 						}
 					} catch (JSONException e) {
-						Log.e(TAG, "Error parsing data "
-								+ e.toString());
+						Log.e(TAG, "Error parsing data " + e.toString());
 					}
 					rebuild_hostmap();
 					return SUCCESS;
 				} else {
 					return SELECT_PROFILE;
 				}
-			}			
+			}
 		}
 
 		@Override
 		protected void onPostExecute(Integer result) {
 			if (progressLoad != null)
 				progressLoad.dismiss();
-			Log.i(TAG,"return:"+result);
+			Log.i(TAG, "return:" + result);
 			if ((result == SUCCESS) || (result == DEMO_MODE)) {
 				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-					//notify = new MyNotification(this, hostmap);
+					notify = new MyNotification(activity, output_names);
 				}
 				ld = new LyricueDisplay(output_names);
 
@@ -279,7 +305,7 @@ public class Lyricue extends FragmentActivity {
 			} else if (result == SELECT_PROFILE) {
 				Intent profileActivity = new Intent(getBaseContext(),
 						ChooseProfile.class);
-				profileActivity.putExtra("host", found_host+":"+found_port);
+				profileActivity.putExtra("host", found_host + ":" + found_port);
 				startActivityForResult(profileActivity, 1);
 				finish();
 			}
@@ -288,20 +314,20 @@ public class Lyricue extends FragmentActivity {
 
 	@Override
 	protected void onStop() {
-		Log.i(TAG,"onStop()");
+		Log.i(TAG, "onStop()");
 		super.onStop();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.i(TAG,"onStart()");
-		//getPrefs();
+		Log.i(TAG, "onStart()");
+		// getPrefs();
 	}
 
 	@Override
 	protected void onDestroy() {
-		Log.i(TAG,"onDestroy()");
+		Log.i(TAG, "onDestroy()");
 		super.onDestroy();
 	}
 
@@ -399,10 +425,6 @@ public class Lyricue extends FragmentActivity {
 	public void logError(String error_text) {
 		Log.e(TAG, error_text);
 		Toast.makeText(this, error_text, Toast.LENGTH_SHORT).show();
-	}
-
-	public void logDebug(String error_text) {
-		Log.i(TAG, error_text);
 	}
 
 	public void load_playlist() {

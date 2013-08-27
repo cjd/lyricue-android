@@ -9,6 +9,8 @@
     <pl.polidea.treeview.TreeViewList
         android:id="@+id/playlistView"
         android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:scrollbars="vertical" android:smoothScrollbar="true"/>
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical"
+        android:smoothScrollbar="true" />
+
 </LinearLayout>

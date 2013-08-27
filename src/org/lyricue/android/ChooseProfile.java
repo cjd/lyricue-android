@@ -22,26 +22,27 @@ public class ChooseProfile extends Activity {
 	private static final String TAG = Lyricue.class.getSimpleName();
 	private String host = "";
 	Spinner spinProfile;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "Choosing Profile");
-		
+
 		setContentView(R.layout.choose_profile);
 		spinProfile = (Spinner) findViewById(R.id.spinProfileSelect);
-		host=getIntent().getExtras().getString("host");
+		host = getIntent().getExtras().getString("host");
 		new GetProfilesTask().execute(this);
 	}
-	
-	private class GetProfilesTask extends AsyncTask<Context, Void, ArrayAdapter<String>> {
-		
+
+	private class GetProfilesTask extends
+			AsyncTask<Context, Void, ArrayAdapter<String>> {
+
 		@Override
 		protected ArrayAdapter<String> doInBackground(Context... arg0) {
 			LyricueDisplay ld = new LyricueDisplay(host);
-			JSONArray jArray = ld.runQuery("lyricDb", "SELECT DISTINCT(profile) FROM status") ;
+			JSONArray jArray = ld.runQuery("lyricDb",
+					"SELECT DISTINCT(profile) FROM status");
 			ArrayList<String> spinArray = new ArrayList<String>();
-			
 
 			if (jArray != null) {
 				try {
@@ -50,8 +51,7 @@ public class ChooseProfile extends Activity {
 						spinArray.add(results.getString("profile"));
 					}
 				} catch (JSONException e) {
-					Log.e(TAG, "Error parsing data "
-							+ e.toString());
+					Log.e(TAG, "Error parsing data " + e.toString());
 				}
 			}
 			if (spinArray.size() == 1) {
@@ -61,10 +61,10 @@ public class ChooseProfile extends Activity {
 
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(arg0[0],
 					android.R.layout.simple_spinner_item, spinArray);
-			
+
 			return adapter;
-		}		
-		
+		}
+
 		@Override
 		protected void onPostExecute(ArrayAdapter<String> result) {
 			spinProfile.setAdapter(result);
@@ -72,7 +72,7 @@ public class ChooseProfile extends Activity {
 	}
 
 	public void onClickProfile(View v) {
-		Log.d(TAG, "onClickSetup");
+		Log.i(TAG, "onClickSetup");
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor editor = settings.edit();

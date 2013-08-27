@@ -2,6 +2,7 @@ package org.lyricue.android;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,6 +15,7 @@ import pl.polidea.treeview.TreeNodeInfo;
 import pl.polidea.treeview.TreeStateManager;
 
 final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
+	private static final String TAG = Lyricue.class.getSimpleName();
 	private final Lyricue activity;
 	private final PlaylistFragment fragment;
 
@@ -36,7 +38,7 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 				.findViewById(R.id.playlist_item_image);
 		descriptionView.setText(getDescription(treeNodeInfo.getId()));
 		descriptionView.setTextSize(20 - 2 * treeNodeInfo.getLevel());
-		
+
 		if (activity.imageplaylist && (getImage(treeNodeInfo.getId()) != null)) {
 			imageView.setImageBitmap(getImage(treeNodeInfo.getId()));
 			imageView.setScaleType(ImageView.ScaleType.FIT_START);
@@ -54,8 +56,10 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 	private Bitmap getImage(final long id) {
 		Bitmap b = fragment.imagemap.get(id);
 		if (b != null) {
-			int height = (b.getHeight()*activity.thumbnail_width)/b.getWidth();
-			return Bitmap.createScaledBitmap(fragment.imagemap.get(id), activity.thumbnail_width,height, false);
+			int height = (b.getHeight() * activity.thumbnail_width)
+					/ b.getWidth();
+			return Bitmap.createScaledBitmap(fragment.imagemap.get(id),
+					activity.thumbnail_width, height, false);
 		}
 		return null;
 	}
@@ -69,8 +73,12 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 
 	@Override
 	public void handleItemClick(final View view, final Object id) {
-		activity.logDebug(id.toString());
-		activity.ld.runCommand_noreturn("display", id.toString(), "");
+		Log.i(TAG, id.toString());
+		if (id.toString().equals("0")) {
+			fragment.load_playlists();
+		} else {
+			activity.ld.runCommand_noreturn("display", id.toString(), "");
+		}
 	}
 
 	@Override

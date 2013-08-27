@@ -19,6 +19,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -30,6 +31,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 public class PlaylistFragment extends Fragment {
+	private static final String TAG = Lyricue.class.getSimpleName();
+
 	private final Set<Long> selected = new HashSet<Long>();
 
 	public static final String PREFS_NAME = "LyricuePrefsFile";
@@ -59,7 +62,7 @@ public class PlaylistFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		activity.logDebug("resume playlist");
+		Log.i(TAG, "resume playlist");
 		super.onResume();
 	}
 
@@ -105,11 +108,11 @@ public class PlaylistFragment extends Fragment {
 			long itemid = treeView.getItemIdAtPosition(info.position);
 
 			if (item.getItemId() == 0) {
-				activity.logDebug("show item:" + itemid);
+				Log.i(TAG, "show item:" + itemid);
 				activity.ld.runCommand_noreturn("display",
 						String.valueOf(itemid), "");
 			} else if (item.getItemId() == 1) {
-				activity.logDebug("remove item:" + itemid);
+				Log.i(TAG, "remove item:" + itemid);
 				if (!activity.hosts.isEmpty())
 					new RemoveItemTask().execute(itemid);
 			}
@@ -121,7 +124,7 @@ public class PlaylistFragment extends Fragment {
 	}
 
 	void load_playlists() {
-		activity.logDebug("load_playlists");
+		Log.i(TAG, "load_playlists()");
 		if (activity.playlistid == 0) {
 			return;
 		}
@@ -144,7 +147,8 @@ public class PlaylistFragment extends Fragment {
 					+ " AND (type='play' OR type='sub')"
 					+ " WHERE data IS NULL AND playlists.id > 0"
 					+ " ORDER BY id";
-			LyricueDisplay ld = new LyricueDisplay(activity.hosts, activity.profile);
+			LyricueDisplay ld = new LyricueDisplay(activity.hosts,
+					activity.profile);
 
 			JSONArray jArray = ld.runQuery("lyricDb", Query);
 			if (jArray == null) {
@@ -169,9 +173,9 @@ public class PlaylistFragment extends Fragment {
 	}
 
 	void load_playlist() {
-		activity.logDebug("load_playlist");
+		Log.i(TAG, "load_playlist()");
 		if (activity.playlistid != -1) {
-			
+
 		}
 		new LoadPlaylistTask().execute(activity.playlistid);
 	}
@@ -187,7 +191,7 @@ public class PlaylistFragment extends Fragment {
 			} else {
 				treeBuilder.sequentiallyAddNextNode((long) 0, 0);
 				playlistmap.put((long) 0,
-						"No playlist loaded\nLoad one from the menu");
+						"No playlist loaded\nClick here to select one");
 			}
 			adapter = new PlaylistAdapter(activity, fragment, selected,
 					manager, LEVEL_NUMBER);
@@ -195,7 +199,7 @@ public class PlaylistFragment extends Fragment {
 		}
 
 		protected void onPostExecute(PlaylistAdapter result) {
-			activity.logDebug("done loading playlist");
+			Log.i(TAG, "done loading playlist");
 			treeView.setAdapter(result);
 			manager.collapseChildren(null);
 			treeView.setCollapsible(true);
@@ -205,7 +209,7 @@ public class PlaylistFragment extends Fragment {
 	}
 
 	void add_playlist(TreeBuilder<Long> treeBuilder, int playlistid, int level) {
-		activity.logDebug("add_playlist:" + playlistid);
+		Log.i(TAG, "add_playlist:" + playlistid);
 
 		if (activity.hosts.isEmpty()) {
 			load_demo_playlist(treeBuilder);
@@ -251,12 +255,20 @@ public class PlaylistFragment extends Fragment {
 					playlistmap.put(results.getLong("playorder"), "Verses "
 							+ results.getString("data"));
 				} else if (results.getString("type").equals("file")) {
-					String filename = results.getString("data"); 
+					String filename = results.getString("data");
 					if (filename.startsWith("/var/tmp/lyricue-")) {
-						filename = filename.substring(filename.lastIndexOf("/")+1, filename.length()-4).replace("_", " ");
-						playlistmap.put(results.getLong("playorder"), "Presentation: "+ filename);
+						filename = filename.substring(
+								filename.lastIndexOf("/") + 1,
+								filename.length() - 4).replace("_", " ");
+						playlistmap.put(results.getLong("playorder"),
+								"Presentation: " + filename);
 					} else {
-						playlistmap.put(results.getLong("playorder"), "File:" + results.getString("data").substring(results.getString("data").lastIndexOf("/")+1));
+						playlistmap.put(
+								results.getLong("playorder"),
+								"File:"
+										+ results.getString("data").substring(
+												results.getString("data")
+														.lastIndexOf("/") + 1));
 					}
 				} else if (results.getString("type").equals("imag")) {
 					String[] imageItem = results.getString("data")
@@ -276,7 +288,11 @@ public class PlaylistFragment extends Fragment {
 									"Image: unknown");
 						}
 					} else if (imageItem[0].equals("dir")) {
-						playlistmap.put(results.getLong("playorder"), "Image:" + imageItem[1].substring(imageItem[1].lastIndexOf("/")+1));
+						playlistmap.put(
+								results.getLong("playorder"),
+								"Image:"
+										+ imageItem[1].substring(imageItem[1]
+												.lastIndexOf("/") + 1));
 					} else {
 						playlistmap.put(results.getLong("playorder"), "Image:"
 								+ imageItem[1]);

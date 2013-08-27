@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +23,8 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 
 public class BibleFragment extends Fragment {
+	private static final String TAG = Lyricue.class.getSimpleName();
+
 	Lyricue activity = null;
 	View v = null;
 	String biblename = "";
@@ -70,7 +73,7 @@ public class BibleFragment extends Fragment {
 		@Override
 		protected ArrayList<String> doInBackground(Context... arg0) {
 			try {
-				String status = activity.ld.runCommand(0,"status", "", "");
+				String status = activity.ld.runCommand(0, "status", "", "");
 				if (!status.equals("")) {
 
 					String biblename = status
@@ -79,7 +82,7 @@ public class BibleFragment extends Fragment {
 							biblename.lastIndexOf(","));
 
 					// Find Bibles
-					String bibles = activity.ld.runCommand(0,"bible",
+					String bibles = activity.ld.runCommand(0, "bible",
 							"available", "");
 					JSONObject json = new JSONObject(bibles);
 					JSONArray jArray = json.getJSONArray("results");
@@ -142,7 +145,7 @@ public class BibleFragment extends Fragment {
 	public class BibleOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View vi) {
-			activity.logDebug("onClickBible");
+			Log.i(TAG, "onClickBible");
 			Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
 			String bookname = spin.getSelectedItem().toString();
 			spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
@@ -179,7 +182,7 @@ public class BibleFragment extends Fragment {
 				}
 				break;
 			case R.id.buttonBibleAdd:
-				activity.logDebug("Adding " + bookname + " " + chapter + ":"
+				Log.i(TAG,"Adding " + bookname + " " + chapter + ":"
 						+ startverse + "-" + endverse);
 				if (!activity.hosts.isEmpty()) {
 					if (activity.playlistid != -1) {
@@ -236,7 +239,7 @@ public class BibleFragment extends Fragment {
 	}
 
 	void show_verse(String verse, String command) {
-		activity.logDebug("Showing " + verse);
+		Log.i(TAG, "Showing " + verse);
 		new ShowVerseTask().execute(command + "#" + verse);
 	}
 
@@ -245,14 +248,14 @@ public class BibleFragment extends Fragment {
 
 		protected String doInBackground(String... verse) {
 			String[] tokens = verse[0].split("#", 2);
-			String shown = activity.ld
-					.runCommand(0,"bible", tokens[0], tokens[1]).trim();
+			String shown = activity.ld.runCommand(0, "bible", tokens[0],
+					tokens[1]).trim();
 			return shown;
 		}
 
 		protected void onPostExecute(String shown) {
 			if (shown != "") {
-				activity.logDebug("Ret " + shown);
+				Log.i(TAG, "Ret " + shown);
 				if (!shown.equals(verse_passed)) {
 					String[] tokens = shown.split("[-:]");
 					String startverse = tokens[2];
@@ -268,7 +271,7 @@ public class BibleFragment extends Fragment {
 	}
 
 	void select_verse(String verse) {
-		activity.logDebug("Select Verse " + verse);
+		Log.i(TAG, "Select Verse " + verse);
 		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
 		String[] tokens = verse.split("[-:]");
 		String bible = tokens[0];
@@ -294,7 +297,7 @@ public class BibleFragment extends Fragment {
 
 	private class SelectBibleTask extends AsyncTask<Integer, Void, Integer> {
 		protected Integer doInBackground(Integer... bible) {
-			activity.ld.runCommand(0,"change_to_db",
+			activity.ld.runCommand(0, "change_to_db",
 					activity.bibles_id[bible[0]],
 					activity.bibles_type[bible[0]]);
 			return 1;
@@ -309,7 +312,7 @@ public class BibleFragment extends Fragment {
 	}
 
 	void select_book() {
-		activity.logDebug("select_book");
+		Log.i(TAG, "select_book");
 		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
 		String bookname = spin.getSelectedItem().toString();
 		new SelectBookTask().execute(bookname);
@@ -317,10 +320,11 @@ public class BibleFragment extends Fragment {
 
 	private class SelectBookTask extends AsyncTask<String, Void, Integer> {
 		protected Integer doInBackground(String... books) {
-			String ret = activity.ld.runCommand(0,"bible","maxchapter", books[0]).trim();
+			String ret = activity.ld.runCommand(0, "bible", "maxchapter",
+					books[0]).trim();
 			if (ret.isEmpty()) {
 				return 1;
-			} else { 
+			} else {
 				return Integer.parseInt(ret);
 			}
 		}
@@ -348,7 +352,7 @@ public class BibleFragment extends Fragment {
 	}
 
 	void select_chapter() {
-		activity.logDebug("select_chapter");
+		Log.i(TAG, "select_chapter");
 		Spinner spin = (Spinner) v.findViewById(R.id.spinBibleChapter);
 		int chapter = Integer.parseInt(spin.getSelectedItem().toString());
 		spin = (Spinner) v.findViewById(R.id.spinBibleBook);
@@ -358,7 +362,8 @@ public class BibleFragment extends Fragment {
 
 	private class SelectChapterTask extends AsyncTask<String, Void, Integer> {
 		protected Integer doInBackground(String... lookup) {
-			String ret = activity.ld.runCommand(0,"bible","maxverse", lookup[0]).trim();
+			String ret = activity.ld.runCommand(0, "bible", "maxverse",
+					lookup[0]).trim();
 			if (ret.isEmpty()) {
 				return 1;
 			} else {
@@ -444,9 +449,9 @@ public class BibleFragment extends Fragment {
 			// Add actual verses
 			String verse = book + ":" + chapter + ":" + startverse + "-"
 					+ chapter + ":" + endverse;
-			String result = activity.ld.runCommand(0,"bible", "verse_start",
+			String result = activity.ld.runCommand(0, "bible", "verse_start",
 					verse).trim();
-			activity.logDebug(result + "=" + verse);
+			Log.i(TAG, result + "=" + verse);
 			while (!result.equals(verse)) {
 				String tokens[] = result.split("[-:]");
 				playorder++;
@@ -461,9 +466,9 @@ public class BibleFragment extends Fragment {
 				verse = tokens2[0] + ":" + tokens2[1] + ":"
 						+ (Integer.parseInt(tokens[4]) + 1) + "-" + tokens2[3]
 						+ ":" + tokens2[4];
-				result = activity.ld.runCommand(0,"bible", "verse_start", verse)
-						.trim();
-				activity.logDebug(result + "=" + verse);
+				result = activity.ld.runCommand(0, "bible", "verse_start",
+						verse).trim();
+				Log.i(TAG, result + "=" + verse);
 			}
 			String tokens[] = result.split("[-:]");
 			playorder++;
