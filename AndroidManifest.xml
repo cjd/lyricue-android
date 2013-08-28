@@ -18,7 +18,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
+        android:label="@string/app_name" android:theme="@style/Theme.VPI">
         <activity
             android:name=".Lyricue"
             android:configChanges="orientation"
@@ -32,15 +32,10 @@
         </activity>
         <activity
             android:name=".Preferences"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@style/Theme.VPI" />
         <activity
             android:name=".ChooseProfile"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity
-            android:name=".UnableToAccess"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity android:name=".JMDNSAddServiceListenerActivity" >
-        </activity>
+            android:theme="@style/Theme.VPI" />
         <activity android:name=".JMDNSRegisterServiceActivity" >
         </activity>
 

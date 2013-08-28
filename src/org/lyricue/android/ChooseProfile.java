@@ -61,7 +61,7 @@ public class ChooseProfile extends Activity {
 
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(arg0[0],
 					android.R.layout.simple_spinner_item, spinArray);
-
+		    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			return adapter;
 		}
 
