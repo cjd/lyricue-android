@@ -147,7 +147,8 @@ public class PlaylistFragment extends SherlockFragment {
 					+ " AND playlist.data NOT LIKE '%-%'"
 					+ " AND (type='play' OR type='sub')"
 					+ " WHERE data IS NULL AND playlists.id > 0"
-					+ " ORDER BY id";
+					+ " AND profile='" + activity.profile
+					+ " ' ORDER BY id";
 			LyricueDisplay ld = new LyricueDisplay(activity.hosts,
 					activity.profile);
 
