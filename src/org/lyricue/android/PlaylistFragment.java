@@ -196,13 +196,14 @@ public class PlaylistFragment extends Fragment {
 
 		protected void onPostExecute(PlaylistAdapter adapter) {
 			listView.setAdapter(adapter);
-			Button button = (Button)fragment.getView().findViewById(R.id.buttonPlayUp); 
-			if (parent_playlist>0) {
+			Button button = (Button) fragment.getView().findViewById(
+					R.id.buttonPlayUp);
+			if (parent_playlist > 0) {
 				button.setVisibility(View.VISIBLE);
 				button.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Log.i(TAG,"Go up to "+parent_playlist);
+						Log.i(TAG, "Go up to " + parent_playlist);
 						load_playlist(parent_playlist);
 					}
 				});
@@ -220,7 +221,9 @@ public class PlaylistFragment extends Fragment {
 						fragment.load_playlists();
 					} else {
 						if (item.type.equals("play") || item.type.equals("sub")) {
-							Log.i(TAG, "Load playlist:"+String.valueOf(item.data));
+							Log.i(TAG,
+									"Load playlist:"
+											+ String.valueOf(item.data));
 							load_playlist(item.data);
 						} else {
 							activity.ld.runCommand_noreturn("display",
@@ -245,10 +248,12 @@ public class PlaylistFragment extends Fragment {
 		if (this_playlist <= 0) {
 			return;
 		}
-		
+
 		String Query;
-		Query = "SELECT playlist FROM playlist WHERE data="+this_playlist+" AND (type='play' OR type='sub')";
-		parent_playlist = (long) activity.ld.runQuery_int("lyricDb", Query, "playlist");
+		Query = "SELECT playlist FROM playlist WHERE data=" + this_playlist
+				+ " AND (type='play' OR type='sub')";
+		parent_playlist = (long) activity.ld.runQuery_int("lyricDb", Query,
+				"playlist");
 
 		Query = "SELECT playorder, type, data FROM playlist"
 				+ " WHERE playlist=" + this_playlist + " ORDER BY playorder";
@@ -318,7 +323,8 @@ public class PlaylistFragment extends Fragment {
 									+ desc, results.getString("type"), (long) 0);
 						} else {
 							adapter.add(results.getLong("playorder"),
-									"Image: unknown", results.getString("type"), (long) 0);
+									"Image: unknown",
+									results.getString("type"), (long) 0);
 						}
 					} else if (imageItem[0].equals("dir")) {
 						adapter.add(
@@ -329,11 +335,13 @@ public class PlaylistFragment extends Fragment {
 								results.getString("type"), (long) 0);
 					} else {
 						adapter.add(results.getLong("playorder"), "Image:"
-								+ imageItem[1], results.getString("type"), (long) 0);
+								+ imageItem[1], results.getString("type"),
+								(long) 0);
 					}
 				} else {
 					adapter.add(results.getLong("playorder"),
-							"Unknown item type", results.getString("type"), (long) 0);
+							"Unknown item type", results.getString("type"),
+							(long) 0);
 				}
 				if (activity.imageplaylist) {
 					if (!imagemap.containsKey(results.getLong("playorder"))) {
@@ -375,9 +383,18 @@ public class PlaylistFragment extends Fragment {
 	}
 
 	void load_demo_playlist() {
-		for (int i = 0; i < 13; i++) {
-			adapter.add((long) i, "Demo Item " + i, "demo", (long) 0);
+		if (this_playlist == 1) {
+			for (int i = 0; i < 13; i++) {
+				adapter.add((long) i, "Demo Song " + i, "play", (long) 2);
+				parent_playlist = (long) 0;
+			}
+		} else {
+			for (int i = 0; i < 13; i++) {
+				adapter.add((long) i, "Demo Item " + i, "demo", (long) 2);
+				parent_playlist = (long) 1;
+			}
 		}
+
 	}
 
 	private class RemoveItemTask extends AsyncTask<Long, Void, Void> {
