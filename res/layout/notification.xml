@@ -4,12 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <ImageView
-        android:id="@+id/imageProfileHeader"
+    <ImageButton
+        android:id="@+id/imageButtonHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
         android:contentDescription="@string/lyricue"
         android:src="@drawable/ic_launcher" />
 

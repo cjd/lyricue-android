@@ -7,33 +7,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.MenuInflater;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class AvailableSongsFragment extends SherlockFragment {
+public class AvailableSongsFragment extends Fragment {
 	private static final String TAG = Lyricue.class.getSimpleName();
 	Lyricue activity = null;
 	View v = null;
 	ListView songlist = null;
 	AvailableSongsAdapter adapter = null;
-	private EditText filterText = null;
 	private ArrayList<AvailableSongItem> items = null;
 
 	@Override
@@ -41,17 +38,33 @@ public class AvailableSongsFragment extends SherlockFragment {
 			Bundle savedInstanceState) {
 		v = (View) inflater.inflate(R.layout.available, null);
 		songlist = (ListView) v.findViewById(R.id.available_songlist);
-		filterText = (EditText) v.findViewById(R.id.available_search);
-		filterText.addTextChangedListener(filterTextWatcher);
 		setHasOptionsMenu(true);
 		activity = (Lyricue) getActivity();
 		return v;
 
 	}
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.songs_menu, menu);
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+		SearchView searchView = (SearchView) MenuItemCompat
+				.getActionView(searchItem);
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+			@Override
+			public boolean onQueryTextSubmit(String arg0) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String arg0) {
+				// TODO Auto-generated method stub if (adapter != null)
+				adapter.getFilter().filter(arg0);
+				return false;
+			}
+		});
 	}
 
 	@Override
@@ -66,7 +79,7 @@ public class AvailableSongsFragment extends SherlockFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.refresh_songlist:
+		case R.id.action_refresh_songlist:
 			load_available();
 			return true;
 		default:
@@ -81,13 +94,12 @@ public class AvailableSongsFragment extends SherlockFragment {
 					.getMenuInfo();
 
 			if (adapter != null) {
-				Log.i(TAG,"pos:" + info.position);
+				Log.i(TAG, "pos:" + info.position);
 				long itemid = adapter.getItemId(info.position);
 				String itemtext = adapter.getItem(info.position).main;
 
 				if (item.getItemId() == 0) {
-					Log.i(TAG,"add to playlist:" + itemid + "-"
-							+ itemtext);
+					Log.i(TAG, "add to playlist:" + itemid + "-" + itemtext);
 					add_to_playlist(itemid);
 				}
 			}
@@ -100,12 +112,12 @@ public class AvailableSongsFragment extends SherlockFragment {
 
 	@Override
 	public void onResume() {
-		Log.i(TAG,"resume available");
+		Log.i(TAG, "resume available");
 		super.onResume();
 	}
 
 	public void load_available() {
-		Log.i(TAG,"load_available");
+		Log.i(TAG, "load_available");
 		new AvailableSongsTask().execute();
 	}
 
@@ -125,7 +137,8 @@ public class AvailableSongsFragment extends SherlockFragment {
 						activity.getApplicationContext(), items);
 				return adapter;
 			}
-			LyricueDisplay ld = new LyricueDisplay(activity.hosts, activity.profile);
+			LyricueDisplay ld = new LyricueDisplay(activity.hosts,
+					activity.profile);
 			String Query = "SELECT COUNT(id) AS count FROM lyricMain WHERE id > 0";
 			int size = ld.runQuery_int("lyricDb", Query, "count");
 			if (size > 0) {
@@ -166,13 +179,13 @@ public class AvailableSongsFragment extends SherlockFragment {
 		}
 
 		protected void onPostExecute(AvailableSongsAdapter result) {
-			Log.i(TAG,"Songlist loaded");
+			Log.i(TAG, "Songlist loaded");
 			songlist.setAdapter(result);
 			songlist.setTextFilterEnabled(true);
 			songlist.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
-					Log.i(TAG,"pos:" + position + " pid:"
+					Log.i(TAG, "pos:" + position + " pid:"
 							+ activity.playlistid);
 				}
 			});
@@ -183,7 +196,7 @@ public class AvailableSongsFragment extends SherlockFragment {
 	public void add_to_playlist(long itemid) {
 		if (activity.playlistid < 0)
 			return;
-		Log.i(TAG,"add to playlist");
+		Log.i(TAG, "add to playlist");
 		new AddSongTask().execute(itemid);
 
 	}
@@ -240,23 +253,4 @@ public class AvailableSongsFragment extends SherlockFragment {
 			return null;
 		}
 	}
-
-	private TextWatcher filterTextWatcher = new TextWatcher() {
-		@Override
-		public void afterTextChanged(Editable s) {
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-		}
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
-			if (adapter != null)
-				adapter.getFilter().filter(s);
-		}
-
-	};
 }

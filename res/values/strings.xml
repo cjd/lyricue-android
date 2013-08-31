@@ -116,5 +116,7 @@ Please Enter the Profile to use.</string>
     <string name="nextverse">Next Verse</string>
     <string name="changeprofile">Change Profile</string>
     <string name="exit">Exit</string>
+    <string name="up">Up</string>
+    <string name="search_songs">Search Available songs</string>
     
 </resources>

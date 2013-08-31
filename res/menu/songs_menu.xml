@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:lyricue="http://schemas.android.com/apk/res-auto">
 
+	<item android:id="@+id/action_search"
+          android:title="@string/search_songs"
+          android:icon="@drawable/ic_action_search"
+          lyricue:showAsAction="always|collapseActionView"
+          lyricue:actionViewClass="android.support.v7.widget.SearchView" />
     <item
-        android:id="@+id/refresh_songlist"
-        android:icon="@drawable/ic_refresh"
-        android:showAsAction="always"
+        android:id="@+id/action_refresh_songlist"
+        android:icon="@drawable/ic_action_refresh"
+        lyricue:showAsAction="always"
         android:title="@string/refresh_songlist">
     </item>
-
+    
 </menu>

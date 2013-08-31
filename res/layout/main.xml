@@ -5,18 +5,12 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <com.viewpagerindicator.TabPageIndicator
-        android:id="@+id/indicator"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
-
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_above="@+id/hline1"
-        android:layout_below="@+id/indicator" />
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/hline1">
+    </android.support.v4.view.ViewPager>
     
     <View
         android:id="@+id/hline1"

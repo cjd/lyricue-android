@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/control_landscape"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-
-    <ImageView
-        android:id="@+id/imageProfileHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:contentDescription="@string/lyricue"
-        android:scaleType="fitCenter"
-        android:src="@drawable/lyricue_header_rotated" />
-
-    <TableLayout
-        android:layout_width="0dip"
-        android:layout_height="fill_parent"
-        android:layout_weight="1" >
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/control_landscape"
+        
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
         <TableRow
             android:id="@+id/tableRow1"
@@ -97,5 +85,3 @@
                 android:textColor="#ffffffff" />
         </TableRow>
     </TableLayout>
-
-</LinearLayout>

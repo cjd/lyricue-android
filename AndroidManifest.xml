@@ -18,12 +18,12 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" android:theme="@style/Theme.VPI">
+        android:label="@string/app_name" android:theme="@style/Theme.Lyricue">
         <activity
             android:name=".Lyricue"
             android:configChanges="orientation"
             android:label="@string/app_name"
-            android:theme="@style/Theme.VPI" >
+            android:theme="@style/Theme.Lyricue" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,10 +32,10 @@
         </activity>
         <activity
             android:name=".Preferences"
-            android:theme="@style/Theme.VPI" />
+            android:theme="@style/Theme.Lyricue" />
         <activity
             android:name=".ChooseProfile"
-            android:theme="@style/Theme.VPI" />
+            android:theme="@style/Theme.Lyricue" />
         <activity android:name=".JMDNSRegisterServiceActivity" >
         </activity>
 

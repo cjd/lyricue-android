@@ -1,56 +1,47 @@
 package org.lyricue.android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.Set;
-
-import pl.polidea.treeview.AbstractTreeViewAdapter;
-import pl.polidea.treeview.TreeNodeInfo;
-import pl.polidea.treeview.TreeStateManager;
-
-final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
+final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
 	private static final String TAG = Lyricue.class.getSimpleName();
 	private final Lyricue activity;
 	private final PlaylistFragment fragment;
 
-	public PlaylistAdapter(final Activity activity,
-			final PlaylistFragment fragment, final Set<Long> selected,
-			final TreeStateManager<Long> treeStateManager,
-			final int numberOfLevels) {
-		super(activity, treeStateManager, numberOfLevels);
+	public PlaylistAdapter(final Activity activity,	final PlaylistFragment fragment, final int textViewResourceId) {
+		super(activity, textViewResourceId);
+		Log.i(TAG, "new playlist adapter");
 		this.fragment = fragment;
 		this.activity = (Lyricue) activity;
 	}
 
 	@Override
-	public LinearLayout updateView(final View view,
-			final TreeNodeInfo<Long> treeNodeInfo) {
-		final LinearLayout viewLayout = (LinearLayout) view;
-		final TextView descriptionView = (TextView) viewLayout
+	public View getView(int position, View convertView, ViewGroup parent) {
+		LayoutInflater inflater = (LayoutInflater) activity
+		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View rowView = inflater.inflate(R.layout.playlist_item, parent, false);
+		final TextView descriptionView = (TextView) rowView
 				.findViewById(R.id.playlist_item_description);
-		final ImageView imageView = (ImageView) viewLayout
+		final ImageView imageView = (ImageView) rowView
 				.findViewById(R.id.playlist_item_image);
-		descriptionView.setText(getDescription(treeNodeInfo.getId()));
-		descriptionView.setTextSize(20 - 2 * treeNodeInfo.getLevel());
-
-		if (activity.imageplaylist && (getImage(treeNodeInfo.getId()) != null)) {
-			imageView.setImageBitmap(getImage(treeNodeInfo.getId()));
+		descriptionView.setText(this.getItem(position).title);
+		Log.i(TAG,"Getview:"+position+"="+this.getItem(position).title);
+		if (activity.imageplaylist && (getImage(getItem(position).id) != null)) {
+			imageView.setImageBitmap(getImage(getItem(position).id));
 			imageView.setScaleType(ImageView.ScaleType.FIT_START);
 			imageView.setVisibility(View.VISIBLE);
 		} else {
 			imageView.setVisibility(View.GONE);
 		}
-		return viewLayout;
-	}
-
-	private String getDescription(final long id) {
-		return fragment.playlistmap.get(id);
+		return rowView;
 	}
 
 	private Bitmap getImage(final long id) {
@@ -63,26 +54,9 @@ final class PlaylistAdapter extends AbstractTreeViewAdapter<Long> {
 		}
 		return null;
 	}
-
-	@Override
-	public View getNewChildView(final TreeNodeInfo<Long> treeNodeInfo) {
-		final LinearLayout viewLayout = (LinearLayout) getActivity()
-				.getLayoutInflater().inflate(R.layout.playlist_item, null);
-		return updateView(viewLayout, treeNodeInfo);
-	}
-
-	@Override
-	public void handleItemClick(final View view, final Object id) {
-		Log.i(TAG, id.toString());
-		if (id.toString().equals("0")) {
-			fragment.load_playlists();
-		} else {
-			activity.ld.runCommand_noreturn("display", id.toString(), "");
-		}
-	}
-
-	@Override
-	public long getItemId(final int position) {
-		return getTreeId(position);
+	
+	public void add(Long itemId, String text, String type, Long data) {
+		PlaylistItem item = new PlaylistItem(itemId, text, type, data);
+		super.add(item);
 	}
 }

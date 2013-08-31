@@ -1,14 +1,13 @@
 package org.lyricue.android;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
-public class PlaylistsDialogFragment extends SherlockDialogFragment {
+public class PlaylistsDialogFragment extends DialogFragment {
 	private static final String TAG = Lyricue.class.getSimpleName();
 
 	public static PlaylistsDialogFragment newInstance(int title) {

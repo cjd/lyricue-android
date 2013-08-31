@@ -15,13 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.MenuInflater;
-import com.viewpagerindicator.TabPageIndicator;
-
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -33,16 +26,22 @@ import android.net.wifi.WifiManager.MulticastLock;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.Tab;
+import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.Toast;
 
-public class Lyricue extends SherlockFragmentActivity {
+public class Lyricue extends ActionBarActivity {
 
 	/** Called when the activity is first created. */
 	public static final String PREFS_NAME = "LyricuePrefsFile";
@@ -56,16 +55,16 @@ public class Lyricue extends SherlockFragmentActivity {
 	public String[] output_names = null;
 	public String[] output_profiles = null;
 	public String profile = "";
-	public int playlistid = -1;
+	public Long playlistid = (long) -1;
 	public String[] playlists_text = null;
-	public int[] playlists_id = null;
+	public Long[] playlists_id = null;
 	public String[] bibles_text = null;
 	public String[] bibles_id = null;
 	public String[] bibles_type = null;
 	public boolean togglescreen = false;
 	public boolean imageplaylist = true;
 	public LyricueDisplay ld = null;
-	public Map<String, SherlockFragment> fragments = new HashMap<String, SherlockFragment>();
+	public Map<String, Fragment> fragments = new HashMap<String, Fragment>();
 	private ProgressDialog progressLoad = null;
 	public int thumbnail_width = 0;
 	public MyNotification notify = null;
@@ -85,11 +84,45 @@ public class Lyricue extends SherlockFragmentActivity {
 		adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(),
 				activity);
 		pager = (ViewPager) findViewById(R.id.viewpager);
-		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		pager.setAdapter(adapter);
-		indicator.setViewPager(pager);
 		pager.setOffscreenPageLimit(5);
 		pager.setCurrentItem(0);
+
+		final ActionBar actionBar = getSupportActionBar();
+		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+				// When the tab is selected, switch to the
+				// corresponding page in the ViewPager.
+				pager.setCurrentItem(tab.getPosition());
+			}
+
+			@Override
+			public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+			}
+
+			@Override
+			public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+			}
+		};
+		actionBar.addTab(actionBar.newTab().setText(R.string.control)
+				.setTabListener(tabListener));
+		actionBar.addTab(actionBar.newTab().setText(R.string.playlist)
+				.setTabListener(tabListener));
+		actionBar.addTab(actionBar.newTab().setText(R.string.available)
+				.setTabListener(tabListener));
+		actionBar.addTab(actionBar.newTab().setText(R.string.bible)
+				.setTabListener(tabListener));
+		actionBar.addTab(actionBar.newTab().setText(R.string.display)
+				.setTabListener(tabListener));
+		pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+				getSupportActionBar().setSelectedNavigationItem(position);
+			}
+		});
+
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -290,8 +323,8 @@ public class Lyricue extends SherlockFragmentActivity {
 					fragments.put("playlist", frag1);
 
 				}
-				playlistid = -1;
-				frag1.load_playlist();
+				playlistid = (long) -1;
+				frag1.refresh();
 				AvailableSongsFragment frag2 = (AvailableSongsFragment) fragments
 						.get("avail");
 				if (frag2 != null) {
@@ -333,7 +366,6 @@ public class Lyricue extends SherlockFragmentActivity {
 	}
 
 	public void onClickControl(View v) {
-		System.err.println("onclickcontrol");
 		switch (v.getId()) {
 		case R.id.ButtonPrevPage:
 		case R.id.ButtonQuickPP:
@@ -362,23 +394,9 @@ public class Lyricue extends SherlockFragmentActivity {
 		}
 	}
 
-	public void onClickAvailable(View v) {
-		System.err.println("onClickAvailable");
-		switch (v.getId()) {
-		case R.id.ButtonClearSongSearch:
-			EditText searchString = (EditText) pager
-					.findViewById(R.id.available_search);
-			if (searchString != null)
-				searchString.setText("");
-			break;
-		}
-	}
-
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.main_menu, menu);
+		getMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
 	}
 
@@ -399,7 +417,8 @@ public class Lyricue extends SherlockFragmentActivity {
 			getPrefs();
 			return true;
 		case R.id.exit_menu:
-			NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+			NotificationManager notificationManager = (NotificationManager) this
+					.getSystemService(Context.NOTIFICATION_SERVICE);
 			notificationManager.cancelAll();
 			finish();
 			return true;
@@ -446,7 +465,7 @@ public class Lyricue extends SherlockFragmentActivity {
 				frag.progressPlaylist.dismiss();
 			frag.progressPlaylist = ProgressDialog.show(this, "",
 					"Loading Playlist..", true);
-			frag.load_playlist();
+			frag.load_playlist(playlistid);
 		} else {
 			logError("playlist fragment not found");
 		}

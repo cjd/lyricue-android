@@ -1,15 +1,17 @@
 package org.lyricue.android;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.view.View;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
+	private static final String TAG = Lyricue.class.getSimpleName();
+
 	public String[] titles = new String[5];
 
 	public int CONTROL_ID = 0;
@@ -47,10 +49,6 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 		titles[DISPLAY_ID] = res.getString(R.string.display);
 	}
 
-	@Override
-	public String getPageTitle(int position) {
-		return titles[position];
-	}
 
 	@Override
 	public int getCount() {
@@ -58,8 +56,9 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
 	}
 
 	@Override
-	public SherlockFragment getItem(int position) {
-		SherlockFragment f = null;
+	public Fragment getItem(int position) {
+		Log.i(TAG,"getItem:"+position);
+		Fragment f = null;
 
 		if (position == CONTROL_ID) {
 			f = new ControlFragment();

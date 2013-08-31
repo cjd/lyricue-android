@@ -6,11 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
-public class BibleFragment extends SherlockFragment {
+public class BibleFragment extends Fragment {
 	private static final String TAG = Lyricue.class.getSimpleName();
 
 	Lyricue activity = null;
@@ -481,9 +480,8 @@ public class BibleFragment extends SherlockFragment {
 					+ tokens[2] + "-" + tokens[4] + "\")";
 			activity.ld.runQuery("lyricDb", Query);
 
-			PlaylistFragment frag = (PlaylistFragment) activity.fragments
-					.get("playlist");
-			frag.load_playlist();
+			PlaylistFragment frag = (PlaylistFragment)activity.fragments.get("playlist");
+			frag.refresh();
 			return null;
 		}
 	}

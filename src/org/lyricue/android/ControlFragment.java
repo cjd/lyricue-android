@@ -1,14 +1,13 @@
 package org.lyricue.android;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ControlFragment extends SherlockFragment {
+public class ControlFragment extends Fragment {
 	private static Lyricue activity = null;
 	private View v = null;
 	private LayoutInflater inflater = null;

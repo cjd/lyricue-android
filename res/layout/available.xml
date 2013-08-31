@@ -4,36 +4,6 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     android:orientation="vertical" >
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="top"
-    android:orientation="horizontal" >
-    
-        <EditText
-            android:id="@+id/available_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:ems="10"
-            android:hint="@string/typetofilter"
-            android:inputType="text"
-            android:maxLines="1"
-            android:layout_weight="1">
-
-            <requestFocus />
-        </EditText>
-
-        <ImageButton
-            android:id="@+id/ButtonClearSongSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@android:string/cancel"
-            android:layout_weight=".1"
-            android:onClick="onClickAvailable"
-            android:src="@android:drawable/ic_input_delete" />
-
-</LinearLayout>
     <ListView
         android:id="@+id/available_songlist"
         android:layout_width="wrap_content"

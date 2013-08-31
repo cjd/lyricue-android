@@ -1,52 +1,43 @@
 package org.lyricue.android;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.MenuInflater;
-
-import pl.polidea.treeview.InMemoryTreeStateManager;
-import pl.polidea.treeview.TreeBuilder;
-import pl.polidea.treeview.TreeStateManager;
-import pl.polidea.treeview.TreeViewList;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
 
-public class PlaylistFragment extends SherlockFragment {
+public class PlaylistFragment extends Fragment {
 	private static final String TAG = Lyricue.class.getSimpleName();
-
-	private final Set<Long> selected = new HashSet<Long>();
 
 	public static final String PREFS_NAME = "LyricuePrefsFile";
 	private static Lyricue activity = null;
 	private static View v = null;
-	private TreeViewList treeView;
-	private static int LEVEL_NUMBER = 6;
-	private TreeStateManager<Long> manager = null;
+	private ListView listView;
 	private PlaylistAdapter adapter;
-	public HashMap<Long, String> playlistmap = new HashMap<Long, String>();
 	public HashMap<Long, Bitmap> imagemap = new HashMap<Long, Bitmap>();
 	private PlaylistFragment fragment = null;
 	public ProgressDialog progressPlaylist = null;
+	public Long this_playlist = (long) 0;
+	public Long parent_playlist = (long) -1;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,9 +46,9 @@ public class PlaylistFragment extends SherlockFragment {
 		activity = (Lyricue) this.getActivity();
 		fragment = this;
 		v = (View) inflater.inflate(R.layout.playlist, null);
-		treeView = (TreeViewList) v.findViewById(R.id.playlistView);
+		listView = (ListView) v.findViewById(R.id.playlistView);
 		setHasOptionsMenu(true);
-		registerForContextMenu(treeView);
+		registerForContextMenu(listView);
 		return v;
 	}
 
@@ -77,7 +68,7 @@ public class PlaylistFragment extends SherlockFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.refresh_playlist:
-			load_playlist();
+			refresh();
 			return true;
 		case R.id.select_playlist_menu:
 			load_playlists();
@@ -106,7 +97,7 @@ public class PlaylistFragment extends SherlockFragment {
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
 					.getMenuInfo();
 
-			long itemid = treeView.getItemIdAtPosition(info.position);
+			long itemid = listView.getItemIdAtPosition(info.position);
 
 			if (item.getItemId() == 0) {
 				Log.i(TAG, "show item:" + itemid);
@@ -129,6 +120,9 @@ public class PlaylistFragment extends SherlockFragment {
 		if (activity.playlistid == 0) {
 			return;
 		}
+		if (this_playlist == 0) {
+			this_playlist = activity.playlistid;
+		}
 		new LoadPlaylistsTask().execute();
 	}
 
@@ -136,8 +130,8 @@ public class PlaylistFragment extends SherlockFragment {
 		protected Void doInBackground(Void... arg0) {
 			if (activity.hosts.isEmpty()) {
 				activity.playlists_text = new String[1];
-				activity.playlists_id = new int[1];
-				activity.playlists_id[0] = 1;
+				activity.playlists_id = new Long[1];
+				activity.playlists_id[0] = (long) 1;
 				activity.playlists_text[0] = "Demo playlist";
 				activity.showPlaylistsDialog(v);
 				return null;
@@ -147,8 +141,7 @@ public class PlaylistFragment extends SherlockFragment {
 					+ " AND playlist.data NOT LIKE '%-%'"
 					+ " AND (type='play' OR type='sub')"
 					+ " WHERE data IS NULL AND playlists.id > 0"
-					+ " AND profile='" + activity.profile
-					+ " ' ORDER BY id";
+					+ " AND profile='" + activity.profile + " ' ORDER BY id";
 			LyricueDisplay ld = new LyricueDisplay(activity.hosts,
 					activity.profile);
 
@@ -158,11 +151,11 @@ public class PlaylistFragment extends SherlockFragment {
 			}
 			try {
 				activity.playlists_text = new String[jArray.length()];
-				activity.playlists_id = new int[jArray.length()];
+				activity.playlists_id = new Long[jArray.length()];
 
 				for (int i = 0; i < jArray.length(); i++) {
 					JSONObject results = jArray.getJSONObject(i);
-					activity.playlists_id[i] = results.getInt("id");
+					activity.playlists_id[i] = results.getLong("id");
 					activity.playlists_text[i] = results.getString("title");
 				}
 			} catch (JSONException e) {
@@ -174,77 +167,109 @@ public class PlaylistFragment extends SherlockFragment {
 		}
 	}
 
-	void load_playlist() {
-		Log.i(TAG, "load_playlist()");
-		if (activity.playlistid != -1) {
-
-		}
-		playlistmap.clear();
+	void refresh() {
 		imagemap.clear();
-		new LoadPlaylistTask().execute(activity.playlistid);
+		new LoadPlaylistTask().execute(this_playlist);
+	}
+
+	void load_playlist(Long playlistid) {
+		Log.i(TAG, "load_playlist(" + playlistid + ")");
+		this_playlist = playlistid;
+		new LoadPlaylistTask().execute(playlistid);
 	}
 
 	private class LoadPlaylistTask extends
-			AsyncTask<Integer, Void, PlaylistAdapter> {
+			AsyncTask<Long, Void, PlaylistAdapter> {
 
-		protected PlaylistAdapter doInBackground(Integer... arg0) {
-			manager = new InMemoryTreeStateManager<Long>();
-			final TreeBuilder<Long> treeBuilder = new TreeBuilder<Long>(manager);
+		protected PlaylistAdapter doInBackground(Long... arg0) {
+			adapter = new PlaylistAdapter(activity, fragment,
+					R.layout.playlist_item);
 			if (activity.playlistid > 0) {
-				add_playlist(treeBuilder, activity.playlistid, 0);
+				add_playlist();
 			} else {
-				treeBuilder.sequentiallyAddNextNode((long) 0, 0);
-				playlistmap.put((long) 0,
-						"No playlist loaded\nClick here to select one");
+				adapter.add((long) 0,
+						"No playlist loaded\nClick here to select one",
+						"unloaded", (long) 0);
 			}
-			adapter = new PlaylistAdapter(activity, fragment, selected,
-					manager, LEVEL_NUMBER);
 			return adapter;
 		}
 
-		protected void onPostExecute(PlaylistAdapter result) {
-			Log.i(TAG, "done loading playlist");
-			treeView.setAdapter(result);
-			manager.collapseChildren(null);
-			treeView.setCollapsible(true);
+		protected void onPostExecute(PlaylistAdapter adapter) {
+			listView.setAdapter(adapter);
+			Button button = (Button)fragment.getView().findViewById(R.id.buttonPlayUp); 
+			if (parent_playlist>0) {
+				button.setVisibility(View.VISIBLE);
+				button.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Log.i(TAG,"Go up to "+parent_playlist);
+						load_playlist(parent_playlist);
+					}
+				});
+			} else {
+				button.setVisibility(View.GONE);
+			}
+			listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, final View view,
+						int position, long id) {
+					Log.i(TAG, "Clicked:" + String.valueOf(id));
+					PlaylistItem item = (PlaylistItem) parent
+							.getItemAtPosition(position);
+					if (item.type.equals("unloaded")) {
+						fragment.load_playlists();
+					} else {
+						if (item.type.equals("play") || item.type.equals("sub")) {
+							Log.i(TAG, "Load playlist:"+String.valueOf(item.data));
+							load_playlist(item.data);
+						} else {
+							activity.ld.runCommand_noreturn("display",
+									String.valueOf(item.id), "");
+						}
+					}
+				}
+			});
 			if (progressPlaylist != null)
 				progressPlaylist.dismiss();
+			Log.i(TAG, "done loading playlist");
 		}
 	}
 
-	void add_playlist(TreeBuilder<Long> treeBuilder, int playlistid, int level) {
-		Log.i(TAG, "add_playlist:" + playlistid);
+	void add_playlist() {
+		Log.i(TAG, "add_playlist:" + this_playlist);
 
 		if (activity.hosts.isEmpty()) {
-			load_demo_playlist(treeBuilder);
+			load_demo_playlist();
 			return;
 		}
-		if (playlistid <= 0) {
+		if (this_playlist <= 0) {
 			return;
 		}
+		
 		String Query;
+		Query = "SELECT playlist FROM playlist WHERE data="+this_playlist+" AND (type='play' OR type='sub')";
+		parent_playlist = (long) activity.ld.runQuery_int("lyricDb", Query, "playlist");
+
 		Query = "SELECT playorder, type, data FROM playlist"
-				+ " WHERE playlist=" + playlistid + " ORDER BY playorder";
+				+ " WHERE playlist=" + this_playlist + " ORDER BY playorder";
 		JSONArray jArray = activity.ld.runQuery("lyricDb", Query);
 		if (jArray == null) {
 			return;
 		}
-		int newlevel = level + 1;
 		for (int i = 0; i < jArray.length(); i++) {
 			try {
 				JSONObject results = jArray.getJSONObject(i);
-				treeBuilder.sequentiallyAddNextNode(
-						results.getLong("playorder"), level);
 				if (results.getString("type").equals("play")
 						|| results.getString("type").equals("sub")) {
 					String Query2 = "SELECT * FROM playlists WHERE id="
 							+ results.getString("data");
 					JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
 					if (pArray != null && pArray.length() > 0) {
-						playlistmap.put(results.getLong("playorder"), pArray
-								.getJSONObject(0).getString("title"));
-						add_playlist(treeBuilder, results.getInt("data"),
-								newlevel);
+						adapter.add(results.getLong("playorder"), pArray
+								.getJSONObject(0).getString("title"), results
+								.getString("type"), results.getLong("data"));
+						Log.i(TAG, "Add list:" + results.getLong("data") + "-"
+								+ pArray.getJSONObject(0).getString("title"));
 					}
 				} else if (results.getString("type").equals("song")) {
 					String Query2 = "SELECT pagetitle, lyrics FROM page WHERE pageid="
@@ -253,26 +278,30 @@ public class PlaylistFragment extends SherlockFragment {
 					if (pArray != null && pArray.length() > 0) {
 						String[] lines = pArray.getJSONObject(0)
 								.getString("lyrics").split("\n");
-						playlistmap.put(results.getLong("playorder"), lines[0]);
+						adapter.add(results.getLong("playorder"), lines[0],
+								results.getString("type"), (long) 0);
 					}
 				} else if (results.getString("type").equals("vers")) {
-					playlistmap.put(results.getLong("playorder"), "Verses "
-							+ results.getString("data"));
+					adapter.add(results.getLong("playorder"), "Verses "
+							+ results.getString("data"),
+							results.getString("type"), (long) 0);
 				} else if (results.getString("type").equals("file")) {
 					String filename = results.getString("data");
 					if (filename.startsWith("/var/tmp/lyricue-")) {
 						filename = filename.substring(
 								filename.lastIndexOf("/") + 1,
 								filename.length() - 4).replace("_", " ");
-						playlistmap.put(results.getLong("playorder"),
-								"Presentation: " + filename);
+						adapter.add(results.getLong("playorder"),
+								"Presentation: " + filename,
+								results.getString("type"), (long) 0);
 					} else {
-						playlistmap.put(
+						adapter.add(
 								results.getLong("playorder"),
 								"File:"
 										+ results.getString("data").substring(
 												results.getString("data")
-														.lastIndexOf("/") + 1));
+														.lastIndexOf("/") + 1),
+								results.getString("type"), (long) 0);
 					}
 				} else if (results.getString("type").equals("imag")) {
 					String[] imageItem = results.getString("data")
@@ -285,41 +314,46 @@ public class PlaylistFragment extends SherlockFragment {
 						if (pArray != null && pArray.length() > 0) {
 							String desc = pArray.getJSONObject(0).getString(
 									"description");
-							playlistmap.put(results.getLong("playorder"),
-									"Image:" + desc);
+							adapter.add(results.getLong("playorder"), "Image:"
+									+ desc, results.getString("type"), (long) 0);
 						} else {
-							playlistmap.put(results.getLong("playorder"),
-									"Image: unknown");
+							adapter.add(results.getLong("playorder"),
+									"Image: unknown", results.getString("type"), (long) 0);
 						}
 					} else if (imageItem[0].equals("dir")) {
-						playlistmap.put(
+						adapter.add(
 								results.getLong("playorder"),
 								"Image:"
 										+ imageItem[1].substring(imageItem[1]
-												.lastIndexOf("/") + 1));
+												.lastIndexOf("/") + 1),
+								results.getString("type"), (long) 0);
 					} else {
-						playlistmap.put(results.getLong("playorder"), "Image:"
-								+ imageItem[1]);
+						adapter.add(results.getLong("playorder"), "Image:"
+								+ imageItem[1], results.getString("type"), (long) 0);
 					}
 				} else {
-					playlistmap.put(results.getLong("playorder"),
-							"Unknown item type");
+					adapter.add(results.getLong("playorder"),
+							"Unknown item type", results.getString("type"), (long) 0);
 				}
 				if (activity.imageplaylist) {
-					String Query2 = "SELECT HEX(snapshot) FROM playlist WHERE playorder="
-							+ results.getLong("playorder");
-					JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
-					if (pArray != null
-							&& pArray.length() > 0
-							&& pArray.getJSONObject(0).getString(
-									"HEX(snapshot)") != null) {
-						byte[] imageBytes = hexStringToByteArray(pArray
-								.getJSONObject(0).getString("HEX(snapshot)"));
-						imagemap.put(results.getLong("playorder"),
-								BitmapFactory.decodeByteArray(imageBytes, 0,
-										imageBytes.length));
-					} else {
-						imagemap.put(results.getLong("playorder"), null);
+					if (!imagemap.containsKey(results.getLong("playorder"))) {
+						String Query2 = "SELECT HEX(snapshot) FROM playlist WHERE playorder="
+								+ results.getLong("playorder");
+						JSONArray pArray = activity.ld.runQuery("lyricDb",
+								Query2);
+						if (pArray != null
+								&& pArray.length() > 0
+								&& pArray.getJSONObject(0).getString(
+										"HEX(snapshot)") != null) {
+							byte[] imageBytes = hexStringToByteArray(pArray
+									.getJSONObject(0)
+									.getString("HEX(snapshot)"));
+							imagemap.put(results.getLong("playorder"),
+									BitmapFactory.decodeByteArray(imageBytes,
+											0, imageBytes.length));
+						} else {
+							imagemap.put(results.getLong("playorder"), null);
+						}
 					}
 				}
 			} catch (JSONException e) {
@@ -340,13 +374,9 @@ public class PlaylistFragment extends SherlockFragment {
 		return data;
 	}
 
-	void load_demo_playlist(TreeBuilder<Long> treeBuilder) {
-		int[] DEMO_NODES = new int[] { 0, 0, 1, 1, 1, 2, 2, 1, 1, 2, 1, 0, 0,
-				0, 1, 2, 3, 2, 0, 0, 1, 2, 0, 1, 2, 0, 1 };
-		for (int i = 0; i < DEMO_NODES.length; i++) {
-			treeBuilder.sequentiallyAddNextNode((long) i, DEMO_NODES[i]);
-			playlistmap.put((long) i, "Demo Item " + i);
-			imagemap.put((long) i, null);
+	void load_demo_playlist() {
+		for (int i = 0; i < 13; i++) {
+			adapter.add((long) i, "Demo Item " + i, "demo", (long) 0);
 		}
 	}
 
@@ -354,7 +384,7 @@ public class PlaylistFragment extends SherlockFragment {
 		protected Void doInBackground(Long... args) {
 			Long itemid = args[0];
 			remove_single_item(itemid);
-			load_playlist();
+			refresh();
 			return null;
 		}
 	}
@@ -399,7 +429,7 @@ public class PlaylistFragment extends SherlockFragment {
 
 	void toggle_previews() {
 		activity.imageplaylist = !activity.imageplaylist;
-		load_playlist();
+		refresh();
 	}
 
 }

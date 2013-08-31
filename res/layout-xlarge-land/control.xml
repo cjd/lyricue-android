@@ -7,15 +7,6 @@
         android:id="@+id/tableRow4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
-
-        <ImageView
-            android:id="@+id/imageProfileHeader"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_span="2"
-            android:layout_weight="1"
-            android:contentDescription="@string/lyricue"
-            android:src="@drawable/lyricue_header" />
     </TableRow>
 
     <TableRow

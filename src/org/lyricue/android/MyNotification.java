@@ -70,6 +70,10 @@ public class MyNotification extends Notification {
 				intentBlank, PendingIntent.FLAG_UPDATE_CURRENT);
 		view.setOnClickPendingIntent(R.id.imageButtonNotifyReshow,
 				pIntentReshow);
+		Intent intentLoad = new Intent(ctx, Lyricue.class);
+		PendingIntent pIntentLoad = PendingIntent.getService(ctx, 3,
+				intentLoad, PendingIntent.FLAG_UPDATE_CURRENT);
+		view.setOnClickPendingIntent(R.id.imageButtonHeader, pIntentLoad);
 	}
 
 }
