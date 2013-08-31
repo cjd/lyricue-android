@@ -8,7 +8,6 @@
     <string name="redisplay">Reshow page</string>
     <string name="nextpage">Next Page</string>
     <string name="nextsong">Next Song</string>
-    <string name="quit">Quit</string>
     <string name="apply">Apply</string>
     <string name="control">Control</string>
     <string name="settings">Settings</string>
@@ -22,7 +21,6 @@
     <string name="selectbible">Select Bible</string>
     <string name="available">Available Songs</string>
     <string name="lyricue">Lyricue</string>
-    <string name="typetofilter">type to filter</string>
     <string name="selectbook">Select Book</string>
     <string name="selectchapter">Select Chapter</string>
     <string name="selectversestart">Start</string>
@@ -105,8 +103,6 @@
     <string name="welcome">Thank you for running Lyricue Frontend for Android.\n\n
 In order to run I need know which profile you wish to use\n\n
 Please Enter the Profile to use.</string>
-    <string name="retry">Retry</string>
-    <string name="rightarrow">></string>
     <string name="demo">Demo Mode</string>
     <string name="snapshot">Snapshot</string>
     <string name="dash">-</string>

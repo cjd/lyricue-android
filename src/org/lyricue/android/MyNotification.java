@@ -1,6 +1,7 @@
 package org.lyricue.android;
 
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,6 +15,7 @@ public class MyNotification extends Notification {
 	private String[] hosts = null;
 	private Context context = null;
 	private RemoteViews contentView = null;
+	@SuppressLint("NewApi")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public MyNotification(Context ctx, String[] hosts) {
 		super();

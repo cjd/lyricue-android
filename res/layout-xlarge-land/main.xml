@@ -5,7 +5,8 @@
     android:id="@+id/main_layout_tablet"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal" 
+    android:baselineAligned="false">
 
     <fragment
         android:id="@+id/playlist"
@@ -20,18 +21,12 @@
         android:layout_height="fill_parent"
         android:layout_weight="1" >
 
-        <com.viewpagerindicator.TabPageIndicator
-            android:id="@+id/indicator"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
-
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_above="@+id/hline1"
-            android:layout_below="@+id/indicator" />
+            />
 
         <View
             android:id="@+id/hline1"

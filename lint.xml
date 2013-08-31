@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="AlwaysShowAction" severity="ignore" />
+    <issue id="DefaultLocale" severity="ignore" />
+    <issue id="IconDuplicates">
+        <ignore path="res/drawable-xhdpi/ab_stacked_solid_lyricue.9.png" />
+    </issue>
     <issue id="StateListReachable">
         <ignore path="res/drawable/list_selector_background.xml" />
     </issue>

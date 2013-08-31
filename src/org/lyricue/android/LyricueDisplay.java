@@ -37,6 +37,10 @@ public class LyricueDisplay extends Service {
 		}
 	}
 	
+	public LyricueDisplay() {
+		hosts = new String[1];
+		hosts[0] = "#demo";
+	}
 	public LyricueDisplay(String host) {
 		hosts = new String[1];
 		hosts[0] = host;
