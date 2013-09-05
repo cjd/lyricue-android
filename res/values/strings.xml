@@ -114,5 +114,6 @@ Please Enter the Profile to use.</string>
     <string name="exit">Exit</string>
     <string name="up">Up</string>
     <string name="search_songs">Search Available songs</string>
+    <string name="server">Start Local Display Server</string>
     
 </resources>

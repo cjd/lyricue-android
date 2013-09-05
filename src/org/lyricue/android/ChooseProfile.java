@@ -41,7 +41,7 @@ public class ChooseProfile extends Activity {
 		protected ArrayAdapter<String> doInBackground(Context... arg0) {
 			LyricueDisplay ld = new LyricueDisplay(host);
 			JSONArray jArray = ld.runQuery("lyricDb",
-					"SELECT DISTINCT(profile) FROM status");
+					"SELECT DISTINCT(profile) FROM status WHERE TIMEDIFF(NOW(), lastupdate) < '00:00:20'");
 			ArrayList<String> spinArray = new ArrayList<String>();
 
 			if (jArray != null) {

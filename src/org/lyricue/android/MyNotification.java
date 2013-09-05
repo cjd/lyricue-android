@@ -27,9 +27,10 @@ public class MyNotification extends Notification {
 		contentView = new RemoteViews(context.getPackageName(),
 				R.layout.notification);
 		setListeners(contentView, ctx);
+		Intent activityIntent = new Intent(ctx, Lyricue.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		Notification noti = new Notification.Builder(context)
 				.setContent(contentView).setSmallIcon(R.drawable.ic_launcher)
-				.build();
+				.setContentIntent(PendingIntent.getActivity(ctx, 0, activityIntent, PendingIntent.FLAG_CANCEL_CURRENT)).build();
 		noti.flags |= Notification.FLAG_ONGOING_EVENT;
 
 		notificationManager.notify(0, noti);
@@ -72,10 +73,6 @@ public class MyNotification extends Notification {
 				intentBlank, PendingIntent.FLAG_UPDATE_CURRENT);
 		view.setOnClickPendingIntent(R.id.imageButtonNotifyReshow,
 				pIntentReshow);
-		Intent intentLoad = new Intent(ctx, Lyricue.class);
-		PendingIntent pIntentLoad = PendingIntent.getService(ctx, 3,
-				intentLoad, PendingIntent.FLAG_UPDATE_CURRENT);
-		view.setOnClickPendingIntent(R.id.imageButtonHeader, pIntentLoad);
 	}
 
 }

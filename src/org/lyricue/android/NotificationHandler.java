@@ -7,7 +7,7 @@ import android.os.IBinder;
 
 public class NotificationHandler extends Service {
 
-	private LyricueDisplay ld=null;
+	private LyricueDisplay ld = null;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -16,7 +16,6 @@ public class NotificationHandler extends Service {
 			if (ld == null) {
 				ld = new LyricueDisplay(extras.getStringArray("hosts"));
 			}
-			
 			ld.runCommand_noreturn("display", extras.getString("command"), "");
 		}
 		return super.onStartCommand(intent, flags, startId);

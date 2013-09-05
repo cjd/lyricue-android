@@ -213,14 +213,22 @@ public class Lyricue extends ActionBarActivity {
 
 							@Override
 							public void serviceResolved(ServiceEvent arg0) {
-								Log.i(TAG, "host:"
-										+ arg0.getInfo().getHostAddresses()[0]
-										+ ":" + arg0.getInfo().getPort());
-								found_host = arg0.getInfo().getHostAddresses()[0];
-								found_port = arg0.getInfo().getPort();
-								if (android.os.Build.MODEL.equals("google_sdk")
-										|| android.os.Build.MODEL.equals("sdk")) {
-									found_host = "10.0.2.2";
+								if (arg0.getName().contains("Display")) {
+									Log.i(TAG,
+											"host:"
+													+ arg0.getInfo()
+															.getHostAddresses()[0]
+													+ ":"
+													+ arg0.getInfo().getPort());
+									found_host = arg0.getInfo()
+											.getHostAddresses()[0];
+									found_port = arg0.getInfo().getPort();
+									if (android.os.Build.MODEL
+											.equals("google_sdk")
+											|| android.os.Build.MODEL
+													.equals("sdk")) {
+										found_host = "10.0.2.2";
+									}
 								}
 							}
 						});
@@ -262,7 +270,9 @@ public class Lyricue extends ActionBarActivity {
 							JSONObject results = jArray.getJSONObject(i);
 							if (results.getString("type").equals("normal")
 									|| results.getString("type").equals(
-											"simple")) {
+											"simple")
+									|| results.getString("type").equals(
+											"headless")) {
 								if (android.os.Build.MODEL.equals("google_sdk")
 										|| android.os.Build.MODEL.equals("sdk")) {
 									String[] values = results.getString("host")
@@ -321,10 +331,11 @@ public class Lyricue extends ActionBarActivity {
 					frag1 = (PlaylistFragment) getSupportFragmentManager()
 							.findFragmentById(R.id.playlist);
 					fragments.put("playlist", frag1);
-
 				}
 				playlistid = (long) -1;
-				frag1.refresh();
+				if (frag1 != null) {
+					frag1.refresh();
+				}
 				AvailableSongsFragment frag2 = (AvailableSongsFragment) fragments
 						.get("avail");
 				if (frag2 != null) {
@@ -354,9 +365,14 @@ public class Lyricue extends ActionBarActivity {
 
 	@Override
 	protected void onStart() {
-		super.onStart();
 		Log.i(TAG, "onStart()");
-		// getPrefs();
+		super.onStart();
+	}
+
+	@Override
+	protected void onRestart() {
+		Log.i(TAG, "onRestart()");
+		super.onStart();
 	}
 
 	@Override
@@ -415,6 +431,19 @@ public class Lyricue extends ActionBarActivity {
 			editor.putString("profile", "");
 			editor.commit();
 			getPrefs();
+			return true;
+		case R.id.server_menu:
+			Intent serverActivity = new Intent(getBaseContext(),
+					ServerActivity.class);
+			if (profile.equals("#demo")) {
+				serverActivity.putExtra("host", "#demo");
+			} else {
+				rebuild_hostmap();
+				Log.i(TAG,output_names[0]);
+				serverActivity.putExtra("host", output_names[0]);
+			}
+			serverActivity.putExtra("profile", profile);
+			startActivity(serverActivity);
 			return true;
 		case R.id.exit_menu:
 			NotificationManager notificationManager = (NotificationManager) this

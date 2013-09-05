@@ -41,6 +41,7 @@
 
         <service android:name=".LyricueDisplay" />
         <service android:name=".NotificationHandler" />
+        <activity android:name=".ServerActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

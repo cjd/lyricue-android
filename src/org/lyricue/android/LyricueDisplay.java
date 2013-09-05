@@ -55,6 +55,7 @@ public class LyricueDisplay extends Service {
 
 	public void runCommand_noreturn(final String command, final String option1,
 			final String option2) {
+		if (hosts != null) {
 		new Thread(new Runnable() {
 			public void run() {
 				LyricueDisplay ld = new LyricueDisplay(hosts);
@@ -65,6 +66,7 @@ public class LyricueDisplay extends Service {
 				}
 			}
 		}).start();
+		}
 	}
 
 	public boolean checkRunning() {
@@ -93,7 +95,7 @@ public class LyricueDisplay extends Service {
 	public String runCommand(Integer hostnum, String command, String option1,
 			String option2) {
 		String result = "";
-		if ((hosts == null) || (hosts.length == 0) || (hosts[hostnum] == null)) {
+		if ((hosts == null) || (hosts.length == 0) || (hosts[hostnum] == null) || (hosts[hostnum].equals("#demo"))) {
 			return result;
 		}
 		Socket sc = null;
