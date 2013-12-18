@@ -12,8 +12,14 @@ import java.util.Map;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -21,6 +27,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ServerActivity extends Activity {
@@ -123,34 +130,72 @@ public class ServerActivity extends Activity {
 				my_server_host = "10.0.2.2:" + values[1];
 				Log.i(TAG, "Adding host:" + my_server_host);
 			}
-			
+
 			return my_server_host;
 		}
-		
+
 		protected void onPostExecute(String host) {
-			server_host=host;
+			server_host = host;
 			ld = new LyricueDisplay(server_host);
 			new CheckRemoteTask().execute();
+			new CheckRemoteBGTask().execute();
 		}
 
 	}
 
-	private class CheckRemoteTask extends AsyncTask<Void, Void, String[]> {
-		protected String[] doInBackground(Void... arg0) {
-			String[] retval = new String[4];
-			retval[0] = ld.runCommand(0, "get", "header", "");
-			retval[1] = ld.runCommand(0, "get", "main", "");
-			retval[2] = ld.runCommand(0, "get", "footer", "");
-			return retval;
+	private class CheckRemoteTask extends AsyncTask<Void, Void, String> {
+		protected String doInBackground(Void... arg0) {
+			return ld.runCommand(0, "get", "text", "");
 		}
 
-		protected void onPostExecute(String[] values) {
-			TextView tv = (TextView) findViewById(R.id.textServerHeader);
-			tv.setText(values[0]);
-			tv = (TextView) findViewById(R.id.textServerMain);
-			tv.setText(values[1]);
-			tv = (TextView) findViewById(R.id.textServerFooter);
-			tv.setText(values[2]);
+		protected void onPostExecute(String value) {
+			try {
+
+				JSONObject json = new JSONObject(value);
+				JSONArray jArray = json.getJSONArray("results");
+				if (jArray != null) {
+					JSONObject results = jArray.getJSONObject(0);
+
+					TextView tv = (TextView) findViewById(R.id.textServerHeader);
+					tv.setText(results.getString("header"));
+					tv = (TextView) findViewById(R.id.textServerMain);
+					tv.setText(results.getString("main"));
+					tv = (TextView) findViewById(R.id.textServerFooter);
+					tv.setText(results.getString("footer"));
+				}
+			} catch (JSONException e) {
+				Log.i(TAG, "Error parsing data " + e.toString());
+			}
+			new CheckRemoteBGTask().execute();
+		}
+	}
+
+	private class CheckRemoteBGTask extends AsyncTask<Void, Void, String> {
+		protected String doInBackground(Void... arg0) {
+			return ld.runCommand(0, "get", "bg", "");
+		}
+
+		protected void onPostExecute(String value) {
+			try {
+				JSONObject json = new JSONObject(value);
+				JSONArray jArray = json.getJSONArray("results");
+				if (jArray != null) {
+					JSONObject results = jArray.getJSONObject(0);
+					String image = results.getString("image");
+					ImageView iv = (ImageView) findViewById(R.id.imageServerBackground);
+					if (image != null) {
+						byte[] imageBytes = hexStringToByteArray(image);
+						Bitmap bm = BitmapFactory.decodeByteArray(imageBytes, 0,
+								imageBytes.length);
+						iv.setImageBitmap(bm);
+					} else {
+						iv.setImageBitmap(null);
+					}
+				}
+			} catch (JSONException e) {
+				Log.i(TAG, "Error parsing data " + e.toString());
+			}
+
 		}
 	}
 
@@ -189,7 +234,7 @@ public class ServerActivity extends Activity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (ss== null){
+			if (ss == null) {
 				finish();
 			}
 			while (!Thread.currentThread().isInterrupted()) {
@@ -223,4 +268,15 @@ public class ServerActivity extends Activity {
 			}
 		}
 	}
+
+	public static byte[] hexStringToByteArray(String s) {
+		int len = s.length();
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
+					.digit(s.charAt(i + 1), 16));
+		}
+		return data;
+	}
+
 }

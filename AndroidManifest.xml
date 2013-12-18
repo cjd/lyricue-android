@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.lyricue.android"
-    android:versionCode="21"
-    android:versionName="3.1" >
+    android:versionCode="22"
+    android:versionName="3.2" >
 
     <uses-sdk
-        android:maxSdkVersion="18"
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
 

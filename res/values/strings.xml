@@ -115,5 +115,9 @@ Please Enter the Profile to use.</string>
     <string name="up">Up</string>
     <string name="search_songs">Search Available songs</string>
     <string name="server">Start Local Display Server</string>
+    <string name="headertext">Header Text</string>
+    <string name="maintext">Main Text</string>
+    <string name="footertext">Footer Text</string>
+    <string name="background">Background</string>
     
 </resources>
