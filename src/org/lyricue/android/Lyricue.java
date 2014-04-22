@@ -183,58 +183,57 @@ public class Lyricue extends ActionBarActivity {
 				return DEMO_MODE;
 			}
 
-			// Find a display server to talk to (doesn't matter which - we are
-			// just using it to ask the DB for a full list)
-			Log.i(TAG, "start_mdns()");
-			try {
-				WifiManager wifi = (WifiManager) Lyricue.this
-						.getSystemService(Context.WIFI_SERVICE);
-				MulticastLock lock = wifi.createMulticastLock("mylock");
-				lock.acquire();
-				WifiInfo wifiinfo = wifi.getConnectionInfo();
-				int intaddr = wifiinfo.getIpAddress();
-				byte[] byteaddr = new byte[] { (byte) (intaddr & 0xff),
-						(byte) (intaddr >> 8 & 0xff),
-						(byte) (intaddr >> 16 & 0xff),
-						(byte) (intaddr >> 24 & 0xff) };
+			if (settings.getString("hostname", "").isEmpty()) {
+				// Find a display server to talk to (doesn't matter which - we
+				// are
+				// just using it to ask the DB for a full list)
+				Log.i(TAG, "start_mdns()");
+				try {
+					WifiManager wifi = (WifiManager) Lyricue.this
+							.getSystemService(Context.WIFI_SERVICE);
+					MulticastLock lock = wifi.createMulticastLock("mylock");
+					lock.acquire();
+					WifiInfo wifiinfo = wifi.getConnectionInfo();
+					int intaddr = wifiinfo.getIpAddress();
+					byte[] byteaddr = new byte[] { (byte) (intaddr & 0xff),
+							(byte) (intaddr >> 8 & 0xff),
+							(byte) (intaddr >> 16 & 0xff),
+							(byte) (intaddr >> 24 & 0xff) };
 
-				mJmDNS = JmDNS.create(InetAddress.getByAddress(byteaddr));
+					mJmDNS = JmDNS.create(InetAddress.getByAddress(byteaddr));
 
-				mJmDNS.addServiceListener("_lyricue._tcp.local.",
-						new ServiceListener() {
+					mJmDNS.addServiceListener("_lyricue._tcp.local.",
+							new ServiceListener() {
 
-							@Override
-							public void serviceAdded(ServiceEvent arg0) {
-							}
+								@Override
+								public void serviceAdded(ServiceEvent arg0) {
+								}
 
-							@Override
-							public void serviceRemoved(ServiceEvent arg0) {
-							}
+								@Override
+								public void serviceRemoved(ServiceEvent arg0) {
+								}
 
-							@Override
-							public void serviceResolved(ServiceEvent arg0) {
-								if (arg0.getName().contains("Display")) {
-									Log.i(TAG,
-											"host:"
-													+ arg0.getInfo()
-															.getHostAddresses()[0]
-													+ ":"
-													+ arg0.getInfo().getPort());
-									found_host = arg0.getInfo()
-											.getHostAddresses()[0];
-									found_port = arg0.getInfo().getPort();
-									if (android.os.Build.MODEL
-											.equals("google_sdk")
-											|| android.os.Build.MODEL
-													.equals("sdk")) {
-										found_host = "10.0.2.2";
+								@Override
+								public void serviceResolved(ServiceEvent arg0) {
+									if (arg0.getName().contains("Display")) {
+										Log.i(TAG, "host:"
+												+ arg0.getInfo()
+														.getHostAddresses()[0]
+												+ ":"
+												+ arg0.getInfo().getPort());
+										found_host = arg0.getInfo()
+												.getHostAddresses()[0];
+										found_port = arg0.getInfo().getPort();
 									}
 								}
-							}
-						});
-				lock.release();
-			} catch (Exception e) {
-				e.printStackTrace();
+							});
+					lock.release();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				found_host = settings.getString("hostname", "10.0.2.2");
+				found_port = 2346;
 			}
 			for (long stop = System.nanoTime() + TimeUnit.SECONDS.toNanos(5); stop > System
 					.nanoTime();) {
@@ -439,7 +438,7 @@ public class Lyricue extends ActionBarActivity {
 				serverActivity.putExtra("host", "#demo");
 			} else {
 				rebuild_hostmap();
-				Log.i(TAG,output_names[0]);
+				Log.i(TAG, output_names[0]);
 				serverActivity.putExtra("host", output_names[0]);
 			}
 			serverActivity.putExtra("profile", profile);
