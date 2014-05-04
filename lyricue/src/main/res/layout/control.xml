@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" >
+
+        <Button
+            android:id="@+id/ButtonPrevPage"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@android:drawable/ic_media_rew"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onClickControl"
+            android:text="@string/prevpage"
+            android:textColor="#ffffffff" />
+
+        <Button
+            android:id="@+id/ButtonNextPage"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@android:drawable/ic_media_ff"
+            android:onClick="onClickControl"
+            android:text="@string/nextpage"
+            android:textColor="#ffffffff" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" >
+
+        <Button
+            android:id="@+id/ButtonPrevSong"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@android:drawable/ic_media_previous"
+            android:onClick="onClickControl"
+            android:text="@string/prevsong"
+            android:textColor="#ffffffff" />
+
+        <Button
+            android:id="@+id/ButtonNextSong"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@android:drawable/ic_media_next"
+            android:onClick="onClickControl"
+            android:text="@string/nextsong"
+            android:textColor="#ffffffff" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" >
+
+        <Button
+            android:id="@+id/ButtonRedisplay"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@android:drawable/ic_media_play"
+            android:onClick="onClickControl"
+            android:text="@string/redisplay"
+            android:textColor="#ffffffff" />
+
+        <Button
+            android:id="@+id/ButtonBlank"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@android:drawable/ic_media_pause"
+            android:onClick="onClickControl"
+            android:text="@string/blank"
+            android:textColor="#ffffffff" />
+    </TableRow>
+
+</TableLayout>
