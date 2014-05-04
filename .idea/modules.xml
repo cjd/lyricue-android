@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Lyricue.iml" filepath="$PROJECT_DIR$/Lyricue.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LyricueRemote.iml" filepath="$PROJECT_DIR$/LyricueRemote.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lyricue/lyricue.iml" filepath="$PROJECT_DIR$/lyricue/lyricue.iml" />
     </modules>
   </component>
 </project>
