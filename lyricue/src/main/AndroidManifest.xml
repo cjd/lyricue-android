@@ -20,7 +20,6 @@
             android:theme="@style/Theme.Lyricue">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,15 +29,16 @@
         <activity
             android:name=".ChooseProfile"
             android:theme="@style/Theme.Lyricue" />
-        <activity android:name=".JMDNSRegisterServiceActivity"></activity>
-
-        <service android:name=".LyricueDisplay" />
-        <service android:name=".NotificationHandler" />
-
+        <activity android:name=".JMDNSRegisterServiceActivity"/>
         <activity
             android:name=".ServerActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+        <service android:name=".LyricueDisplay" />
+        <service android:name=".NotificationHandler" />
+
+
     </application>
 
 </manifest>
