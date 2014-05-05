@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LyricueRemote.iml" filepath="$PROJECT_DIR$/LyricueRemote.iml" />
       <module fileurl="file://$PROJECT_DIR$/lyricue/lyricue.iml" filepath="$PROJECT_DIR$/lyricue/lyricue.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lyricue-android.iml" filepath="$PROJECT_DIR$/lyricue-android.iml" />
     </modules>
   </component>
 </project>
