@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.lyricue.android" >
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    package="org.lyricue.android">
 
-        <application
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
+    <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" android:theme="@style/Theme.Lyricue">
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Lyricue">
         <activity
             android:name=".Lyricue"
             android:configChanges="orientation"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Lyricue" >
+            android:theme="@style/Theme.Lyricue">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,12 +30,15 @@
         <activity
             android:name=".ChooseProfile"
             android:theme="@style/Theme.Lyricue" />
-        <activity android:name=".JMDNSRegisterServiceActivity" >
-        </activity>
+        <activity android:name=".JMDNSRegisterServiceActivity"></activity>
 
         <service android:name=".LyricueDisplay" />
         <service android:name=".NotificationHandler" />
-        <activity android:name=".ServerActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:screenOrientation="landscape"/>
+
+        <activity
+            android:name=".ServerActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
     </application>
 
 </manifest>
