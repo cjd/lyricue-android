@@ -185,7 +185,7 @@ class PlaylistFragment extends Fragment {
                                 .getJSONObject(0)
                                 .getString("HEX(snapshot)"));
                         thumbnail = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                        if (thumbnail!=null) {
+                        if (thumbnail != null) {
                             int height = (thumbnail.getHeight() * activity.thumbnail_width)
                                     / thumbnail.getWidth();
                             thumbnail = Bitmap.createScaledBitmap(thumbnail, activity.thumbnail_width, height, false);
