@@ -13,7 +13,6 @@ import android.widget.EditText;
 
 class DisplayFragment extends Fragment {
     private static final String TAG = Lyricue.class.getSimpleName();
-    //String bookname = "";
     private Lyricue activity = null;
     private View v = null;
 

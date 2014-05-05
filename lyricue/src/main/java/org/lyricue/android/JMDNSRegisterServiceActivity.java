@@ -56,7 +56,6 @@ public class JMDNSRegisterServiceActivity extends Activity {
                     );
                     mJmDNS.close();
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

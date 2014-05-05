@@ -21,7 +21,6 @@ import java.util.Map;
 public class LyricueDisplay extends Service {
 
     private static final String TAG = Lyricue.class.getSimpleName();
-    // --Commented out by Inspection (4/05/14 9:56 AM):public Context context = null;
     private HostItem[] hosts = null;
 
     public LyricueDisplay(Map<String, String> hostmap, String profile) {
@@ -75,27 +74,6 @@ public class LyricueDisplay extends Service {
             }).start();
         }
     }
-
-    /*public boolean checkRunning() {
-        if (hosts.length == 0) {
-            return true;
-        }
-
-        try {
-            Socket sc = new Socket();
-            InetSocketAddress hostaddr = new InetSocketAddress(hosts[0].hostname, hosts[0].port);
-            sc.connect(hostaddr, 5000);
-            sc.close();
-            return true;
-        } catch (UnknownHostException e) {
-            logError("Don't know about host: " + hosts[0].hostname + ":" + hosts[0].port);
-            return false;
-        } catch (IOException e) {
-            logError("Couldn't get I/O socket for the connection to: "
-                    + hosts[0].hostname + ":" + hosts[0].port);
-            return false;
-        }
-    }*/
 
     public String runCommand(Integer hostnum, String command, String option1,
                              String option2) {

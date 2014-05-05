@@ -61,7 +61,6 @@ class AvailableSongsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String arg0) {
-                // TODO Auto-generated method stub if (adapter != null)
                 adapter.getFilter().filter(arg0);
                 return false;
             }

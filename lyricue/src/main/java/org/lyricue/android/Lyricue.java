@@ -307,11 +307,6 @@ public class Lyricue extends ActionBarActivity {
 
     public void load_playlist() {
         PlaylistFragment frag = (PlaylistFragment) fragments.get(PlaylistFragment.class.getName());
-       /* if (frag == null) {
-            frag = (PlaylistFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.playlist);
-            fragments.put("playlist", frag);
-        }*/
         if (frag != null) {
             if (frag.progressPlaylist != null)
                 frag.progressPlaylist.dismiss();
@@ -345,8 +340,7 @@ public class Lyricue extends ActionBarActivity {
 
             if (settings.getString("hostname", "").isEmpty()) {
                 // Find a display server to talk to (doesn't matter which - we
-                // are
-                // just using it to ask the DB for a full list)
+                // are just using it to ask the DB for a full list)
                 Log.i(TAG, "start multicast dns()");
                 try {
                     WifiManager wifi = (WifiManager) Lyricue.this
@@ -446,7 +440,6 @@ public class Lyricue extends ActionBarActivity {
                     } catch (JSONException e) {
                         Log.e(TAG, "Error parsing data " + e.toString());
                     }
-                    //rebuild_hostmap();
                     return SUCCESS;
                 } else {
                     return SELECT_PROFILE;
