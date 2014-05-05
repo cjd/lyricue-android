@@ -26,7 +26,6 @@ import org.json.JSONObject;
 class PlaylistFragment extends Fragment {
     private static final String TAG = Lyricue.class.getSimpleName();
     private static Lyricue activity = null;
-    private static View v = null;
     public ProgressDialog progressPlaylist = null;
     public Long parent_playlist = (long) -1;
     private ListView listView;
@@ -50,7 +49,7 @@ class PlaylistFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         activity = (Lyricue) this.getActivity();
         fragment = this;
-        v = inflater.inflate(R.layout.playlist, container, false);
+        View v = inflater.inflate(R.layout.playlist, container, false);
         listView = (ListView) v.findViewById(R.id.playlistView);
         setHasOptionsMenu(true);
         registerForContextMenu(listView);

@@ -14,13 +14,11 @@ import android.widget.TextView;
 final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
     private static final String TAG = Lyricue.class.getSimpleName();
     private final Lyricue activity;
-    private final PlaylistFragment fragment;
 
     @SuppressWarnings("SameParameterValue")
     public PlaylistAdapter(final Activity activity, final PlaylistFragment fragment, final int textViewResourceId) {
         super(activity, textViewResourceId);
         Log.i(TAG, "new playlist adapter");
-        this.fragment = fragment;
         this.activity = (Lyricue) activity;
     }
 

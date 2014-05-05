@@ -259,8 +259,7 @@ public class ServerActivity extends Activity {
                         s = ss.accept();
                     BufferedReader input = new BufferedReader(
                             new InputStreamReader(s.getInputStream()));
-                    String st = input.readLine();
-                    mClientMsg = st;
+                    mClientMsg = input.readLine();
                     if (mClientMsg != null) {
                         myUpdateHandler.sendMessage(m);
                     }
