@@ -36,7 +36,7 @@ public class MyNotification extends Notification {
 
         Intent activityIntent = new Intent(ctx, Lyricue.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Notification noti = new Notification.Builder(ctx)
-                .setContent(contentView).setSmallIcon(R.drawable.ic_launcher)
+                .setContent(contentView).setSmallIcon(R.drawable.ic_stat_name)
                 .setContentIntent(PendingIntent.getActivity(ctx, 0, activityIntent, PendingIntent.FLAG_CANCEL_CURRENT)).build();
         noti.flags |= Notification.FLAG_ONGOING_EVENT;
 
