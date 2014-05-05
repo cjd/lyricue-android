@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jmdns-3.4.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lyricue/libs/jmdns-3.4.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
