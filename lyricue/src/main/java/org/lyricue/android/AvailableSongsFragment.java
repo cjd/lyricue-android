@@ -37,7 +37,7 @@ class AvailableSongsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.available, null);
+        View v = inflater.inflate(R.layout.available, container, false);
         songlist = (ListView) v.findViewById(R.id.available_songlist);
         setHasOptionsMenu(true);
         activity = (Lyricue) getActivity();

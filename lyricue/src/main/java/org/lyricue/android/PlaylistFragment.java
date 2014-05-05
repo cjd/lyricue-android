@@ -1,6 +1,5 @@
 package org.lyricue.android;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,7 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 class PlaylistFragment extends Fragment {
-    public static final String PREFS_NAME = "LyricuePrefsFile";
     private static final String TAG = Lyricue.class.getSimpleName();
     private static Lyricue activity = null;
     private static View v = null;
@@ -46,14 +44,13 @@ class PlaylistFragment extends Fragment {
         return data;
     }
 
-    @SuppressLint("InflateParams")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         activity = (Lyricue) this.getActivity();
         fragment = this;
-        v = inflater.inflate(R.layout.playlist, null);
+        v = inflater.inflate(R.layout.playlist, container, false);
         listView = (ListView) v.findViewById(R.id.playlistView);
         setHasOptionsMenu(true);
         registerForContextMenu(listView);
@@ -316,7 +313,7 @@ class PlaylistFragment extends Fragment {
                 Query = "SELECT playorder FROM playlist WHERE playlist="
                         + results.getLong("data");
                 JSONArray pArray = activity.ld.runQuery("lyricDb", Query);
-                if (jArray != null) {
+                if (pArray != null) {
                     for (int i = 0; i < pArray.length(); i++) {
                         JSONObject item = pArray.getJSONObject(i);
                         remove_single_item(item.getLong("playorder"));

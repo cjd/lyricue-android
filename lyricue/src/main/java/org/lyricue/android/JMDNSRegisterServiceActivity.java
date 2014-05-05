@@ -43,16 +43,16 @@ public class JMDNSRegisterServiceActivity extends Activity {
                             "data=android");
                     mJmDNS.registerService(mServiceInfo);
                     Log.w(TAG,
-                            String.format("registerService:",
-                                    mServiceInfo.toString())
+                            "registerService:" +
+                                    mServiceInfo.toString()
                     );
                     while (running) {
                         Thread.sleep(1);
                     }
                     mJmDNS.unregisterService(mServiceInfo);
                     Log.w(TAG,
-                            String.format("unregisterService:",
-                                    mServiceInfo.toString())
+                            "unregisterService:" +
+                                    mServiceInfo.toString()
                     );
                     mJmDNS.close();
                 } catch (Exception e) {

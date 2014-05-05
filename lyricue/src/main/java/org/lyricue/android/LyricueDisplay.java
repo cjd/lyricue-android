@@ -21,6 +21,7 @@ import java.util.Map;
 public class LyricueDisplay extends Service {
 
     private static final String TAG = Lyricue.class.getSimpleName();
+    // --Commented out by Inspection (4/05/14 9:56 AM):public Context context = null;
     private HostItem[] hosts = null;
 
     public LyricueDisplay(Map<String, String> hostmap, String profile) {
@@ -75,6 +76,27 @@ public class LyricueDisplay extends Service {
         }
     }
 
+    /*public boolean checkRunning() {
+        if (hosts.length == 0) {
+            return true;
+        }
+
+        try {
+            Socket sc = new Socket();
+            InetSocketAddress hostaddr = new InetSocketAddress(hosts[0].hostname, hosts[0].port);
+            sc.connect(hostaddr, 5000);
+            sc.close();
+            return true;
+        } catch (UnknownHostException e) {
+            logError("Don't know about host: " + hosts[0].hostname + ":" + hosts[0].port);
+            return false;
+        } catch (IOException e) {
+            logError("Couldn't get I/O socket for the connection to: "
+                    + hosts[0].hostname + ":" + hosts[0].port);
+            return false;
+        }
+    }*/
+
     public String runCommand(Integer hostnum, String command, String option1,
                              String option2) {
         String result = "";
@@ -114,7 +136,7 @@ public class LyricueDisplay extends Service {
                 StringBuilder sb = new StringBuilder();
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(is, "utf-8"), 128);
-                String line = null;
+                String line;
                 while ((line = reader.readLine()) != null) {
                     sb.append(line).append("\n");
                 }
@@ -123,7 +145,7 @@ public class LyricueDisplay extends Service {
                 try {
                     os.close();
                     sc.close();
-                } catch (IOException f) {
+                } catch (IOException ignored) {
                 }
             } catch (UnknownHostException e) {
                 logError("Trying to connect to unknown host: " + e);
@@ -151,7 +173,7 @@ public class LyricueDisplay extends Service {
 
     public JSONArray runQuery(String database, String query) {
         String result = runCommand(0, "query", database, query);
-        if (result == "") {
+        if (result.equals("")) {
             return null;
         } else {
             try {

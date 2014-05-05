@@ -7,7 +7,7 @@ public class AvailableSongItem implements Comparable<Object> {
 
     @Override
     public String toString() {
-        if (small != "") {
+        if (!small.equals("")) {
             return main + " " + small;
         } else {
             return main;

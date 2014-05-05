@@ -35,7 +35,7 @@ class BibleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         activity = (Lyricue) getActivity();
-        v = inflater.inflate(R.layout.bible, null);
+        v = inflater.inflate(R.layout.bible, container, false);
         return v;
     }
 
@@ -304,7 +304,7 @@ class BibleFragment extends Fragment {
         }
 
         protected void onPostExecute(String shown) {
-            if (shown != "") {
+            if (!shown.equals("")) {
                 Log.i(TAG, "Ret " + shown);
                 if (!shown.equals(verse_passed)) {
                     String[] tokens = shown.split("[-:]");

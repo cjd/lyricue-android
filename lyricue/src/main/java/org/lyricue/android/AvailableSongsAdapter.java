@@ -167,11 +167,9 @@ public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
                     values = new ArrayList<AvailableSongItem>(originalitems);
                 }
 
-                final int count = values.size();
                 final ArrayList<AvailableSongItem> newValues = new ArrayList<AvailableSongItem>();
 
-                for (int i = 0; i < count; i++) {
-                    final AvailableSongItem value = values.get(i);
+                for (final AvailableSongItem value : values) {
                     final String valueText = value.toString().toLowerCase();
 
                     // First match against the whole, non-split value
@@ -179,12 +177,11 @@ public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
                         newValues.add(value);
                     } else {
                         final String[] words = valueText.split(" ");
-                        final int wordCount = words.length;
 
                         // Start at index 0, in case valueText starts with
                         // space(s)
-                        for (int k = 0; k < wordCount; k++) {
-                            if (words[k].startsWith(prefixString)) {
+                        for (String word : words) {
+                            if (word.startsWith(prefixString)) {
                                 newValues.add(value);
                                 break;
                             }
@@ -206,8 +203,8 @@ public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
             if (results.count > 0) {
                 notifyDataSetChanged();
                 clear();
-                for (int i = 0; i < items.size(); i++) {
-                    add(items.get(i));
+                for (AvailableSongItem item : items) {
+                    add(item);
                 }
                 refresh_songlist_index();
             } else {

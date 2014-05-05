@@ -21,7 +21,7 @@ class DisplayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         activity = (Lyricue) getActivity();
-        v = inflater.inflate(R.layout.display, null);
+        v = inflater.inflate(R.layout.display, container, false);
         Button b = (Button) v.findViewById(R.id.buttonDisplayMain);
         b.setOnClickListener(new DisplayOnClickListener());
         b = (Button) v.findViewById(R.id.buttonDisplayOSD);

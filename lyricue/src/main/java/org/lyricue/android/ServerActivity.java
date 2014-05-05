@@ -46,7 +46,8 @@ public class ServerActivity extends Activity {
                         if (mClientMsg.startsWith("android", 0)) {
                             TextView tv = (TextView) findViewById(R.id.textServerMain);
                             tv.setText(mClientMsg);
-                        } else if (mClientMsg.startsWith("get", 0)) {
+                        } else //noinspection StatementWithEmptyBody
+                            if (mClientMsg.startsWith("get", 0)) {
                             // ignore
                         } else {
                             new CheckRemoteTask().execute();
@@ -234,8 +235,8 @@ public class ServerActivity extends Activity {
 
                 mJmDNS.registerService(mServiceInfo);
                 Log.w(TAG,
-                        String.format("registerService:",
-                                mServiceInfo.toString())
+                        "registerService:" +
+                                mServiceInfo.toString()
                 );
             } catch (Exception e) {
 
@@ -258,8 +259,7 @@ public class ServerActivity extends Activity {
                         s = ss.accept();
                     BufferedReader input = new BufferedReader(
                             new InputStreamReader(s.getInputStream()));
-                    String st = null;
-                    st = input.readLine();
+                    String st = input.readLine();
                     mClientMsg = st;
                     if (mClientMsg != null) {
                         myUpdateHandler.sendMessage(m);
@@ -272,9 +272,9 @@ public class ServerActivity extends Activity {
             }
 
             mJmDNS.unregisterService(mServiceInfo);
-            Log.i(TAG, String.format("unregisterService:",
-                    mServiceInfo.toString()));
             try {
+                Log.i(TAG, "unregisterService:" +
+                        mServiceInfo.toString());
                 mJmDNS.close();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 public class NotificationHandler extends Service {
-    private static final String TAG = Lyricue.class.getSimpleName();
     private LyricueDisplay ld = null;
 
     @Override

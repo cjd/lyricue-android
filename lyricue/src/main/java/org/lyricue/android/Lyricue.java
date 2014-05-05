@@ -76,11 +76,11 @@ public class Lyricue extends ActionBarActivity {
         activity = this;
         setContentView(R.layout.main);
         FragmentManager fragman = getSupportFragmentManager();
-        if (savedInstanceState != null) {
-           /* for (Fragment frag : fragman.getFragments()) {
+        /*if (savedInstanceState != null) {
+           for (Fragment frag : fragman.getFragments()) {
                 fragments.put(frag.getClass().getName(), frag);
-            }*/
-        }
+            }
+        }*/
 
         LyricuePagerAdapter adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(),
                 activity);
@@ -394,6 +394,7 @@ public class Lyricue extends ActionBarActivity {
                     .nanoTime(); ) {
                 if (found_port != 0)
                     break;
+                //noinspection EmptyCatchBlock
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -452,8 +453,9 @@ public class Lyricue extends ActionBarActivity {
             if (progressLoad != null)
                 progressLoad.dismiss();
             Log.i(TAG, "return:" + result);
-            if ((result == SUCCESS) || (result == DEMO_MODE)) {
+            if ((result.equals(SUCCESS)) || (result.equals(DEMO_MODE))) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    //noinspection UnusedAssignment
                     MyNotification notify = new MyNotification(activity, hosts);
                 }
                 ld = new LyricueDisplay(hosts);
@@ -466,7 +468,7 @@ public class Lyricue extends ActionBarActivity {
                     getWindow().clearFlags(
                             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 }
-                if (result == DEMO_MODE) {
+                if (result.equals(DEMO_MODE)) {
                     v.findViewById(R.id.textDemo).setVisibility(View.VISIBLE);
                 } else {
                     v.findViewById(R.id.textDemo).setVisibility(View.GONE);
@@ -488,7 +490,7 @@ public class Lyricue extends ActionBarActivity {
                     frag3.load_bible();
                 }
 
-            } else if (result == SELECT_PROFILE) {
+            } else if (result.equals(SELECT_PROFILE)) {
                 Intent profileActivity = new Intent(getBaseContext(),
                         ChooseProfile.class);
                 profileActivity.putExtra("host", found_host + ":" + found_port);

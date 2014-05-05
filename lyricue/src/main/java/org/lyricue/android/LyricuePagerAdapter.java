@@ -10,9 +10,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
-    public static final String PREFS_NAME = "LyricuePrefsFile";
     private static final String TAG = Lyricue.class.getSimpleName();
-    private final String[] titles = new String[5];
     private int CONTROL_ID = 0;
     private int PLAYLIST_ID = 1;
     private int AVAIL_ID = 2;
@@ -40,11 +38,6 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
             CONTROL_ID = 4;
             pages = 4;
         }
-        titles[CONTROL_ID] = res.getString(R.string.control);
-        titles[PLAYLIST_ID] = res.getString(R.string.playlist);
-        titles[AVAIL_ID] = res.getString(R.string.available);
-        titles[BIBLE_ID] = res.getString(R.string.bible);
-        titles[DISPLAY_ID] = res.getString(R.string.display);
     }
 
 
@@ -56,8 +49,7 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Log.i(TAG, "get fragment:" + position);
-        Fragment f = null;
-        String className = "";
+        Fragment f;
         if (position == CONTROL_ID) {
 
             f = activity.fragments.get(ControlFragment.class.getName());
