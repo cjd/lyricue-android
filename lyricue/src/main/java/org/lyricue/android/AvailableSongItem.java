@@ -17,6 +17,8 @@
 
 package org.lyricue.android;
 
+import java.util.Locale;
+
 public class AvailableSongItem implements Comparable<Object> {
     public String main = "";
     public String small = "";
@@ -33,6 +35,6 @@ public class AvailableSongItem implements Comparable<Object> {
 
     @Override
     public int compareTo(Object another) {
-        return this.toString().toUpperCase().compareTo(another.toString().toUpperCase());
+        return this.toString().toUpperCase(Locale.getDefault()).compareTo(another.toString().toUpperCase(Locale.getDefault()));
     }
 }

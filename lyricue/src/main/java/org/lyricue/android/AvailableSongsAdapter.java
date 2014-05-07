@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Set;
 
 public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
@@ -124,7 +125,7 @@ public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
             // We store the first letter of the word, and its index.
             // The Hashmap will replace the value for identical keys are put in
             alphaIndexer
-                    .put(items.get(i).main.substring(0, 1).toUpperCase(), i);
+                    .put(items.get(i).main.substring(0, 1).toUpperCase(Locale.getDefault()), i);
         }
 
         // now we have an hashmap containing for each first-letter
@@ -177,7 +178,7 @@ public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
                 results.values = list;
                 results.count = list.size();
             } else {
-                String prefixString = prefix.toString().toLowerCase();
+                String prefixString = prefix.toString().toLowerCase(Locale.getDefault());
 
                 ArrayList<AvailableSongItem> values;
                 synchronized (mLock) {
@@ -187,7 +188,7 @@ public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
                 final ArrayList<AvailableSongItem> newValues = new ArrayList<AvailableSongItem>();
 
                 for (final AvailableSongItem value : values) {
-                    final String valueText = value.toString().toLowerCase();
+                    final String valueText = value.toString().toLowerCase(Locale.getDefault());
 
                     // First match against the whole, non-split value
                     if (valueText.startsWith(prefixString)) {
