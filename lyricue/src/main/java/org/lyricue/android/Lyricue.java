@@ -181,6 +181,7 @@ public class Lyricue extends ActionBarActivity {
     @Override
     protected void onRestart() {
         Log.i(TAG, "onRestart()");
+        MyNotification notify = new MyNotification(activity, hosts);
         super.onStart();
     }
 
@@ -504,4 +505,6 @@ public class Lyricue extends ActionBarActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
+
+
 }

@@ -38,21 +38,12 @@ public class MyNotification extends Notification {
         Notification noti = new Notification.Builder(ctx)
                 .setContent(contentView).setSmallIcon(R.drawable.ic_stat_name)
                 .setContentIntent(PendingIntent.getActivity(ctx, 0, activityIntent, PendingIntent.FLAG_CANCEL_CURRENT)).build();
-        noti.flags |= Notification.FLAG_ONGOING_EVENT;
+        //noti.flags |= Notification.FLAG_ONGOING_EVENT;
 
         notificationManager.notify(0, noti);
     }
 
     private void setListeners(RemoteViews view, Context ctx) {
-
-        Intent intentExit = new Intent(ctx, Lyricue.class);
-        intentExit.putExtra("command", "android_exit");
-        intentExit.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pIntentExit = PendingIntent.getService(ctx, 0,
-                intentExit, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.imageButtonNotifyExit, pIntentExit);
-
         Intent intentPrev = new Intent(ctx, NotificationHandler.class);
         intentPrev.putExtra("command", "prev_page");
         intentPrev.putExtra("hosts", hosts);
@@ -86,7 +77,7 @@ public class MyNotification extends Notification {
         intentReshow.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pIntentReshow = PendingIntent.getService(ctx, 3,
-                intentBlank, PendingIntent.FLAG_UPDATE_CURRENT);
+                intentReshow, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.imageButtonNotifyReshow,
                 pIntentReshow);
     }
