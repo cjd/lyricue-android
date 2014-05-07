@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-class ControlFragment extends Fragment {
+public class ControlFragment extends Fragment {
     private static Lyricue activity = null;
     private View v = null;
     private LayoutInflater inflater = null;

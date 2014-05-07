@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 
-class AvailableSongsFragment extends Fragment {
+public class AvailableSongsFragment extends Fragment {
     private static final String TAG = Lyricue.class.getSimpleName();
     private Lyricue activity = null;
     private ListView songlist = null;
@@ -61,8 +61,11 @@ class AvailableSongsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String arg0) {
-                adapter.getFilter().filter(arg0);
-                return false;
+                if (adapter!=null) {
+                    adapter.getFilter().filter(arg0);
+                    return false;
+                }
+                return true;
             }
         });
     }

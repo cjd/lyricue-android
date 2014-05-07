@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-class BibleFragment extends Fragment {
+public class BibleFragment extends Fragment {
     private static final String TAG = Lyricue.class.getSimpleName();
     private Lyricue activity = null;
     private View v = null;

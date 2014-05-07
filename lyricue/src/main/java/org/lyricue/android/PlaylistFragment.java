@@ -23,7 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class PlaylistFragment extends Fragment {
+public class PlaylistFragment extends Fragment {
     private static final String TAG = Lyricue.class.getSimpleName();
     private static Lyricue activity = null;
     public ProgressDialog progressPlaylist = null;
