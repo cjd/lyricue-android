@@ -82,7 +82,7 @@ public class Lyricue extends ActionBarActivity {
     private boolean togglescreen = false;
     private ProgressDialog progressLoad = null;
     private Lyricue activity = null;
-
+    public ActionBar actionBar = null;
     /**
      * Called when the activity is first created.
      */
@@ -117,10 +117,8 @@ public class Lyricue extends ActionBarActivity {
                 activity);
         pager = (ViewPager) findViewById(R.id.viewpager);
         pager.setAdapter(adapter);
-        pager.setOffscreenPageLimit(5);
-        pager.setCurrentItem(0);
 
-        final ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
                 // When the tab is selected, switch to the
@@ -142,13 +140,11 @@ public class Lyricue extends ActionBarActivity {
         boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
         boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
 
-        if (!(isLarge && isLandscape)) {
-            actionBar.addTab(actionBar.newTab().setText(R.string.control)
-                    .setTabListener(tabListener));
-        } else {
+        if (isLarge && isLandscape) {
             activity.setQuickBar(false);
-            fragments.put(ControlFragment.class.getName(), fragman.findFragmentById(R.layout.control));
         }
+        actionBar.addTab(actionBar.newTab().setText(R.string.control)
+                .setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText(R.string.playlist)
                 .setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText(R.string.available)
@@ -157,6 +153,9 @@ public class Lyricue extends ActionBarActivity {
                 .setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText(R.string.display)
                 .setTabListener(tabListener));
+
+        pager.setOffscreenPageLimit(actionBar.getTabCount());
+        pager.setCurrentItem(0);
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -364,6 +363,19 @@ public class Lyricue extends ActionBarActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        Resources res = getBaseContext().getResources();
+        Configuration conf = res.getConfiguration();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
+        boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
+        if (isLarge && isLandscape) {
+            Log.d(TAG,"rotate: landscape");
+            fragmentTransaction.hide(getSupportFragmentManager().findFragmentById(R.layout.control));
+        } else {
+            Log.d(TAG,"rotate: portrait");
+            fragmentTransaction.show(getSupportFragmentManager().findFragmentById(R.layout.control));
+        }
+        fragmentTransaction.commit();
     }
 
     private class GetPrefsTask extends AsyncTask<Context, Void, Integer> {

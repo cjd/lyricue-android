@@ -23,89 +23,87 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.ViewGroup;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
-    private static final String TAG = Lyricue.class.getSimpleName();
-    private int CONTROL_ID = 0;
-    private int PLAYLIST_ID = 1;
-    private int AVAIL_ID = 2;
-    private int BIBLE_ID = 3;
-    private int DISPLAY_ID = 4;
-    private int pages = 5;
+    private static final String TAG = LyricuePagerAdapter.class.getSimpleName();
     private Lyricue activity = null;
+    private FragmentManager fm = null;
+    private Configuration conf = null;
+    private Context context = null;
 
     public LyricuePagerAdapter(FragmentManager fm, Context context,
                                Lyricue activity) {
         super(fm);
-        Resources res = context.getResources();
-        Configuration conf = res.getConfiguration();
         this.activity = activity;
-
-        boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
-
-        boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
-        if (isLarge && isLandscape) {
-
-            PLAYLIST_ID = 0;
-            AVAIL_ID = 1;
-            BIBLE_ID = 2;
-            DISPLAY_ID = 3;
-            CONTROL_ID = 4;
-            pages = 4;
-        }
+        this.fm = fm;
+        this.context = context;
+        Resources res = context.getResources();
+        conf = res.getConfiguration();
     }
 
 
     @Override
     public int getCount() {
-        return pages;
+        boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
+        boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
+        if (isLarge && isLandscape) {
+            return 4;
+        }
+        return 5;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Log.i(TAG, "get fragment:" + position);
-        Fragment f;
-        if (position == CONTROL_ID) {
-
+        String title = context.getString(R.string.control);
+        if (position < activity.actionBar.getTabCount()) {
+            title = activity.actionBar.getTabAt(position).getText().toString();
+        }
+        Log.i(TAG, "get fragment:" + position + ":"+ title);
+        Fragment f=null;
+        if (title.equals(context.getString(R.string.control))) {
             f = activity.fragments.get(ControlFragment.class.getName());
             if (f == null) {
                 f = new ControlFragment();
                 activity.fragments.put(f.getClass().getName(), f);
             }
-        } else if (position == PLAYLIST_ID) {
+        } else if (title.equals(context.getString(R.string.playlist))) {
             f = activity.fragments.get(PlaylistFragment.class.getName());
             if (f == null) {
                 f = new PlaylistFragment();
                 activity.fragments.put(f.getClass().getName(), f);
             }
-        } else if (position == AVAIL_ID) {
+        } else if (title.equals(context.getString(R.string.available))) {
             f = activity.fragments.get(AvailableSongsFragment.class.getName());
             if (f == null) {
                 f = new AvailableSongsFragment();
                 activity.fragments.put(f.getClass().getName(), f);
             }
-        } else if (position == BIBLE_ID) {
+        } else if (title.equals(context.getString(R.string.bible))) {
             f = activity.fragments.get(BibleFragment.class.getName());
             if (f == null) {
                 f = new BibleFragment();
                 activity.fragments.put(f.getClass().getName(), f);
             }
-        } else if (position == DISPLAY_ID) {
+        } else if (title.equals(context.getString(R.string.display))) {
             f = activity.fragments.get(DisplayFragment.class.getName());
             if (f == null) {
                 f = new DisplayFragment();
                 activity.fragments.put(f.getClass().getName(), f);
             }
-        } else {
-            f = activity.fragments.get(ControlFragment.class.getName());
-            if (f == null) {
-                f = new ControlFragment();
-                activity.fragments.put(f.getClass().getName(), f);
-            }
         }
-
+        boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
+        boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
+        /*FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        if (isLarge && isLandscape) {
+            fragmentTransaction.hide(fm.findFragmentById(R.layout.control));
+        } else {
+            fragmentTransaction.show(fm.findFragmentById(R.layout.control));
+        }
+        fragmentTransaction.commit();*/
         return f;
     }
 
@@ -124,9 +122,9 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
             key = BibleFragment.class.getName();
         } else if (position == DISPLAY_ID) {
             key = DisplayFragment.class.getName();
-        }*/
+        }
         if (key != null)
-            activity.fragments.remove(key);
+            activity.fragments.remove(key);*/
         super.destroyItem(container, position, object);
     }
 
