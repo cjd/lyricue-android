@@ -110,7 +110,7 @@ public class Lyricue extends ActionBarActivity {
             bibles_id = savedInstanceState.getStringArray("bibles_id");
             bibles_type = savedInstanceState.getStringArray("bibles_type");
             imageplaylist = savedInstanceState.getBoolean("imageplaylist");
-            ld=new LyricueDisplay(hosts);
+            ld = new LyricueDisplay(hosts);
         }
 
         LyricuePagerAdapter adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(),
@@ -135,14 +135,7 @@ public class Lyricue extends ActionBarActivity {
             }
         };
 
-        Resources res = getResources();
-        Configuration conf = res.getConfiguration();
-        boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
-        boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
 
-        if (isLarge && isLandscape) {
-            activity.setQuickBar(false);
-        }
         actionBar.addTab(actionBar.newTab().setText(R.string.control)
                 .setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText(R.string.playlist)
@@ -155,13 +148,25 @@ public class Lyricue extends ActionBarActivity {
                 .setTabListener(tabListener));
 
         pager.setOffscreenPageLimit(actionBar.getTabCount());
-        pager.setCurrentItem(0);
+
+        Resources res = getResources();
+        Configuration conf = res.getConfiguration();
+        boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
+        boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
+        Log.d(TAG,"Status:"+isLarge+":"+isLandscape);
+        if (isLarge && isLandscape) {
+            activity.setQuickBar(false);
+            pager.setCurrentItem(1);
+        } else {
+            pager.setCurrentItem(0);
+        }
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 getSupportActionBar().setSelectedNavigationItem(position);
             }
         });
+
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
