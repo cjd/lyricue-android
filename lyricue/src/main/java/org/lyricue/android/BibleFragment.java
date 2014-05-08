@@ -56,6 +56,12 @@ public class BibleFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     public void load_bible() {
         Spinner book = (Spinner) v.findViewById(R.id.spinBibleBook);
         book.setOnItemSelectedListener(new BookOnItemSelectedListener());

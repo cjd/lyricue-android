@@ -68,9 +68,9 @@ public class Lyricue extends ActionBarActivity {
     private static final String TAG = Lyricue.class.getSimpleName();
     public HostItem hosts[] = null;
     public String profile = "";
-    public Long playlistid = (long) -1;
+    public long playlistid = (long) -1;
     public String[] playlists_text = null;
-    public Long[] playlists_id = null;
+    public long[] playlists_id = null;
     public String[] bibles_text = null;
     public String[] bibles_id = null;
     public String[] bibles_type = null;
@@ -93,11 +93,25 @@ public class Lyricue extends ActionBarActivity {
         activity = this;
         setContentView(R.layout.main);
         FragmentManager fragman = getSupportFragmentManager();
-        /*if (savedInstanceState != null) {
-           for (Fragment frag : fragman.getFragments()) {
-                fragments.put(frag.getClass().getName(), frag);
+        if (savedInstanceState != null) {
+            for (Fragment frag : fragman.getFragments()) {
+                if (frag != null) {
+                    Log.d(TAG, frag.toString());
+                    Log.d(TAG, frag.getClass().getName());
+                    fragments.put(frag.getClass().getName(), frag);
+                }
             }
-        }*/
+            hosts = (HostItem[]) savedInstanceState.getParcelableArray("hosts");
+            profile = savedInstanceState.getString("profile");
+            playlistid = savedInstanceState.getLong("playlistid");
+            playlists_text = savedInstanceState.getStringArray("playlists_text");
+            playlists_id = savedInstanceState.getLongArray("playlists_id");
+            bibles_text = savedInstanceState.getStringArray("bibles_text");
+            bibles_id = savedInstanceState.getStringArray("bibles_id");
+            bibles_type = savedInstanceState.getStringArray("bibles_type");
+            imageplaylist = savedInstanceState.getBoolean("imageplaylist");
+            ld=new LyricueDisplay(hosts);
+        }
 
         LyricuePagerAdapter adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(),
                 activity);
@@ -158,7 +172,9 @@ public class Lyricue extends ActionBarActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         thumbnail_width = Math.min(displaymetrics.widthPixels,
                 displaymetrics.heightPixels) / 2;
-        getPrefs();
+        if (profile.equals("")) {
+            getPrefs();
+        }
     }
 
     @Override
@@ -170,6 +186,15 @@ public class Lyricue extends ActionBarActivity {
                 }
             }
         }
+        outState.putParcelableArray("hosts", hosts);
+        outState.putString("profile", profile);
+        outState.putLong("playlistid", playlistid);
+        outState.putStringArray("playlists_text", playlists_text);
+        outState.putLongArray("playlists_id", playlists_id);
+        outState.putStringArray("bibles_text", bibles_text);
+        outState.putStringArray("bibles_id", bibles_id);
+        outState.putStringArray("bibles_type", bibles_type);
+        outState.putBoolean("imageplaylist", imageplaylist);
         super.onSaveInstanceState(outState);
     }
 
@@ -334,6 +359,11 @@ public class Lyricue extends ActionBarActivity {
         } else {
             logError("playlist fragment not found");
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     private class GetPrefsTask extends AsyncTask<Context, Void, Integer> {
@@ -516,11 +546,6 @@ public class Lyricue extends ActionBarActivity {
                 finish();
             }
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
 

@@ -74,9 +74,16 @@ public class PlaylistFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public void onResume() {
         Log.i(TAG, "resume playlist");
         super.onResume();
+        load_playlist(this_playlist);
     }
 
     @Override
@@ -361,7 +368,7 @@ public class PlaylistFragment extends Fragment {
         protected Void doInBackground(Void... arg0) {
             if (activity.hosts == null) {
                 activity.playlists_text = new String[1];
-                activity.playlists_id = new Long[1];
+                activity.playlists_id = new long[1];
                 activity.playlists_id[0] = (long) 1;
                 activity.playlists_text[0] = "Demo playlist";
                 activity.showPlaylistsDialog();
@@ -381,7 +388,7 @@ public class PlaylistFragment extends Fragment {
             }
             try {
                 activity.playlists_text = new String[jArray.length()];
-                activity.playlists_id = new Long[jArray.length()];
+                activity.playlists_id = new long[jArray.length()];
 
                 for (int i = 0; i < jArray.length(); i++) {
                     JSONObject results = jArray.getJSONObject(i);

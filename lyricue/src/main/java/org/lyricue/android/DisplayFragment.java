@@ -30,6 +30,12 @@ public class DisplayFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     private class DisplayOnClickListener implements OnClickListener {
         @Override
         public void onClick(View vi) {

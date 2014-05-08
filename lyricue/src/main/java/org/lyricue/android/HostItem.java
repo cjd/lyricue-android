@@ -1,16 +1,31 @@
 package org.lyricue.android;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
-public class HostItem {
+public class HostItem implements Parcelable {
+    public static final Creator<HostItem> CREATOR =
+            new Creator<HostItem>() {
+                public HostItem createFromParcel(Parcel in) {
+                    return new HostItem(in);
+                }
+
+                public HostItem[] newArray(int size) {
+                    return new HostItem[size];
+                }
+            };
     private static final String TAG = Lyricue.class.getSimpleName();
     public String hostname;
     public int port;
 
-
     public HostItem(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
+    }
+
+    public HostItem(Parcel in) {
+        readFromParcel(in);
     }
 
     public HostItem(String input) {
@@ -35,5 +50,21 @@ public class HostItem {
     @Override
     public String toString() {
         return hostname + "#" + port;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(this.hostname);
+        parcel.writeInt(this.port);
+    }
+
+    private void readFromParcel(Parcel in) {
+        hostname = in.readString();
+        port = in.readInt();
     }
 }

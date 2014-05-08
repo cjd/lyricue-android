@@ -63,6 +63,12 @@ public class AvailableSongsFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.songs_menu, menu);
@@ -133,6 +139,7 @@ public class AvailableSongsFragment extends Fragment {
     @Override
     public void onResume() {
         Log.i(TAG, "resume available");
+        load_available();
         super.onResume();
     }
 

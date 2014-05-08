@@ -33,7 +33,6 @@ public class PlaylistsDialogFragment extends DialogFragment {
         Bundle args = new Bundle();
         args.putInt("title", title);
         frag.setArguments(args);
-
         return frag;
     }
 
