@@ -28,6 +28,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -136,8 +137,7 @@ public class Lyricue extends ActionBarActivity {
         };
 
 
-        actionBar.addTab(actionBar.newTab().setText(R.string.control)
-                .setTabListener(tabListener));
+        Tab controlTab = actionBar.newTab().setText("Control").setTabListener(tabListener);
         actionBar.addTab(actionBar.newTab().setText(R.string.playlist)
                 .setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText(R.string.available)
@@ -146,6 +146,7 @@ public class Lyricue extends ActionBarActivity {
                 .setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText(R.string.display)
                 .setTabListener(tabListener));
+        actionBar.addTab(controlTab);
 
         pager.setOffscreenPageLimit(actionBar.getTabCount());
 
@@ -156,9 +157,10 @@ public class Lyricue extends ActionBarActivity {
         Log.d(TAG,"Status:"+isLarge+":"+isLandscape);
         if (isLarge && isLandscape) {
             activity.setQuickBar(false);
-            pager.setCurrentItem(1);
-        } else {
+            actionBar.removeTab(controlTab);
             pager.setCurrentItem(0);
+        } else {
+            pager.setCurrentItem(4);
         }
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -227,7 +229,9 @@ public class Lyricue extends ActionBarActivity {
     @Override
     protected void onRestart() {
         Log.i(TAG, "onRestart()");
-        MyNotification notify = new MyNotification(activity, hosts);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            MyNotification notify = new MyNotification(activity, hosts);
+        }
         super.onStart();
     }
 
@@ -495,7 +499,10 @@ public class Lyricue extends ActionBarActivity {
                                     || results.getString("type").equals(
                                     "headless")) {
                                 hosts[i] = new HostItem(results.getString("host"));
-                                if (android.os.Build.MODEL.equals("google_sdk")
+                                if (!settings.getString("hostname", "").isEmpty()) {
+                                    Log.d(TAG,"Forcing hostname to "+settings.getString("hostname","10.0.2.2"));
+                                    hosts[i].hostname=settings.getString("hostname","10.0.2.2");
+                                } else if (android.os.Build.MODEL.equals("google_sdk")
                                         || android.os.Build.MODEL.equals("sdk")) {
                                     hosts[i].hostname = "10.0.2.2";
                                 }

@@ -38,7 +38,6 @@ import java.util.Map;
 public class LyricueDisplay extends Service {
 
     private static final String TAG = Lyricue.class.getSimpleName();
-    // --Commented out by Inspection (4/05/14 9:56 AM):public Context context = null;
     private HostItem[] hosts = null;
 
     public LyricueDisplay(Map<String, String> hostmap, String profile) {
