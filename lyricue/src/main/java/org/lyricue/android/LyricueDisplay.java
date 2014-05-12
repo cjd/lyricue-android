@@ -33,23 +33,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Map;
 
 public class LyricueDisplay extends Service {
 
-    private static final String TAG = Lyricue.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     private HostItem[] hosts = null;
-
-    public LyricueDisplay(Map<String, String> hostmap, String profile) {
-        hosts = new HostItem[hostmap.size()];
-        int i = 0;
-        for (Map.Entry<String, String> entry : hostmap.entrySet()) {
-            if (entry.getValue().equals(profile) || profile.length() == 0) {
-                hosts[i] = new HostItem(entry.getKey());
-                i++;
-            }
-        }
-    }
 
     public LyricueDisplay() {
         hosts = new HostItem[1];

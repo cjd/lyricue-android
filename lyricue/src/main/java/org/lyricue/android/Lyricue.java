@@ -66,7 +66,7 @@ public class Lyricue extends ActionBarActivity {
      * Called when the activity is first created.
      */
     public static final String PREFS_NAME = "LyricuePrefsFile";
-    private static final String TAG = Lyricue.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     public HostItem hosts[] = null;
     public String profile = "";
     public long playlistid = (long) -1;
@@ -230,7 +230,7 @@ public class Lyricue extends ActionBarActivity {
     protected void onRestart() {
         Log.i(TAG, "onRestart()");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            MyNotification notify = new MyNotification(activity, hosts);
+            @SuppressWarnings("UnusedAssignment") MyNotification notify = new MyNotification(activity, hosts);
         }
         super.onStart();
     }

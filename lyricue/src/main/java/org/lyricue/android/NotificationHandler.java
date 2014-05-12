@@ -17,16 +17,15 @@
 
 package org.lyricue.android;
 
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.content.Context;
+import android.os.Parcelable;
 import android.util.Log;
 
 public class NotificationHandler extends Service {
-    private static final String TAG = Lyricue.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     private LyricueDisplay ld = null;
 
     @Override
@@ -34,20 +33,14 @@ public class NotificationHandler extends Service {
         Bundle extras = intent.getExtras();
         if (extras != null) {
             Log.d(TAG, "command:" + extras.getString("command"));
-            if (extras.getString("command").equals("android_exit")) {
-                NotificationManager notificationManager = (NotificationManager) this
-                        .getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.cancelAll();
-                return super.onStartCommand(intent, flags, startId);
+            Parcelable[] hosts_in = extras.getParcelableArray("hosts");
+            HostItem hosts[]= new HostItem[hosts_in.length];
+            for (int i=0;i<hosts_in.length;i++){
+                hosts[i]=(HostItem) hosts_in[i];
             }
-            String[] hosts = extras.getStringArray("hosts");
-            if (!hosts[0].equals("")) {
+            if ((hosts != null) && (!hosts[0].equals(new HostItem("",0)))) {
                 if (ld == null) {
-                    HostItem hostitems[] = new HostItem[hosts.length];
-                    for (int i = 0; i < hosts.length; i++) {
-                        hostitems[i] = new HostItem(hosts[i]);
-                    }
-                    ld = new LyricueDisplay(hostitems);
+                    ld = new LyricueDisplay(hosts);
                 }
                 ld.runCommand_noreturn("display", extras.getString("command"), "");
             }

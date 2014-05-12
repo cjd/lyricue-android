@@ -41,7 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PlaylistFragment extends Fragment {
-    private static final String TAG = Lyricue.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     private static Lyricue activity = null;
     public ProgressDialog progressPlaylist = null;
     public Long parent_playlist = (long) -1;

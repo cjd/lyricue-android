@@ -23,15 +23,12 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.ViewGroup;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
-    private static final String TAG = LyricuePagerAdapter.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     private Lyricue activity = null;
-    private FragmentManager fm = null;
     private Configuration conf = null;
     private Context context = null;
 
@@ -39,7 +36,6 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
                                Lyricue activity) {
         super(fm);
         this.activity = activity;
-        this.fm = fm;
         this.context = context;
         Resources res = context.getResources();
         conf = res.getConfiguration();
@@ -95,15 +91,6 @@ public class LyricuePagerAdapter extends FragmentPagerAdapter {
                 activity.fragments.put(f.getClass().getName(), f);
             }
         }
-        boolean isLarge = (conf.screenLayout & 0x4) == 0x4;
-        boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
-        /*FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        if (isLarge && isLandscape) {
-            fragmentTransaction.hide(fm.findFragmentById(R.layout.control));
-        } else {
-            fragmentTransaction.show(fm.findFragmentById(R.layout.control));
-        }
-        fragmentTransaction.commit();*/
         return f;
     }
 

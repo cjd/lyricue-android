@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ChooseProfile extends Activity {
-    private static final String TAG = Lyricue.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     private String host = "";
     private Spinner spinProfile;
 

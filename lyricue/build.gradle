@@ -23,5 +23,6 @@ dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     //noinspection GradleDependency
     compile 'com.android.support:appcompat-v7:19.1.0'
+    compile 'com.github.rickyclarkson:jmdns:3.4.2-r353-1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

@@ -25,7 +25,7 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
 public class PlaylistsDialogFragment extends DialogFragment {
-    private static final String TAG = Lyricue.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
 
     @SuppressWarnings("SameParameterValue")
     public static PlaylistsDialogFragment newInstance(int title) {

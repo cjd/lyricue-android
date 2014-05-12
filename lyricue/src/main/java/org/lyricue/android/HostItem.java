@@ -15,7 +15,7 @@ public class HostItem implements Parcelable {
                     return new HostItem[size];
                 }
             };
-    private static final String TAG = Lyricue.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     public String hostname;
     public int port;
 

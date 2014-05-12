@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
-    private static final String TAG = Lyricue.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     private final Lyricue activity;
 
     @SuppressWarnings("SameParameterValue")

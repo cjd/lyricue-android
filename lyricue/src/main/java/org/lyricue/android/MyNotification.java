@@ -29,21 +29,13 @@ import android.os.Build;
 import android.widget.RemoteViews;
 
 public class MyNotification extends Notification {
-    private String[] hosts = null;
+    private HostItem[] hosts = null;
 
     @SuppressLint("NewApi")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public MyNotification(Context ctx, HostItem[] hosts_in) {
         super();
-        if (hosts_in == null) {
-            hosts = new String[1];
-            hosts[0] = "";
-        } else {
-            hosts = new String[hosts_in.length];
-            for (int i = 0; i < hosts_in.length; i++) {
-                hosts[i] = hosts_in[i].toString();
-            }
-        }
+        hosts=hosts_in;
         NotificationManager notificationManager = (NotificationManager) ctx
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -55,7 +47,6 @@ public class MyNotification extends Notification {
         Notification noti = new Notification.Builder(ctx)
                 .setContent(contentView).setSmallIcon(R.drawable.ic_stat_name)
                 .setContentIntent(PendingIntent.getActivity(ctx, 0, activityIntent, PendingIntent.FLAG_CANCEL_CURRENT)).build();
-        //noti.flags |= Notification.FLAG_ONGOING_EVENT;
 
         notificationManager.notify(0, noti);
     }
