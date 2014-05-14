@@ -20,6 +20,8 @@ package org.lyricue.android;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+
+import java.lang.ref.WeakReference;
 
 final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
     private final String TAG = this.getClass().getSimpleName();
@@ -62,6 +68,7 @@ final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
             viewHolder.image.setScaleType(ImageView.ScaleType.FIT_START);
             viewHolder.image.setVisibility(View.VISIBLE);
         } else {
+            new ImageDownloaderTask(viewHolder.image).execute(getItem(position).id);
             viewHolder.image.setVisibility(View.GONE);
         }
         return convertView;
@@ -75,5 +82,66 @@ final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
     static class ViewHolderItem {
         TextView description;
         ImageView image;
+    }
+
+    private class ImageDownloaderTask extends AsyncTask<Long, Void, Bitmap> {
+        private final WeakReference imageViewReference;
+
+        public ImageDownloaderTask(ImageView imageView) {
+            imageViewReference = new WeakReference(imageView);
+        }
+
+
+        @Override
+        protected Bitmap doInBackground(Long... params) {
+            // params comes from the execute() call: params[0] is the url.
+            return downloadBitmap(params[0]);
+        }
+
+        @Override
+        // Once the image is downloaded, associates it to the imageView
+        protected void onPostExecute(Bitmap bitmap) {
+            if (isCancelled()) {
+                bitmap = null;
+            }
+
+            if (imageViewReference != null) {
+                ImageView imageView = (ImageView) imageViewReference.get();
+                if (imageView != null) {
+
+                    if (bitmap != null) {
+                        imageView.setImageBitmap(bitmap);
+                    } else {
+                        imageView.setVisibility(View.GONE);
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    static Bitmap downloadBitmap(Long playorder) {
+
+        String Query2 = "SELECT HEX(snapshot) FROM playlist WHERE playorder="
+                + playorder;
+        JSONArray pArray = activity.ld.runQuery("lyricDb",
+                Query2);
+        if (pArray != null
+                && pArray.length() > 0
+                && pArray.getJSONObject(0).getString(
+                "HEX(snapshot)") != null) {
+            byte[] imageBytes = hexStringToByteArray(pArray
+                    .getJSONObject(0)
+                    .getString("HEX(snapshot)"));
+            thumbnail = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            if (thumbnail != null) {
+                int height = (thumbnail.getHeight() * activity.thumbnail_width)
+                        / thumbnail.getWidth();
+                thumbnail = Bitmap.createScaledBitmap(thumbnail, activity.thumbnail_width, height, false);
+            }
+            return thumbnail;
+        }
+        return null;
     }
 }
