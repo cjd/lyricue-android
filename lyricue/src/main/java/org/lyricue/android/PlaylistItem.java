@@ -26,11 +26,11 @@ class PlaylistItem {
     public Long data = (long) 0;
     public Bitmap thumbnail = null;
 
-    public PlaylistItem(Long id, String title, String type, Long data, Bitmap thumbnail) {
+    public PlaylistItem(Long id, String title, String type, Long data) {
         this.title = title;
         this.id = id;
         this.type = type;
         this.data = data;
-        this.thumbnail = thumbnail;
+        this.thumbnail = null;
     }
 }
