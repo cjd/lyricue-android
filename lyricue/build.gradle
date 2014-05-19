@@ -7,13 +7,23 @@ android {
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 19
-        versionCode 24
-        versionName "3.4"
+        versionCode 25
+        versionName "3.4.1"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("/home/cjd/Owncloud/Config/lyricue.keystore")
+            storePassword System.getenv("KEY_PASS")
+            keyAlias "lyricue"
+            keyPassword System.getenv("KEY_PASS")
+        }
     }
     buildTypes {
         release {
-            runProguard true
+            runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -22,5 +32,4 @@ dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.android.support:appcompat-v7:19.1.0'
     compile 'com.github.rickyclarkson:jmdns:3.4.2-r353-1'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
 }
