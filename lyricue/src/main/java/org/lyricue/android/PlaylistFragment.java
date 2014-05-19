@@ -45,10 +45,12 @@ public class PlaylistFragment extends Fragment {
     private static Lyricue activity = null;
     public ProgressDialog progressPlaylist = null;
     public Long parent_playlist = (long) -1;
+    public String parent_playlisttitle = "";
     private ListView listView;
     private PlaylistAdapter adapter;
     private PlaylistFragment fragment = null;
     private Long this_playlist = (long) 0;
+    private String this_playlisttitle = "";
 
     private static byte[] hexStringToByteArray(String s) {
         int len = s.length();
@@ -83,7 +85,7 @@ public class PlaylistFragment extends Fragment {
     public void onResume() {
         Log.i(TAG, "resume playlist");
         super.onResume();
-        load_playlist(this_playlist);
+        load_playlist(this_playlist,this_playlisttitle);
     }
 
     @Override
@@ -158,9 +160,10 @@ public class PlaylistFragment extends Fragment {
         new LoadPlaylistTask().execute(this_playlist);
     }
 
-    void load_playlist(Long playlistid) {
-        Log.i(TAG, "load_playlist(" + playlistid + ")");
+    void load_playlist(Long playlistid, String title) {
+        Log.i(TAG, "load_playlist(" + playlistid + "-" + title + ")");
         this_playlist = playlistid;
+        this_playlisttitle = title;
         new LoadPlaylistTask().execute(playlistid);
     }
 
@@ -190,31 +193,6 @@ public class PlaylistFragment extends Fragment {
         for (int i = 0; i < jArray.length(); i++) {
             try {
                 JSONObject results = jArray.getJSONObject(i);
-                /*Bitmap thumbnail = null;
-                if (activity.imageplaylist) {
-
-                    String Query2 = "SELECT HEX(snapshot) FROM playlist WHERE playorder="
-                            + results.getLong("playorder");
-                    JSONArray pArray = activity.ld.runQuery("lyricDb",
-                            Query2);
-                    if (pArray != null
-                            && pArray.length() > 0
-                            && pArray.getJSONObject(0).getString(
-                            "HEX(snapshot)") != null) {
-                        byte[] imageBytes = hexStringToByteArray(pArray
-                                .getJSONObject(0)
-                                .getString("HEX(snapshot)"));
-                        thumbnail = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                        if (thumbnail != null) {
-                            int height = (thumbnail.getHeight() * activity.thumbnail_width)
-                                    / thumbnail.getWidth();
-                            thumbnail = Bitmap.createScaledBitmap(thumbnail, activity.thumbnail_width, height, false);
-                        }
-                    }
-
-
-                }*/
-
                 if (results.getString("type").equals("play")
                         || results.getString("type").equals("sub")) {
                     String Query2 = "SELECT * FROM playlists WHERE id="
@@ -430,9 +408,10 @@ public class PlaylistFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Log.i(TAG, "Go up to " + parent_playlist);
-                        load_playlist(parent_playlist);
+                        load_playlist(parent_playlist, parent_playlisttitle);
                     }
                 });
+                button.setText(this_playlisttitle);
             } else {
                 button.setVisibility(View.GONE);
             }
@@ -451,7 +430,7 @@ public class PlaylistFragment extends Fragment {
                                     "Load playlist:"
                                             + String.valueOf(item.data)
                             );
-                            load_playlist(item.data);
+                            load_playlist(item.data,item.title);
                         } else {
                             activity.ld.runCommand_noreturn("display",
                                     String.valueOf(item.id), "");

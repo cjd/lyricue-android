@@ -322,7 +322,7 @@ public class Lyricue extends ActionBarActivity {
                 R.id.buttonPlayUp);
         if (button.getVisibility() == View.VISIBLE) {
             Log.i(TAG, "Go up to " + frag.parent_playlist);
-            frag.load_playlist(frag.parent_playlist);
+            frag.load_playlist(frag.parent_playlist, frag.parent_playlisttitle);
             return;
         }
 
@@ -363,7 +363,7 @@ public class Lyricue extends ActionBarActivity {
                 frag.progressPlaylist.dismiss();
             frag.progressPlaylist = ProgressDialog.show(this, "",
                     "Loading Playlist..", true);
-            frag.load_playlist(playlistid);
+            frag.load_playlist(playlistid,"");
         } else {
             logError("playlist fragment not found");
         }
