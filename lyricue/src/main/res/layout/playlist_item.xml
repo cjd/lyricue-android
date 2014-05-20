@@ -5,7 +5,11 @@
     android:layout_height="fill_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="2dip" >
+	android:layout_marginLeft="6dp"
+	android:layout_marginRight="6dp"
+	android:layout_marginTop="4dp"
+	android:layout_marginBottom="4dp"
+	android:background="@drawable/bg_card">
 
     <TextView
         android:id="@+id/playlist_item_description"
@@ -14,7 +18,8 @@
         android:layout_gravity="left"
         android:layout_weight="1"
         android:padding="4dip"
-        android:textSize="24sp" >
+        android:textSize="24sp"
+        android:textColor="@android:color/black">
 
     </TextView>
     
@@ -29,5 +34,4 @@
         android:padding="1dp"
         android:scaleType="fitCenter"
         android:src="@android:drawable/btn_star_big_off" />
-
-</LinearLayout>
+	</LinearLayout>
