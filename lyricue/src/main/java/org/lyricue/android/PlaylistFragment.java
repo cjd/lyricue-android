@@ -210,9 +210,7 @@ public class PlaylistFragment extends Fragment {
                             + results.getString("data");
                     JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
                     if (pArray != null && pArray.length() > 0) {
-                        String[] lines = pArray.getJSONObject(0)
-                                .getString("lyrics").split("\n");
-                        adapter.add(results.getLong("playorder"), lines[0],
+                        adapter.add(results.getLong("playorder"), pArray.getJSONObject(0).getString("lyrics"),
                                 results.getString("type"), (long) 0);
                     }
                 } else if (results.getString("type").equals("vers")) {
