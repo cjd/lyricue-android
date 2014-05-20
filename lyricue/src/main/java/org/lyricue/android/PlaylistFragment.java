@@ -103,9 +103,6 @@ public class PlaylistFragment extends Fragment {
             case R.id.select_playlist_menu:
                 load_playlists();
                 return true;
-            case R.id.toggle_previews:
-                toggle_previews();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -333,11 +330,6 @@ public class PlaylistFragment extends Fragment {
         } catch (JSONException e) {
             activity.logError("Error parsing data " + e.toString());
         }
-    }
-
-    void toggle_previews() {
-        activity.imageplaylist = !activity.imageplaylist;
-        refresh();
     }
 
     private class LoadPlaylistsTask extends AsyncTask<Void, Void, Void> {

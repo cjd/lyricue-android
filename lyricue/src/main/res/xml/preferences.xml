@@ -10,8 +10,7 @@
             android:defaultValue="1"
             android:key="togglescreen"
             android:title="Keep display on" android:summaryOff="Screen can timeout and turn off" android:summaryOn="Screen stays on while running"/>
-        <CheckBoxPreference android:key="imageplaylist" android:summaryOff="Don't show previews in playlist" android:title="Previews in Playlist" android:summaryOn="Show previews in playlist" android:defaultValue="1"/>
-        
+
     </PreferenceCategory>
 
 </PreferenceScreen>

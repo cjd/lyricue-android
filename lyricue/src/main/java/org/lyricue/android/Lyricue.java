@@ -75,7 +75,6 @@ public class Lyricue extends ActionBarActivity {
     public String[] bibles_text = null;
     public String[] bibles_id = null;
     public String[] bibles_type = null;
-    public boolean imageplaylist = true;
     public LyricueDisplay ld = null;
     public Map<String, Fragment> fragments = new HashMap<String, Fragment>();
     public int thumbnail_width = 0;
@@ -110,7 +109,6 @@ public class Lyricue extends ActionBarActivity {
             bibles_text = savedInstanceState.getStringArray("bibles_text");
             bibles_id = savedInstanceState.getStringArray("bibles_id");
             bibles_type = savedInstanceState.getStringArray("bibles_type");
-            imageplaylist = savedInstanceState.getBoolean("imageplaylist");
             ld = new LyricueDisplay(hosts);
         }
 
@@ -200,7 +198,6 @@ public class Lyricue extends ActionBarActivity {
         outState.putStringArray("bibles_text", bibles_text);
         outState.putStringArray("bibles_id", bibles_id);
         outState.putStringArray("bibles_type", bibles_type);
-        outState.putBoolean("imageplaylist", imageplaylist);
         super.onSaveInstanceState(outState);
     }
 
@@ -399,7 +396,6 @@ public class Lyricue extends ActionBarActivity {
             SharedPreferences settings = PreferenceManager
                     .getDefaultSharedPreferences(arg0[0]);
             togglescreen = settings.getBoolean("togglescreen", true);
-            imageplaylist = settings.getBoolean("imageplaylist", true);
             profile = settings.getString("profile", "not set");
             Log.i(TAG, "profile:" + profile);
             if (profile.equals("#demo")) {

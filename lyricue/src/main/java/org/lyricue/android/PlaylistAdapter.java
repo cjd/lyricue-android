@@ -64,7 +64,7 @@ final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
 
         viewHolder.description.setText(this.getItem(position).title);
         Log.i(TAG, "Get view:" + position + "=" + this.getItem(position).title);
-        if (activity.imageplaylist && (getItem(position).thumbnail != null)) {
+        if (getItem(position).thumbnail != null) {
             Log.d(TAG,"Download Item");
             viewHolder.image.setImageBitmap(getItem(position).thumbnail);
             viewHolder.image.setScaleType(ImageView.ScaleType.FIT_START);
