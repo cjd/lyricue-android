@@ -512,6 +512,7 @@ public class Lyricue extends ActionBarActivity {
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, "Error parsing data " + e.toString());
+                        return SELECT_PROFILE;
                     }
                     return SUCCESS;
                 } else {
