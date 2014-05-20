@@ -223,6 +223,7 @@ public class BibleFragment extends Fragment {
     private class BibleOnClickListener implements OnClickListener {
         @Override
         public void onClick(View vi) {
+            Integer position = 0;
             Log.i(TAG, "onClickBible");
             Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
             String bookname = spin.getSelectedItem().toString();
@@ -238,8 +239,9 @@ public class BibleFragment extends Fragment {
             switch (vi.getId()) {
                 case R.id.imageBibleNext:
                     spin = (Spinner) v.findViewById(R.id.spinBibleVerseEnd);
-                    if (spin.getItemAtPosition(Integer.parseInt(endverse)) != null) {
-                        spin.setSelection(Integer.parseInt(endverse));
+                    position=Integer.parseInt(endverse);
+                    if (spin.getCount()>=position && spin.getItemAtPosition(position) != null) {
+                        spin.setSelection(position);
                     }
                     verse = bookname + ":" + chapter + ":" + startverse + "-"
                             + chapter + ":" + spin.getSelectedItem().toString();
@@ -249,8 +251,9 @@ public class BibleFragment extends Fragment {
                     break;
                 case R.id.imageBiblePrev:
                     spin = (Spinner) v.findViewById(R.id.spinBibleVerseStart);
-                    if (spin.getItemAtPosition(Integer.parseInt(startverse) - 1) != null) {
-                        spin.setSelection(Integer.parseInt(startverse) - 2);
+                    position=Integer.parseInt(startverse);
+                    if (spin.getCount()>=(position-1) && spin.getItemAtPosition(position - 1) != null) {
+                        spin.setSelection(position - 2);
                     }
                     verse = bookname + ":" + chapter + ":"
                             + spin.getSelectedItem().toString() + "-" + chapter
