@@ -113,6 +113,7 @@ final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
                 bitmap = null;
             }
 
+            //noinspection ConstantConditions
             if (imageViewReference != null) {
                 ImageView imageView = (ImageView) imageViewReference.get();
                 Log.d(TAG,"Valid view");

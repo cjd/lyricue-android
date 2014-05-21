@@ -156,6 +156,7 @@ public class ServerActivity extends Activity {
             if (android.os.Build.MODEL.equals("google_sdk")
                     || android.os.Build.MODEL.equals("sdk")) {
                 Log.d(TAG, "Server host:" + my_server_host);
+                assert my_server_host != null;
                 String[] values = my_server_host.split(":");
                 my_server_host = "10.0.2.2:" + values[1];
                 Log.i(TAG, "Adding host:" + my_server_host);

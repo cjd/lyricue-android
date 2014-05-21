@@ -48,7 +48,6 @@ public class AvailableSongsFragment extends Fragment {
     private Lyricue activity = null;
     private ListView songlist = null;
     private AvailableSongsAdapter adapter = null;
-    private ArrayList<AvailableSongItem> items = null;
 
     @SuppressLint("InflateParams")
     @Override
@@ -160,7 +159,7 @@ public class AvailableSongsFragment extends Fragment {
             AsyncTask<Void, Void, AvailableSongsAdapter> {
         @Override
         protected AvailableSongsAdapter doInBackground(Void... arg0) {
-            items = new ArrayList<AvailableSongItem>();
+            ArrayList<AvailableSongItem> items = new ArrayList<AvailableSongItem>();
             if (activity.hosts == null) {
                 for (int a = 0; a < 100; a++) {
                     items.add(a, new AvailableSongItem());

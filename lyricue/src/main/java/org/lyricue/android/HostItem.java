@@ -15,6 +15,7 @@ public class HostItem implements Parcelable {
                     return new HostItem[size];
                 }
             };
+    @SuppressWarnings("FieldCanBeLocal")
     private final String TAG = "Lyricue";
     public String hostname;
     public int port;

@@ -33,6 +33,7 @@ public class AvailableSongItem implements Comparable<Object> {
         }
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public int compareTo(Object another) {
         return this.toString().toUpperCase(Locale.getDefault()).compareTo(another.toString().toUpperCase(Locale.getDefault()));

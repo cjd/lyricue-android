@@ -93,7 +93,8 @@
                 android:drawableTop="@android:drawable/ic_media_play"
                 android:onClick="onClickControl"
                 android:text="@string/redisplay"
-                android:textColor="#ffffffff" />
+                android:textColor="#ffffffff"
+                tools:ignore="InconsistentLayout" />
 
             <Button
                 android:id="@+id/ButtonBlank"

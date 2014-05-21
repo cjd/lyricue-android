@@ -25,6 +25,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 public class NotificationHandler extends Service {
+    @SuppressWarnings("FieldCanBeLocal")
     private final String TAG = "Lyricue";
     private LyricueDisplay ld = null;
 
@@ -38,6 +39,7 @@ public class NotificationHandler extends Service {
             for (int i=0;i<hosts_in.length;i++){
                 hosts[i]=(HostItem) hosts_in[i];
             }
+            //noinspection ConstantConditions
             if ((hosts != null) && (!hosts[0].equals(new HostItem("",0)))) {
                 if (ld == null) {
                     ld = new LyricueDisplay(hosts);

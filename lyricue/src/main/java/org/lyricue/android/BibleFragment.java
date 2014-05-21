@@ -223,7 +223,7 @@ public class BibleFragment extends Fragment {
     private class BibleOnClickListener implements OnClickListener {
         @Override
         public void onClick(View vi) {
-            Integer position = 0;
+            Integer position;
             Log.i(TAG, "onClickBible");
             Spinner spin = (Spinner) v.findViewById(R.id.spinBibleBook);
             String bookname = spin.getSelectedItem().toString();
