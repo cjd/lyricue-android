@@ -9,28 +9,58 @@
         android:layout_height="fill_parent"
         android:layout_weight="1" >
 
-        <Button
+        <LinearLayout
             android:id="@+id/ButtonPrevPage"
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableTop="@android:drawable/ic_media_rew"
-            android:gravity="center_vertical|center_horizontal"
-            android:onClick="onClickControl"
-            android:text="@string/prevpage"
-            android:textColor="#ffffffff" />
+            android:onClick="onClickControl">
 
-        <Button
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:id="@+id/imageView1"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_media_rew" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/prevpage"
+                android:id="@+id/textView1"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/ButtonNextPage"
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableTop="@android:drawable/ic_media_ff"
-            android:onClick="onClickControl"
-            android:text="@string/nextpage"
-            android:textColor="#ffffffff" />
+            android:onClick="onClickControl">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:id="@+id/imageView2"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_media_ff" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/nextpage"
+                android:id="@+id/textView2"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
     </TableRow>
 
     <TableRow
@@ -39,27 +69,58 @@
         android:layout_height="fill_parent"
         android:layout_weight="1" >
 
-        <Button
+        <LinearLayout
             android:id="@+id/ButtonPrevSong"
-            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableTop="@android:drawable/ic_media_previous"
-            android:onClick="onClickControl"
-            android:text="@string/prevsong"
-            android:textColor="#ffffffff" />
+            android:onClick="onClickControl">
 
-        <Button
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:id="@+id/imageView3"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_media_previous" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/prevsong"
+                android:id="@+id/textView3"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/ButtonNextSong"
-            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableTop="@android:drawable/ic_media_next"
-            android:onClick="onClickControl"
-            android:text="@string/nextsong"
-            android:textColor="#ffffffff" />
+            android:onClick="onClickControl">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:id="@+id/imageView4"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_media_next" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/nextsong"
+                android:id="@+id/textView4"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
     </TableRow>
 
     <TableRow
@@ -68,27 +129,58 @@
         android:layout_height="fill_parent"
         android:layout_weight="1" >
 
-        <Button
+        <LinearLayout
             android:id="@+id/ButtonRedisplay"
-            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableTop="@android:drawable/ic_media_play"
-            android:onClick="onClickControl"
-            android:text="@string/redisplay"
-            android:textColor="#ffffffff" />
+            android:onClick="onClickControl">
 
-        <Button
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:id="@+id/imageView5"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_media_play" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/redisplay"
+                android:id="@+id/textView5"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/ButtonBlank"
-            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableTop="@android:drawable/ic_media_pause"
-            android:onClick="onClickControl"
-            android:text="@string/blank"
-            android:textColor="#ffffffff" />
+            android:onClick="onClickControl">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:id="@+id/imageView6"
+                android:layout_gravity="center"
+                android:src="@android:drawable/ic_media_pause" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/blank"
+                android:id="@+id/textView6"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
     </TableRow>
 
 </TableLayout>

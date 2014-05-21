@@ -30,6 +30,7 @@ import android.net.wifi.WifiManager.MulticastLock;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -83,6 +84,7 @@ public class Lyricue extends ActionBarActivity {
     private ProgressDialog progressLoad = null;
     private Lyricue activity = null;
     public ActionBar actionBar = null;
+    private Vibrator vib = null;
     /**
      * Called when the activity is first created.
      */
@@ -93,6 +95,8 @@ public class Lyricue extends ActionBarActivity {
         activity = this;
         setContentView(R.layout.main);
         FragmentManager fragman = getSupportFragmentManager();
+        vib = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+
         if (savedInstanceState != null) {
             for (Fragment frag : fragman.getFragments()) {
                 if (frag != null) {
@@ -239,6 +243,7 @@ public class Lyricue extends ActionBarActivity {
     }
 
     public void onClickControl(View v) {
+        vib.vibrate(20);
         switch (v.getId()) {
             case R.id.ButtonPrevPage:
             case R.id.ButtonQuickPP:

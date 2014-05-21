@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import org.json.JSONArray;
@@ -21,7 +23,8 @@ import java.util.ArrayList;
 public class ChooseProfile extends Activity {
     private final String TAG = "Lyricue";
     private String host = "";
-    private Spinner spinProfile;
+    private ListView listProfile = null;
+    String profile = "#demo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,14 @@ public class ChooseProfile extends Activity {
         Log.i(TAG, "Choosing Profile");
 
         setContentView(R.layout.choose_profile);
-        spinProfile = (Spinner) findViewById(R.id.spinProfileSelect);
+        listProfile = (ListView) findViewById(R.id.listProfileSelect);
+        listProfile.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listProfile.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                profile = adapterView.getItemAtPosition(i).toString();
+            }
+        });
         host = getIntent().getExtras().getString("host");
         new GetProfilesTask().execute(this);
     }
@@ -49,10 +59,7 @@ public class ChooseProfile extends Activity {
                 finish();
                 break;
             case R.id.buttonProfileApply:
-                editor.putString("profile",
-                        ((Spinner) findViewById(R.id.spinProfileSelect))
-                                .getSelectedItem().toString()
-                );
+                editor.putString("profile", profile);
                 editor.commit();
                 lyricueActivity = new Intent(getBaseContext(), Lyricue.class);
                 startActivity(lyricueActivity);
@@ -69,32 +76,32 @@ public class ChooseProfile extends Activity {
             LyricueDisplay ld = new LyricueDisplay(new HostItem(host));
             JSONArray jArray = ld.runQuery("lyricDb",
                     "SELECT DISTINCT(profile) FROM status WHERE TIMEDIFF(NOW(), lastupdate) < '00:00:20'");
-            ArrayList<String> spinArray = new ArrayList<String>();
+            ArrayList<String> listArray = new ArrayList<String>();
 
             if (jArray != null) {
                 try {
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject results = jArray.getJSONObject(i);
-                        spinArray.add(results.getString("profile"));
+                        listArray.add(results.getString("profile"));
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, "Error parsing data " + e.toString());
                 }
             }
-            if (spinArray.size() == 1) {
+            if (listArray.size() == 1) {
                 Log.i(TAG, "Only one profile found");
             }
-            spinArray.add("#demo");
+            listArray.add("#demo");
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(arg0[0],
-                    android.R.layout.simple_spinner_item, spinArray);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    android.R.layout.simple_list_item_single_choice, listArray);
+            //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             return adapter;
         }
 
         @Override
         protected void onPostExecute(ArrayAdapter<String> result) {
-            spinProfile.setAdapter(result);
+            listProfile.setAdapter(result);
         }
     }
 }
