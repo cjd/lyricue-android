@@ -48,7 +48,7 @@ import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
 public class ServerActivity extends Activity {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private static final int SERVERPORT = 2346;
     private static final int MSG_ID = 0x1337;
     private static JmDNS mJmDNS = null;

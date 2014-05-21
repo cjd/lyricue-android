@@ -13,7 +13,7 @@ import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
 public class JMDNSRegisterServiceActivity extends Activity {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private static JmDNS mJmDNS = null;
     private static boolean running = true;
 

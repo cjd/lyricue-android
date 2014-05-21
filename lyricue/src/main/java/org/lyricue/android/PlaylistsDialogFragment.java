@@ -25,7 +25,7 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
 public class PlaylistsDialogFragment extends DialogFragment {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
 
     @SuppressWarnings("SameParameterValue")
     public static PlaylistsDialogFragment newInstance(int title) {

@@ -27,7 +27,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 public class LyricuePagerAdapter extends FragmentPagerAdapter {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private Lyricue activity = null;
     private Configuration conf = null;
     private Context context = null;

@@ -41,7 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class BibleFragment extends Fragment {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private Lyricue activity = null;
     private View v = null;
     @SuppressWarnings("CanBeFinal")

@@ -66,7 +66,7 @@ public class Lyricue extends ActionBarActivity {
      * Called when the activity is first created.
      */
     public static final String PREFS_NAME = "LyricuePrefsFile";
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     public HostItem hosts[] = null;
     public String profile = "";
     public long playlistid = (long) -1;

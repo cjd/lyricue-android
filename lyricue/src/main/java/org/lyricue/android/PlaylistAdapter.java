@@ -36,7 +36,7 @@ import org.json.JSONException;
 import java.lang.ref.WeakReference;
 
 final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private final Lyricue activity;
 
     @SuppressWarnings("SameParameterValue")

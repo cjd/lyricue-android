@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AvailableSongsFragment extends Fragment {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private Lyricue activity = null;
     private ListView songlist = null;
     private AvailableSongsAdapter adapter = null;

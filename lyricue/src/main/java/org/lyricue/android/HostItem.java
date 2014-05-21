@@ -15,7 +15,7 @@ public class HostItem implements Parcelable {
                     return new HostItem[size];
                 }
             };
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     public String hostname;
     public int port;
 

@@ -25,7 +25,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 public class NotificationHandler extends Service {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private LyricueDisplay ld = null;
 
     @Override

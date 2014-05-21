@@ -36,7 +36,7 @@ import java.net.UnknownHostException;
 
 public class LyricueDisplay extends Service {
 
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private HostItem[] hosts = null;
 
     public LyricueDisplay() {

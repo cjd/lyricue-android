@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class DisplayFragment extends Fragment {
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "Lyricue";
     private Lyricue activity = null;
     private View v = null;
 
