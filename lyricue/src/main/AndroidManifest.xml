@@ -13,12 +13,12 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Lyricue">
+        android:theme="@style/Lyricue">
         <activity
             android:name=".Lyricue"
             android:configChanges="orientation"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Lyricue">
+            android:theme="@style/Lyricue">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,10 +26,10 @@
         </activity>
         <activity
             android:name=".Preferences"
-            android:theme="@style/Theme.Lyricue" />
+            android:theme="@style/Lyricue" />
         <activity
             android:name=".ChooseProfile"
-            android:theme="@style/Theme.Lyricue" />
+            android:theme="@style/Lyricue" />
         <activity android:name=".JMDNSRegisterServiceActivity"/>
         <activity
             android:name=".ServerActivity"
@@ -38,8 +38,6 @@
 
         <service android:name=".LyricueDisplay" />
         <service android:name=".NotificationHandler" />
-
-
     </application>
 
 </manifest>

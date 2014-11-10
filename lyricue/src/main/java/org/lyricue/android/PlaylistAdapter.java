@@ -26,71 +26,107 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.support.v7.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
-final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
+final class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> implements View.OnClickListener{
     private final String TAG = "Lyricue";
-    private final Lyricue activity;
+    private Context mContext;
+    private ArrayList<PlaylistItem> items;
+    private Lyricue mActivity;
+    private PlaylistFragment mFragment;
 
     @SuppressWarnings("SameParameterValue")
-    public PlaylistAdapter(final Activity activity, final PlaylistFragment fragment, final int textViewResourceId) {
-        super(activity, textViewResourceId);
+    public PlaylistAdapter(final Lyricue activity, final PlaylistFragment fragment, Context context) {
         Log.i(TAG, "new playlist adapter");
-        this.activity = (Lyricue) activity;
+        this.mContext = context;
+        this.mActivity = activity;
+        this.mFragment = fragment;
+        this.items = new ArrayList<PlaylistItem>();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolderItem viewHolder;
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.playlist_item, viewGroup, false);
+        ViewHolder holder = new ViewHolder(v);
+        v.setOnClickListener(PlaylistAdapter.this);
+        v.setTag(holder);
+        return holder;
+    }
 
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) activity
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.playlist_item, parent, false);
-            viewHolder = new ViewHolderItem();
-            viewHolder.description = (TextView) convertView.findViewById(R.id.playlist_item_description);
-            viewHolder.image = (ImageView) convertView.findViewById(R.id.playlist_item_image);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolderItem) convertView.getTag();
-        }
-
-        viewHolder.description.setText(this.getItem(position).title);
-        Log.i(TAG, "Get view:" + position + "=" + this.getItem(position).title);
-        if (getItem(position).thumbnail != null) {
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        PlaylistItem item = items.get(i);
+        viewHolder.lyrics.setText(item.title);
+        Log.i(TAG, "Get view:" + i + "=" + item.title);
+        if (item.thumbnail != null) {
             Log.d(TAG,"Download Item");
-            viewHolder.image.setImageBitmap(getItem(position).thumbnail);
+            viewHolder.image.setImageBitmap(item.thumbnail);
             viewHolder.image.setScaleType(ImageView.ScaleType.FIT_START);
             viewHolder.image.setVisibility(View.VISIBLE);
         } else {
-            if (activity.ld != null) {
-                new ImageDownloaderTask(viewHolder.image).execute(position);
+            if (mActivity.ld != null) {
+                new ImageDownloaderTask(viewHolder.image).execute(item);
             }
             viewHolder.image.setVisibility(View.GONE);
         }
-        return convertView;
+    }
+
+    @Override
+    public void onClick(View view) {
+        ViewHolder holder = (ViewHolder) view.getTag();
+        int itemPosition = holder.getPosition();
+        Log.i(TAG, "Click playlist:" + holder.lyrics.getText()+ "=" + itemPosition);
+        PlaylistItem item = items.get(itemPosition);
+        if (item.type.equals("unloaded")) {
+            mFragment.load_playlists();
+        } else {
+            if (item.type.equals("play") || item.type.equals("sub")) {
+                Log.i(TAG,
+                        "Load playlist:"
+                                + String.valueOf(item.data)
+                );
+                mFragment.load_playlist(item.data, item.title);
+            } else {
+                mActivity.ld.runCommand_noreturn("display",
+                        String.valueOf(item.id), "");
+            }
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return items == null ? 0 : items.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView lyrics;
+        public ImageView image;
+
+        public ViewHolder(View itemView){
+            super(itemView);
+            lyrics=(TextView)itemView.findViewById(R.id.playlist_item_description);
+            image=(ImageView)itemView.findViewById(R.id.playlist_item_image);
+        }
     }
 
     public void add(Long itemId, String text, String type, Long data) {
         PlaylistItem item = new PlaylistItem(itemId, text, type, data);
-        super.add(item);
+        items.add(item);
     }
 
-    static class ViewHolderItem {
-        TextView description;
-        ImageView image;
-    }
-
-    private class ImageDownloaderTask extends AsyncTask<Integer, Void, Bitmap> {
+    private class ImageDownloaderTask extends AsyncTask<PlaylistItem, Void, Bitmap> {
         private final WeakReference imageViewReference;
-        private int position = 0;
+        private PlaylistItem item;
 
         public ImageDownloaderTask(ImageView imageView) {
             imageViewReference = new WeakReference(imageView);
@@ -98,11 +134,11 @@ final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
 
 
         @Override
-        protected Bitmap doInBackground(Integer... params) {
+        protected Bitmap doInBackground(PlaylistItem... params) {
             // params comes from the execute() call: params[0] is the url.
-            position=params[0];
-            Log.d(TAG,activity.ld.toString());
-            return downloadBitmap(activity.ld, activity.thumbnail_width, getItem(position).id);
+            item=params[0];
+            Log.d(TAG,mActivity.ld.toString());
+            return downloadBitmap(mActivity.ld, mActivity.thumbnail_width, item.id);
         }
 
         @Override
@@ -121,7 +157,7 @@ final class PlaylistAdapter extends ArrayAdapter<PlaylistItem> {
                     if (bitmap != null) {
                         Log.d(TAG,"Valid Image");
                         imageView.setImageBitmap(bitmap);
-                        getItem(position).thumbnail = bitmap;
+                        item.thumbnail = bitmap;
                         imageView.setVisibility(View.VISIBLE);
                     } else {
                         Log.d(TAG,"No Image");

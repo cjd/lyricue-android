@@ -168,7 +168,7 @@ public class AvailableSongsFragment extends Fragment {
                 }
                 Collections.sort(items);
                 adapter = new AvailableSongsAdapter(
-                        activity.getApplicationContext(), items);
+                        activity, items);
                 return adapter;
             }
 
@@ -206,7 +206,7 @@ public class AvailableSongsFragment extends Fragment {
 
                 Collections.sort(items);
                 adapter = new AvailableSongsAdapter(
-                        activity.getApplicationContext(), items);
+                        activity, items);
                 return adapter;
             }
             return null;

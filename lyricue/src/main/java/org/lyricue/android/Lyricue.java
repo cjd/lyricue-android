@@ -116,7 +116,7 @@ public class Lyricue extends ActionBarActivity {
             ld = new LyricueDisplay(hosts);
         }
 
-        LyricuePagerAdapter adapter = new LyricuePagerAdapter(fragman, activity.getBaseContext(),
+        LyricuePagerAdapter adapter = new LyricuePagerAdapter(fragman, activity,
                 activity);
         pager = (ViewPager) findViewById(R.id.viewpager);
         pager.setAdapter(adapter);

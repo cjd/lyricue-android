@@ -21,6 +21,9 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -44,21 +47,11 @@ public class PlaylistFragment extends Fragment {
     public ProgressDialog progressPlaylist = null;
     public Long parent_playlist = (long) -1;
     public String parent_playlisttitle = "";
-    private ListView listView;
+    private RecyclerView recyclerView;
     private PlaylistAdapter adapter;
     private PlaylistFragment fragment = null;
     private Long this_playlist = (long) 0;
     private String this_playlisttitle = "";
-
-    private static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
-                    .digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,9 +60,12 @@ public class PlaylistFragment extends Fragment {
         activity = (Lyricue) this.getActivity();
         fragment = this;
         View v = inflater.inflate(R.layout.playlist, container, false);
-        listView = (ListView) v.findViewById(R.id.playlistView);
+        recyclerView = (RecyclerView) v.findViewById(R.id.playlistView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         setHasOptionsMenu(true);
-        registerForContextMenu(listView);
+        registerForContextMenu(recyclerView);
+        load_playlists();
         return v;
     }
 
@@ -122,7 +118,7 @@ public class PlaylistFragment extends Fragment {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
                     .getMenuInfo();
 
-            long itemid = listView.getItemIdAtPosition(info.position);
+            long itemid = item.getItemId();
 
             if (item.getItemId() == 0) {
                 Log.i(TAG, "show item:" + itemid);
@@ -375,7 +371,7 @@ public class PlaylistFragment extends Fragment {
 
         protected PlaylistAdapter doInBackground(Long... arg0) {
             adapter = new PlaylistAdapter(activity, fragment,
-                    R.layout.playlist_item);
+                    getActivity().getApplicationContext());
             if (activity.playlistid > 0) {
                 add_playlist();
             } else {
@@ -387,7 +383,7 @@ public class PlaylistFragment extends Fragment {
         }
 
         protected void onPostExecute(PlaylistAdapter adapter) {
-            listView.setAdapter(adapter);
+            recyclerView.setAdapter(adapter);
             Button button = (Button) fragment.getView().findViewById(
                     R.id.buttonPlayUp);
             if (parent_playlist > 0) {
@@ -403,29 +399,7 @@ public class PlaylistFragment extends Fragment {
             } else {
                 button.setVisibility(View.GONE);
             }
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, final View view,
-                                        int position, long id) {
-                    Log.i(TAG, "Clicked:" + String.valueOf(id));
-                    PlaylistItem item = (PlaylistItem) parent
-                            .getItemAtPosition(position);
-                    if (item.type.equals("unloaded")) {
-                        fragment.load_playlists();
-                    } else {
-                        if (item.type.equals("play") || item.type.equals("sub")) {
-                            Log.i(TAG,
-                                    "Load playlist:"
-                                            + String.valueOf(item.data)
-                            );
-                            load_playlist(item.data,item.title);
-                        } else {
-                            activity.ld.runCommand_noreturn("display",
-                                    String.valueOf(item.id), "");
-                        }
-                    }
-                }
-            });
+
             if (progressPlaylist != null)
                 progressPlaylist.dismiss();
             Log.i(TAG, "done loading playlist");

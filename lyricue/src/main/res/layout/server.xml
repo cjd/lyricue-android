@@ -9,8 +9,7 @@
         android:id="@+id/imageServerBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/background"
-        android:src="@drawable/ab_background_textured_lyricue" />
+        android:contentDescription="@string/background" />
 
     <TextView
         android:id="@+id/textServerHeader"
