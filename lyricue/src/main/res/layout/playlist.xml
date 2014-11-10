@@ -14,11 +14,17 @@
         android:contentDescription="@string/up"
         android:text="@string/up" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/playlistView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        tools:context=".PlaylistFragment"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_playlist"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/playlistView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            tools:context=".PlaylistFragment"
         />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

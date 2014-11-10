@@ -3,15 +3,15 @@
     xmlns:lyricue="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/select_playlist_menu"
-        lyricue:showAsAction="ifRoom"
-        android:title="@string/select_playlist">
-    </item>
-    <item
         android:id="@+id/refresh_playlist"
         android:icon="@drawable/ic_action_refresh"
         lyricue:showAsAction="always"
         android:title="@string/refresh_playlist">
+    </item>
+    <item
+        android:id="@+id/select_playlist_menu"
+        lyricue:showAsAction="never"
+        android:title="@string/select_playlist">
     </item>
 
 </menu>

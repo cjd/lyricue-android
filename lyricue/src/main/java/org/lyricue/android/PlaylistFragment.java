@@ -21,6 +21,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,7 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class PlaylistFragment extends Fragment {
+public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private final String TAG = "Lyricue";
     private static Lyricue activity = null;
     public ProgressDialog progressPlaylist = null;
@@ -52,6 +53,7 @@ public class PlaylistFragment extends Fragment {
     private PlaylistFragment fragment = null;
     private Long this_playlist = (long) 0;
     private String this_playlisttitle = "";
+    private SwipeRefreshLayout swipeLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,7 +67,14 @@ public class PlaylistFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         setHasOptionsMenu(true);
         registerForContextMenu(recyclerView);
-        load_playlists();
+        swipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_playlist);
+        swipeLayout.setOnRefreshListener(this);
+        swipeLayout.setColorSchemeColors(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        if (this_playlist == 0)
+            load_playlists();
         return v;
     }
 
@@ -75,6 +84,10 @@ public class PlaylistFragment extends Fragment {
         setRetainInstance(true);
     }
 
+    @Override
+    public void onRefresh() {
+        refresh();
+    }
     @Override
     public void onResume() {
         Log.i(TAG, "resume playlist");
@@ -148,6 +161,7 @@ public class PlaylistFragment extends Fragment {
     }
 
     void refresh() {
+        Log.i(TAG, "refresh playlist");
         new LoadPlaylistTask().execute(this_playlist);
     }
 
@@ -403,6 +417,7 @@ public class PlaylistFragment extends Fragment {
             if (progressPlaylist != null)
                 progressPlaylist.dismiss();
             Log.i(TAG, "done loading playlist");
+            swipeLayout.setRefreshing(false);
         }
     }
 

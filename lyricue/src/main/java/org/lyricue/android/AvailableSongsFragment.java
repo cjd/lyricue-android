@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -43,7 +44,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class AvailableSongsFragment extends Fragment {
+public class AvailableSongsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private final String TAG = "Lyricue";
     private Lyricue activity = null;
     private ListView songlist = null;
@@ -140,6 +141,12 @@ public class AvailableSongsFragment extends Fragment {
         Log.i(TAG, "resume available");
         load_available();
         super.onResume();
+    }
+
+
+    @Override
+    public void onRefresh() {
+        load_available();
     }
 
     public void load_available() {
