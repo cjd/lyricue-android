@@ -16,9 +16,20 @@
   ~     along with Lyricue.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
-    <style name="Lyricue" parent="Theme.AppCompat.Light.DarkActionBar">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="LyricueTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
+        <item name="android:colorPrimary" tools:targetApi="21">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorPrimaryDark" tools:targetApi="21">@color/primary_dark</item>
+        <item name="backgroundSplit">@color/primary_dark</item>
+        <item name="android:backgroundSplit" tools:targetApi="21">@color/primary_dark</item>
+
+        <item name="android:windowContentTransitions" tools:targetApi="21">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap" tools:targetApi="21">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap" tools:targetApi="21">true</item>
+        <item name="android:windowSharedElementEnterTransition" tools:targetApi="21">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition" tools:targetApi="21">@android:transition/move</item>
+
     </style>
 </resources>

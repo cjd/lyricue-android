@@ -45,7 +45,6 @@ import org.json.JSONObject;
 public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private final String TAG = "Lyricue";
     private static Lyricue activity = null;
-    public ProgressDialog progressPlaylist = null;
     public Long parent_playlist = (long) -1;
     public String parent_playlisttitle = "";
     private RecyclerView recyclerView;
@@ -69,10 +68,7 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
         registerForContextMenu(recyclerView);
         swipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_playlist);
         swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorSchemeColors(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        swipeLayout.setProgressBackgroundColor(android.R.color.holo_blue_light);
         if (this_playlist == 0)
             load_playlists();
         return v;
@@ -88,6 +84,7 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onRefresh() {
         refresh();
     }
+
     @Override
     public void onResume() {
         Log.i(TAG, "resume playlist");
@@ -157,11 +154,17 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (this_playlist == 0) {
             this_playlist = activity.playlistid;
         }
+        if (!swipeLayout.isRefreshing()) {
+            swipeLayout.setRefreshing(true);
+        }
         new LoadPlaylistsTask().execute();
     }
 
     void refresh() {
         Log.i(TAG, "refresh playlist");
+        if (!swipeLayout.isRefreshing()) {
+            swipeLayout.setRefreshing(true);
+        }
         new LoadPlaylistTask().execute(this_playlist);
     }
 
@@ -169,6 +172,9 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
         Log.i(TAG, "load_playlist(" + playlistid + "-" + title + ")");
         this_playlist = playlistid;
         this_playlisttitle = title;
+        if (!swipeLayout.isRefreshing()) {
+            swipeLayout.setRefreshing(true);
+        }
         new LoadPlaylistTask().execute(playlistid);
     }
 
@@ -289,16 +295,17 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     void load_demo_playlist() {
+        // Force some delays as well - for testing
         if (this_playlist == 1) {
             for (int i = 0; i < 13; i++) {
                 adapter.add((long) i, "Demo Song " + i, "play", (long) 2);
-                parent_playlist = (long) 0;
             }
+            parent_playlist = (long) 0;
         } else {
             for (int i = 0; i < 13; i++) {
                 adapter.add((long) i, "Demo Item " + i, "demo", (long) 2);
-                parent_playlist = (long) 1;
             }
+            parent_playlist = (long) 1;
         }
 
     }
@@ -375,6 +382,7 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                 activity.logError("Error parsing data " + e.toString());
                 return null;
             }
+            swipeLayout.setRefreshing(false);
             activity.showPlaylistsDialog();
             return null;
         }
@@ -414,8 +422,6 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                 button.setVisibility(View.GONE);
             }
 
-            if (progressPlaylist != null)
-                progressPlaylist.dismiss();
             Log.i(TAG, "done loading playlist");
             swipeLayout.setRefreshing(false);
         }

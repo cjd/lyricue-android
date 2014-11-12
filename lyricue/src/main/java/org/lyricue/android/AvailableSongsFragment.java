@@ -49,6 +49,7 @@ public class AvailableSongsFragment extends Fragment implements SwipeRefreshLayo
     private Lyricue activity = null;
     private ListView songlist = null;
     private AvailableSongsAdapter adapter = null;
+    private SwipeRefreshLayout swipeLayout;
 
     @SuppressLint("InflateParams")
     @Override
@@ -58,6 +59,9 @@ public class AvailableSongsFragment extends Fragment implements SwipeRefreshLayo
         songlist = (ListView) v.findViewById(R.id.available_songlist);
         setHasOptionsMenu(true);
         activity = (Lyricue) getActivity();
+        swipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_available);
+        swipeLayout.setOnRefreshListener(this);
+        swipeLayout.setProgressBackgroundColor(android.R.color.holo_blue_light);
         return v;
 
     }
@@ -151,6 +155,9 @@ public class AvailableSongsFragment extends Fragment implements SwipeRefreshLayo
 
     public void load_available() {
         Log.i(TAG, "load_available");
+        if (!swipeLayout.isRefreshing()) {
+            swipeLayout.setRefreshing(true);
+        }
         new AvailableSongsTask().execute();
     }
 
@@ -230,6 +237,7 @@ public class AvailableSongsFragment extends Fragment implements SwipeRefreshLayo
                             + activity.playlistid);
                 }
             });
+            swipeLayout.setRefreshing(false);
             registerForContextMenu(songlist);
         }
     }

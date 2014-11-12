@@ -364,10 +364,6 @@ public class Lyricue extends ActionBarActivity {
     public void load_playlist() {
         PlaylistFragment frag = (PlaylistFragment) fragments.get(PlaylistFragment.class.getName());
         if (frag != null) {
-            if (frag.progressPlaylist != null)
-                frag.progressPlaylist.dismiss();
-            frag.progressPlaylist = ProgressDialog.show(this, "",
-                    "Loading Playlist..", true);
             frag.load_playlist(playlistid,"");
         } else {
             logError("playlist fragment not found");
