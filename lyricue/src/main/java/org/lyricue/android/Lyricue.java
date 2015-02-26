@@ -123,6 +123,8 @@ public class Lyricue extends ActionBarActivity {
         pager.setAdapter(adapter);
 
         actionBar = getSupportActionBar();
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setIcon(R.drawable.ic_stat_name);
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
                 // When the tab is selected, switch to the
@@ -138,7 +140,6 @@ public class Lyricue extends ActionBarActivity {
             public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
             }
         };
-
 
         Tab controlTab = actionBar.newTab().setText("Control").setTabListener(tabListener);
         actionBar.addTab(actionBar.newTab().setText(R.string.playlist)
@@ -485,7 +486,7 @@ public class Lyricue extends ActionBarActivity {
                 JSONArray jArray = ld
                         .runQuery(
                                 "lyricDb",
-                                "SELECT host, type FROM status WHERE TIMEDIFF(NOW(), lastupdate) < '00:00:02' AND profile='"
+                                "SELECT host, ip, type FROM status WHERE TIMEDIFF(NOW(), lastupdate) < '00:00:02' AND profile='"
                                         + profile + "'"
                         );
                 if (jArray != null) {
@@ -498,7 +499,8 @@ public class Lyricue extends ActionBarActivity {
                                     "simple")
                                     || results.getString("type").equals(
                                     "headless")) {
-                                hosts[i] = new HostItem(results.getString("host"));
+                                String values[] = results.getString("host").split(":",2);
+                                hosts[i] = new HostItem(results.getString("ip")+":"+values[1]);
                                 if (!settings.getString("hostname", "").isEmpty()) {
                                     Log.d(TAG,"Forcing hostname to "+settings.getString("hostname","10.0.2.2"));
                                     hosts[i].hostname=settings.getString("hostname","10.0.2.2");

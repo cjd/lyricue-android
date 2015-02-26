@@ -382,8 +382,13 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                 activity.logError("Error parsing data " + e.toString());
                 return null;
             }
-            swipeLayout.setRefreshing(false);
-            activity.showPlaylistsDialog();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    swipeLayout.setRefreshing(false);
+                    activity.showPlaylistsDialog();
+                }
+            });
             return null;
         }
     }
