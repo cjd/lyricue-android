@@ -12,8 +12,8 @@ if (project.hasProperty("MyProject.properties") && new File(project.property("My
         defaultConfig {
             minSdkVersion 10
             targetSdkVersion 21
-            versionCode 27
-            versionName "3.6"
+            versionCode 28
+            versionName "3.7"
         }
 
         signingConfigs {
