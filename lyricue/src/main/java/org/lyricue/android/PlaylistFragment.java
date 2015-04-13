@@ -17,7 +17,6 @@
 
 package org.lyricue.android;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,7 +35,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -210,7 +208,7 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                             + results.getString("data");
                     JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
                     if (pArray != null && pArray.length() > 0) {
-                        adapter.add(results.getLong("playorder"), pArray
+                        adapter.add(results.getLong("playorder"), "",pArray
                                 .getJSONObject(0).getString("title"), results
                                 .getString("type"), results.getLong("data"));
                         Log.i(TAG, "Add list:" + results.getLong("data") + "-"
@@ -221,11 +219,11 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                             + results.getString("data");
                     JSONArray pArray = activity.ld.runQuery("lyricDb", Query2);
                     if (pArray != null && pArray.length() > 0) {
-                        adapter.add(results.getLong("playorder"), pArray.getJSONObject(0).getString("lyrics"),
+                        adapter.add(results.getLong("playorder"), pArray.getJSONObject(0).getString("pagetitle"),pArray.getJSONObject(0).getString("lyrics"),
                                 results.getString("type"), (long) 0);
                     }
                 } else if (results.getString("type").equals("vers")) {
-                    adapter.add(results.getLong("playorder"), "Verses "
+                    adapter.add(results.getLong("playorder"), "", "Verses "
                                     + results.getString("data"),
                             results.getString("type"), (long) 0
                     );
@@ -235,17 +233,15 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                         filename = filename.substring(
                                 filename.lastIndexOf("/") + 1,
                                 filename.length() - 4).replace("_", " ");
-                        adapter.add(results.getLong("playorder"),
-                                "Presentation: " + filename,
+                        adapter.add(results.getLong("playorder"),"Presentation: "+filename,"",
                                 results.getString("type"), (long) 0);
                     } else {
                         adapter.add(
-                                results.getLong("playorder"),
-                                "File:"
-                                        + results.getString("data").substring(
+                                results.getLong("playorder"),"File: "+
+                                results.getString("data").substring(
                                         results.getString("data")
                                                 .lastIndexOf("/") + 1
-                                ),
+                                ),"",
                                 results.getString("type"), (long) 0
                         );
                     }
@@ -260,30 +256,30 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                         if (pArray != null && pArray.length() > 0) {
                             String desc = pArray.getJSONObject(0).getString(
                                     "description");
-                            adapter.add(results.getLong("playorder"), "Image:"
-                                    + desc, results.getString("type"), (long) 0);
+                            adapter.add(results.getLong("playorder"), "Image: "+
+                                    desc, "",results.getString("type"), (long) 0);
                         } else {
-                            adapter.add(results.getLong("playorder"),
-                                    "Image: unknown",
+                            adapter.add(results.getLong("playorder"), "Image",
+                                    "unknown",
                                     results.getString("type"), (long) 0);
                         }
                     } else if (imageItem[0].equals("dir")) {
                         adapter.add(
                                 results.getLong("playorder"),
-                                "Image:"
-                                        + imageItem[1].substring(imageItem[1]
-                                        .lastIndexOf("/") + 1),
+                                "Image: "+
+                                        imageItem[1].substring(imageItem[1]
+                                        .lastIndexOf("/") + 1),"",
                                 results.getString("type"), (long) 0
                         );
                     } else {
-                        adapter.add(results.getLong("playorder"), "Image:"
-                                        + imageItem[1], results.getString("type"),
+                        adapter.add(results.getLong("playorder"), "Image: "+
+                                        imageItem[1], "",results.getString("type"),
                                 (long) 0
                         );
                     }
                 } else {
                     adapter.add(results.getLong("playorder"),
-                            "Unknown item type", results.getString("type"),
+                            "Unknown item type","", results.getString("type"),
                             (long) 0);
                 }
             } catch (JSONException e) {
@@ -298,12 +294,12 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
         // Force some delays as well - for testing
         if (this_playlist == 1) {
             for (int i = 0; i < 13; i++) {
-                adapter.add((long) i, "Demo Song " + i, "play", (long) 2);
+                adapter.add((long) i, "","Demo Song " + i, "play", (long) 2);
             }
             parent_playlist = (long) 0;
         } else {
             for (int i = 0; i < 13; i++) {
-                adapter.add((long) i, "Demo Item " + i, "demo", (long) 2);
+                adapter.add((long) i, "","Demo Item " + i, "demo", (long) 2);
             }
             parent_playlist = (long) 1;
         }
@@ -403,7 +399,7 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                 add_playlist();
             } else {
                 adapter.add((long) 0,
-                        "No playlist loaded\nClick here to select one",
+                        "No playlist loaded\nClick here to select one","",
                         "unloaded", (long) 0);
             }
             return adapter;

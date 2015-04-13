@@ -66,8 +66,19 @@ final class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHol
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         PlaylistItem item = items.get(i);
-        viewHolder.lyrics.setText(item.title);
-        Log.i(TAG, "Get view:" + i + "=" + item.title);
+        Log.i(TAG, "Get view:" + i + "=" + item.content);
+        if (item.header.isEmpty()) {
+            viewHolder.header.setVisibility(View.GONE);
+        } else {
+            viewHolder.header.setVisibility(View.VISIBLE);
+            viewHolder.header.setText(item.header);
+        }
+        if (item.content.isEmpty()) {
+            viewHolder.lyrics.setVisibility(View.GONE);
+        } else {
+            viewHolder.lyrics.setVisibility(View.VISIBLE);
+            viewHolder.lyrics.setText(item.content);
+        }
         if (item.thumbnail != null) {
             Log.d(TAG,"Download Item");
             viewHolder.image.setImageBitmap(item.thumbnail);
@@ -95,7 +106,7 @@ final class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHol
                         "Load playlist:"
                                 + String.valueOf(item.data)
                 );
-                mFragment.load_playlist(item.data, item.title);
+                mFragment.load_playlist(item.data, item.content);
             } else {
                 mActivity.ld.runCommand_noreturn("display",
                         String.valueOf(item.id), "");
@@ -109,18 +120,20 @@ final class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHol
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView header;
         public TextView lyrics;
         public ImageView image;
 
         public ViewHolder(View itemView){
             super(itemView);
+            header=(TextView)itemView.findViewById(R.id.playlist_item_header);
             lyrics=(TextView)itemView.findViewById(R.id.playlist_item_description);
             image=(ImageView)itemView.findViewById(R.id.playlist_item_image);
         }
     }
 
-    public void add(Long itemId, String text, String type, Long data) {
-        PlaylistItem item = new PlaylistItem(itemId, text, type, data);
+    public void add(Long itemId, String header, String content, String type, Long data) {
+        PlaylistItem item = new PlaylistItem(itemId, header, content, type, data);
         items.add(item);
     }
 
