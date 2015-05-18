@@ -20,14 +20,16 @@ package org.lyricue.android;
 import android.graphics.Bitmap;
 
 class PlaylistItem {
-    public String title = "";
+    public String header = "";
+    public String content = "";
     public String type = "";
     public Long id = (long) 0;
     public Long data = (long) 0;
     public Bitmap thumbnail = null;
 
-    public PlaylistItem(Long id, String title, String type, Long data) {
-        this.title = title;
+    public PlaylistItem(Long id, String header, String content, String type, Long data) {
+        this.header = header;
+        this.content = content;
         this.id = id;
         this.type = type;
         this.data = data;
