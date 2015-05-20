@@ -44,10 +44,11 @@ public class MyNotification extends Notification {
         setListeners(contentView, ctx);
 
         Intent activityIntent = new Intent(ctx, Lyricue.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        Notification noti = new Notification.Builder(ctx)
-                .setContent(contentView).setSmallIcon(R.drawable.ic_stat_name)
-                .setContentIntent(PendingIntent.getActivity(ctx, 0, activityIntent, PendingIntent.FLAG_CANCEL_CURRENT)).build();
-
+        Notification.Builder build = new Notification.Builder(ctx);
+        build.setContent(contentView);
+        build.setSmallIcon(R.drawable.ic_stat_name);
+        build.setContentIntent(PendingIntent.getActivity(ctx, 0, activityIntent, PendingIntent.FLAG_CANCEL_CURRENT));
+        Notification noti = build.getNotification();
         notificationManager.notify(0, noti);
     }
 

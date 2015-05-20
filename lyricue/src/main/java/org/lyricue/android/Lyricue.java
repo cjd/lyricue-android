@@ -169,7 +169,7 @@ public class Lyricue extends ActionBarActivity {
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                getSupportActionBar().setSelectedNavigationItem(position);
+                 getSupportActionBar().setSelectedNavigationItem(position);
             }
         });
 
