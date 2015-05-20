@@ -36,7 +36,6 @@ import java.net.UnknownHostException;
 
 public class LyricueDisplay extends Service {
 
-    private final String TAG = "Lyricue";
     private HostItem[] hosts = null;
 
     public LyricueDisplay() {
@@ -61,6 +60,7 @@ public class LyricueDisplay extends Service {
     }
 
     void logError(String error_text) {
+        String TAG = "Lyricue";
         Log.d(TAG, error_text);
     }
 
@@ -164,6 +164,7 @@ public class LyricueDisplay extends Service {
                     logError("IOException:  " + e);
                 }
             }
+            //noinspection ConstantConditions,ConstantConditions
             if (os != null) {
                 try {
                     os.close();

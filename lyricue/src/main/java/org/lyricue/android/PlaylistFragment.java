@@ -248,34 +248,38 @@ public class PlaylistFragment extends Fragment implements SwipeRefreshLayout.OnR
                 } else if (results.getString("type").equals("imag")) {
                     String[] imageItem = results.getString("data")
                             .split(";", 2);
-                    if (imageItem[0].equals("db")) {
-                        String Query2 = "SELECT description FROM media WHERE id="
-                                + imageItem[1];
-                        JSONArray pArray = activity.ld.runQuery("mediaDb",
-                                Query2);
-                        if (pArray != null && pArray.length() > 0) {
-                            String desc = pArray.getJSONObject(0).getString(
-                                    "description");
-                            adapter.add(results.getLong("playorder"), "Image: "+
-                                    desc, "",results.getString("type"), (long) 0);
-                        } else {
-                            adapter.add(results.getLong("playorder"), "Image",
-                                    "unknown",
-                                    results.getString("type"), (long) 0);
-                        }
-                    } else if (imageItem[0].equals("dir")) {
-                        adapter.add(
-                                results.getLong("playorder"),
-                                "Image: "+
-                                        imageItem[1].substring(imageItem[1]
-                                        .lastIndexOf("/") + 1),"",
-                                results.getString("type"), (long) 0
-                        );
-                    } else {
-                        adapter.add(results.getLong("playorder"), "Image: "+
-                                        imageItem[1], "",results.getString("type"),
-                                (long) 0
-                        );
+                    switch (imageItem[0]) {
+                        case "db":
+                            String Query2 = "SELECT description FROM media WHERE id="
+                                    + imageItem[1];
+                            JSONArray pArray = activity.ld.runQuery("mediaDb",
+                                    Query2);
+                            if (pArray != null && pArray.length() > 0) {
+                                String desc = pArray.getJSONObject(0).getString(
+                                        "description");
+                                adapter.add(results.getLong("playorder"), "Image: " +
+                                        desc, "", results.getString("type"), (long) 0);
+                            } else {
+                                adapter.add(results.getLong("playorder"), "Image",
+                                        "unknown",
+                                        results.getString("type"), (long) 0);
+                            }
+                            break;
+                        case "dir":
+                            adapter.add(
+                                    results.getLong("playorder"),
+                                    "Image: " +
+                                            imageItem[1].substring(imageItem[1]
+                                                    .lastIndexOf("/") + 1), "",
+                                    results.getString("type"), (long) 0
+                            );
+                            break;
+                        default:
+                            adapter.add(results.getLong("playorder"), "Image: " +
+                                            imageItem[1], "", results.getString("type"),
+                                    (long) 0
+                            );
+                            break;
                     }
                 } else {
                     adapter.add(results.getLong("playorder"),

@@ -22,7 +22,7 @@
         android:layout_weight="1"
         android:padding="4dip"
         android:textSize="24sp"
-        android:text="page header"
+        android:text="@string/headertext"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:layout_gravity="center_horizontal"
@@ -36,7 +36,7 @@
         android:layout_weight="1"
         android:padding="4dip"
         android:textSize="24sp"
-        android:text="blank page"
+        android:text="@string/blank"
         android:textColor="@android:color/black"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal">

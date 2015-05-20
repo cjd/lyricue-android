@@ -37,7 +37,6 @@ import java.util.ArrayList;
 
 final class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> implements View.OnClickListener{
     private final String TAG = "Lyricue";
-    private Context mContext;
     private ArrayList<PlaylistItem> items;
     private Lyricue mActivity;
     private PlaylistFragment mFragment;
@@ -45,7 +44,7 @@ final class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHol
     @SuppressWarnings("SameParameterValue")
     public PlaylistAdapter(final Lyricue activity, final PlaylistFragment fragment, Context context) {
         Log.i(TAG, "new playlist adapter");
-        this.mContext = context;
+        Context mContext = context;
         this.mActivity = activity;
         this.mFragment = fragment;
         this.items = new ArrayList<PlaylistItem>();

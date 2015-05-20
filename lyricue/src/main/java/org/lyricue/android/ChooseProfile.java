@@ -52,14 +52,14 @@ public class ChooseProfile extends Activity {
         switch (v.getId()) {
             case R.id.buttonProfileDemo:
                 editor.putString("profile", "#demo");
-                editor.commit();
+                editor.apply();
                 Intent lyricueActivity = new Intent(getBaseContext(), Lyricue.class);
                 startActivity(lyricueActivity);
                 finish();
                 break;
             case R.id.buttonProfileApply:
                 editor.putString("profile", profile);
-                editor.commit();
+                editor.apply();
                 lyricueActivity = new Intent(getBaseContext(), Lyricue.class);
                 startActivity(lyricueActivity);
                 finish();

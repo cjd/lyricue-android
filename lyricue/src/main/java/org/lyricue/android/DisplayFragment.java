@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class DisplayFragment extends Fragment {
-    private final String TAG = "Lyricue";
     private Lyricue activity = null;
     private View v = null;
 
@@ -39,6 +38,7 @@ public class DisplayFragment extends Fragment {
     private class DisplayOnClickListener implements OnClickListener {
         @Override
         public void onClick(View vi) {
+            String TAG = "Lyricue";
             Log.i(TAG, "onClickBible");
             EditText text = (EditText) v.findViewById(R.id.editDisplay);
             String textString = text.getText().toString();

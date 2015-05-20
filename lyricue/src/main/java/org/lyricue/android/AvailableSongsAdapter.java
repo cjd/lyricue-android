@@ -56,7 +56,7 @@ public class AvailableSongsAdapter extends ArrayAdapter<AvailableSongItem>
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolderItem viewHolder;
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) LayoutInflater.from(context);
+            LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.available_song_row, parent, false);
             viewHolder = new ViewHolderItem();
             viewHolder.mainText = (TextView) convertView.findViewById(R.id.textMain);

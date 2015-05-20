@@ -295,7 +295,7 @@ public class Lyricue extends ActionBarActivity {
                         .getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("profile", "");
-                editor.commit();
+                editor.apply();
                 getPrefs();
                 return true;
             case R.id.server_menu:
